@@ -1,0 +1,285 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-02T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_ktor_superpets",
+      "parentId": null,
+      "modified": 1696010200000,
+      "created": 1696010200000,
+      "name": "Ktor Superpets - Firebase API",
+      "description": "API collection for Superpets with Firebase authentication and credit system",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696010200000,
+      "created": 1696010200000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8080",
+        "firebase_token": "YOUR_FIREBASE_ID_TOKEN_HERE"
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "firebase_token"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1696010200000,
+      "_type": "environment"
+    },
+    {
+      "_id": "req_hello_world",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696010300000,
+      "created": 1696010300000,
+      "url": "{{ _.base_url }}/",
+      "name": "Hello World",
+      "description": "Test the root endpoint (public)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1696010300000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_profile",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696010400000,
+      "created": 1696010400000,
+      "url": "{{ _.base_url }}/user/profile",
+      "name": "Get User Profile",
+      "description": "Get authenticated user profile with credits (requires Firebase token)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.firebase_token }}"
+      },
+      "metaSortKey": -1696010400000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_credits",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696010500000,
+      "created": 1696010500000,
+      "url": "{{ _.base_url }}/user/credits",
+      "name": "Get Credit Balance",
+      "description": "Get current credit balance (requires Firebase token)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.firebase_token }}"
+      },
+      "metaSortKey": -1696010500000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_transactions",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696010600000,
+      "created": 1696010600000,
+      "url": "{{ _.base_url }}/user/transactions",
+      "name": "Get Transaction History",
+      "description": "Get credit transaction history (last 50, requires Firebase token)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.firebase_token }}"
+      },
+      "metaSortKey": -1696010600000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_edits",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696010700000,
+      "created": 1696010700000,
+      "url": "{{ _.base_url }}/user/edits",
+      "name": "Get Edit History",
+      "description": "Get image edit history (last 50, requires Firebase token)",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.firebase_token }}"
+      },
+      "metaSortKey": -1696010700000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_add_credits",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696010800000,
+      "created": 1696010800000,
+      "url": "{{ _.base_url }}/user/credits/add",
+      "name": "Add Credits",
+      "description": "Add credits to user account (requires Firebase token, INSECURE - dev only)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"amount\": 10,\n  \"description\": \"Test credit purchase\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.firebase_token }}"
+      },
+      "metaSortKey": -1696010800000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_nano_banana_edit",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696010900000,
+      "created": 1696010900000,
+      "url": "{{ _.base_url }}/nano-banana/edit",
+      "name": "Nano Banana Edit",
+      "description": "Edit images using AI (costs 1 credit, requires Firebase token)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"make a photo of the man driving the car down the california coastline\",\n  \"image_urls\": [\n    \"https://storage.googleapis.com/falserverless/example_inputs/nano-banana-edit-input.png\",\n    \"https://storage.googleapis.com/falserverless/example_inputs/nano-banana-edit-input-2.png\"\n  ],\n  \"num_images\": 1,\n  \"output_format\": \"jpeg\",\n  \"sync_mode\": false\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.firebase_token }}"
+      },
+      "metaSortKey": -1696010900000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_nano_banana_simple",
+      "parentId": "wrk_ktor_superpets",
+      "modified": 1696011000000,
+      "created": 1696011000000,
+      "url": "{{ _.base_url }}/nano-banana/edit",
+      "name": "Nano Banana Edit (Simple)",
+      "description": "Simple image edit (costs 1 credit, requires Firebase token)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"make this image more vibrant and colorful\",\n  \"image_urls\": [\n    \"https://storage.googleapis.com/falserverless/example_inputs/nano-banana-edit-input.png\"\n  ]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.firebase_token }}"
+      },
+      "metaSortKey": -1696011000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    }
+  ]
+}

@@ -1,0 +1,500 @@
+{
+  "classics": [
+    {
+      "id": "superman",
+      "hero": "Superman",
+      "identity": "blue suit, red cape, S emblem on chest",
+      "scene_options": [
+        "soaring above Metropolis skyline at sunset",
+        "hovering in front of Daily Planet globe",
+        "stopping a speeding train with sheer strength",
+        "flying over icy mountains of the Fortress of Solitude",
+        "catching a crashing airplane in midair",
+        "standing strong against a giant robot attack",
+        "hovering in orbit with Earth glowing behind",
+        "charging into battle in war-torn city streets",
+        "standing in cornfield of Smallville at dawn",
+        "shielding civilians from an explosion"
+      ]
+    },
+    {
+      "id": "batman",
+      "hero": "Batman",
+      "identity": "black suit with bat emblem and flowing cape",
+      "scene_options": [
+        "perched on a Gotham rooftop in pouring rain",
+        "gliding through night sky with bats flying around",
+        "emerging from Batmobile in a dark alley",
+        "standing inside Batcave near Batcomputer glow",
+        "confronting villains in Arkham Asylum",
+        "silhouetted against the Bat-Signal in the sky",
+        "brawling with thugs in dimly lit docks",
+        "swooping down through broken glass ceiling",
+        "standing on gothic gargoyle overlooking city",
+        "walking through shadows with cape swirling"
+      ]
+    },
+    {
+      "id": "wonder-woman",
+      "hero": "Wonder Woman",
+      "identity": "Amazon warrior with armor, lasso of truth, and shield",
+      "scene_options": [
+        "charging into battle on ancient battlefield",
+        "deflecting bullets with glowing bracelets",
+        "standing tall in front of Themyscira temples",
+        "summoning lightning with sword raised",
+        "hovering in storm clouds with golden lasso glowing",
+        "facing an army of mythological beasts",
+        "walking across battlefield flames glowing",
+        "defending civilians with shield raised",
+        "standing in glowing temple ruins",
+        "hovering above ocean waves in armor"
+      ]
+    },
+    {
+      "id": "spider-man",
+      "hero": "Spider-Man",
+      "identity": "red and blue web-patterned suit with white eyes",
+      "scene_options": [
+        "swinging between skyscrapers of New York",
+        "clinging upside down under a bridge",
+        "posing on top of a radio tower at night",
+        "fighting villains in Times Square",
+        "swinging past Statue of Liberty glowing",
+        "standing on web-strung scaffolding",
+        "leaping off rooftop mid-swing",
+        "standing in alley with webbing covering walls",
+        "hanging from helicopter midair",
+        "perched on Empire State Building antenna"
+      ]
+    },
+    {
+      "id": "iron-man",
+      "hero": "Iron Man",
+      "identity": "red and gold powered exosuit with glowing arc reactor",
+      "scene_options": [
+        "blasting into sky with rocket boosters",
+        "fighting drones above Stark Tower",
+        "hovering over battlefield firing repulsors",
+        "standing in lab surrounded by armor suits",
+        "charging up unibeam at glowing core",
+        "hovering above ocean carrier ship",
+        "standing in desert ruins glowing with tech",
+        "engaging giant mech in city streets",
+        "flying across night sky with missile trails",
+        "posing with armor pieces assembling around"
+      ]
+    },
+    {
+      "id": "thor",
+      "hero": "Thor",
+      "identity": "Norse god with hammer Mjolnir and red cape",
+      "scene_options": [
+        "summoning lightning on mountaintop",
+        "standing in Asgard throne hall",
+        "hovering in storm clouds glowing",
+        "fighting frost giants in icy wasteland",
+        "charging with hammer raised glowing",
+        "standing at Bifrost bridge glowing",
+        "battling serpents in ocean storm",
+        "standing in golden halls of Valhalla",
+        "posing with hammer sparking energy",
+        "hovering over battlefield of gods"
+      ]
+    },
+    {
+      "id": "hulk",
+      "hero": "Hulk",
+      "identity": "giant green muscular figure with ripped pants",
+      "scene_options": [
+        "smashing through concrete walls",
+        "leaping across skyscrapers midair",
+        "roaring on top of mountain peak",
+        "lifting a tank over his head",
+        "standing in battlefield rubble",
+        "facing giant robots with fury",
+        "charging through desert army base",
+        "smashing the ground creating shockwave",
+        "standing in ruined city glowing green",
+        "emerging from smoke with glowing eyes"
+      ]
+    },
+    {
+      "id": "captain-america",
+      "hero": "Captain America",
+      "identity": "blue suit with star emblem, shield in hand",
+      "scene_options": [
+        "charging into battle with shield raised",
+        "standing in front of American flag waving",
+        "blocking explosion with shield",
+        "leading squad through ruined streets",
+        "standing in snow battlefield",
+        "posing with shield glowing with energy",
+        "hovering in futuristic battlefield",
+        "fighting aliens in city skyline",
+        "standing on war memorial glowing",
+        "running across battlefield leading charge"
+      ]
+    },
+    {
+      "id": "black-panther",
+      "hero": "Black Panther",
+      "identity": "sleek black vibranium suit with glowing accents",
+      "scene_options": [
+        "standing on Wakandan cliffs at sunrise",
+        "fighting in futuristic city glowing purple",
+        "perched in jungle trees glowing eyes",
+        "leaping across waterfall rocks",
+        "standing in throne room glowing blue",
+        "charging into battle with claws extended",
+        "standing on futuristic aircraft glowing",
+        "roaring in front of Wakanda skyline",
+        "posing in vibranium mines glowing",
+        "hovering above jungle with neon glow"
+      ]
+    },
+    {
+      "id": "doctor-strange",
+      "hero": "Doctor Strange",
+      "identity": "sorcerer with red cloak and glowing sigils",
+      "scene_options": [
+        "casting spells in Sanctum Sanctorum",
+        "hovering in multiverse fractals",
+        "standing in mystical temple ruins",
+        "summoning glowing portals mid-battle",
+        "hovering above city twisting reality",
+        "casting glowing runes in storm",
+        "standing in mirror dimension glowing",
+        "hovering near cosmic gateways",
+        "casting spells with glowing hands",
+        "standing in shattered glass dimensions"
+      ]
+    }
+  ],
+  "uniques": [
+    {
+      "id": "solar-guardian",
+      "hero": "Solar Guardian",
+      "identity": "golden armor with radiant sun emblems and a cape made of glowing light",
+      "scene_options": [
+        "hovering above a desert at sunrise with beams of light",
+        "standing on a golden temple roof glowing in daylight",
+        "flying through clouds with radiant sunlight",
+        "standing in front of a solar eclipse with aura shining",
+        "casting golden energy blasts mid-battle",
+        "hovering over a futuristic solar farm",
+        "standing in a wheat field glowing with light",
+        "posing on a cliff with the sun breaking through clouds",
+        "standing on molten rocks glowing with heat",
+        "flying across space near a burning star"
+      ]
+    },
+    {
+      "id": "storm-howler",
+      "hero": "Storm Howler",
+      "identity": "sleek dark-blue armor with glowing lightning streaks",
+      "scene_options": [
+        "roaring on a stormy mountaintop with thunderbolts",
+        "standing in the middle of a city blackout",
+        "summoning lightning in an open battlefield",
+        "flying through clouds surrounded by electricity",
+        "standing in front of shattered glass glowing blue",
+        "hovering above a power station crackling with sparks",
+        "leaping into battle during heavy rain",
+        "charging energy blasts under storm clouds",
+        "standing on a metallic rooftop with neon lightning",
+        "gliding across a stormy ocean with waves crashing"
+      ]
+    },
+    {
+      "id": "nebula-paws",
+      "hero": "Nebula Paws",
+      "identity": "futuristic cosmic armor glowing with stars and constellations",
+      "scene_options": [
+        "floating in space with nebula colors glowing",
+        "standing on a meteor with galaxies behind",
+        "hovering near Saturn’s rings glowing with light",
+        "casting cosmic energy beams from paws",
+        "posing in front of a wormhole portal",
+        "flying across a glowing galaxy spiral",
+        "standing on a futuristic spaceship deck",
+        "surrounded by swirling purple stardust",
+        "glowing in zero gravity with star trails",
+        "hovering above a cosmic battlefield"
+      ]
+    },
+    {
+      "id": "verdant-guardian",
+      "hero": "Verdant Guardian",
+      "identity": "armor made of vines, glowing leaves, and living wood",
+      "scene_options": [
+        "standing in an enchanted forest glowing green",
+        "surrounded by giant ancient trees with sunlight rays",
+        "summoning vines from the ground mid-battle",
+        "standing in front of a stone temple covered in moss",
+        "hovering above a jungle canopy",
+        "defending a magical tree glowing with energy",
+        "standing in a meadow full of flowers glowing",
+        "posing with green aura in a cave of crystals",
+        "emerging from swamp mist glowing bright",
+        "standing on a riverbank with magical water"
+      ]
+    },
+    {
+      "id": "inferno-fang",
+      "hero": "Inferno Fang",
+      "identity": "fiery armor with molten cracks and a blazing cape",
+      "scene_options": [
+        "standing in front of erupting volcano",
+        "charging forward with flames surrounding",
+        "hovering in lava fields glowing red",
+        "casting fireballs in a dark cavern",
+        "standing in front of burning ruins",
+        "leaping across molten rocks with sparks",
+        "surrounded by ash and smoke clouds",
+        "standing inside a ring of fire",
+        "flying above a burning city skyline",
+        "emerging from lava like a fire spirit"
+      ]
+    },
+    {
+      "id": "crystal-claw",
+      "hero": "Crystal Claw",
+      "identity": "armor of sharp glowing crystals in shades of blue and purple",
+      "scene_options": [
+        "standing in a cave of giant crystals",
+        "casting crystal shards into enemies",
+        "hovering above icy mountains glowing",
+        "standing in a futuristic crystal city",
+        "emerging from underground glowing with gems",
+        "posing inside a prism of refracted light",
+        "standing in a cavern reflecting rainbow beams",
+        "charging forward with crystal claws extended",
+        "standing on frozen lake glowing with cracks",
+        "surrounded by crystal towers under moonlight"
+      ]
+    },
+    {
+      "id": "shadow-prowler",
+      "hero": "Shadow Prowler",
+      "identity": "black stealth suit with glowing purple eyes and shadow aura",
+      "scene_options": [
+        "lurking on a rooftop in moonlight",
+        "emerging from shadows of a dark alley",
+        "standing on broken glass under neon lights",
+        "perched on a gothic gargoyle with glowing eyes",
+        "surrounded by swirling black mist",
+        "standing in a city under blackout",
+        "gliding silently through foggy rooftops",
+        "walking through flames with shadows shielding",
+        "standing in underground tunnels glowing purple",
+        "blending with shadows of a ruined castle"
+      ]
+    },
+    {
+      "id": "glacier-fang",
+      "hero": "Glacier Fang",
+      "identity": "icy armor with frosted spikes and glowing blue breath",
+      "scene_options": [
+        "standing on a frozen glacier under auroras",
+        "casting ice blasts across a battlefield",
+        "hovering above snowy mountains",
+        "standing on a frozen river cracking with light",
+        "emerging from a snowstorm glowing blue",
+        "standing inside an ice cave with crystals",
+        "posing in front of a frozen waterfall",
+        "summoning icy winds around body",
+        "standing on a frozen ocean mid-blizzard",
+        "roaring under northern lights glowing"
+      ]
+    },
+    {
+      "id": "volt-striker",
+      "hero": "Volt Striker",
+      "identity": "sleek armor powered by neon circuits and plasma sparks",
+      "scene_options": [
+        "standing in a futuristic neon city",
+        "charging energy with glowing fists",
+        "hovering in a digital cyberspace grid",
+        "casting electric blasts in combat",
+        "standing in front of a glowing reactor",
+        "flying across skyscrapers with plasma trails",
+        "posing with neon lights glowing behind",
+        "surrounded by sparks in a futuristic lab",
+        "standing on metallic ground with wires glowing",
+        "hovering above a digital hologram battlefield"
+      ]
+    },
+    {
+      "id": "phantom-tail",
+      "hero": "Phantom Tail",
+      "identity": "ethereal ghostly armor with glowing chains and spectral aura",
+      "scene_options": [
+        "hovering in a haunted graveyard with mist",
+        "standing inside a ruined cathedral glowing blue",
+        "emerging from ghostly fog",
+        "casting spectral chains glowing bright",
+        "floating above broken tombstones",
+        "standing under a blood moon aura",
+        "hovering in abandoned ruins glowing green",
+        "standing inside a misty cave of spirits",
+        "gliding through a battlefield of souls",
+        "surrounded by glowing ghostly flames"
+      ]
+    },
+    {
+      "id": "solaris-flare",
+      "hero": "Solaris Flare",
+      "identity": "suit of glowing plasma with fiery solar wings",
+      "scene_options": [
+        "hovering above a desert sunstorm",
+        "flying through space with solar flares",
+        "standing in a burning desert wasteland",
+        "casting plasma blasts mid-air",
+        "glowing above an eclipse sky",
+        "standing in volcanic wasteland glowing bright",
+        "hovering inside a glowing solar storm",
+        "standing in front of burning temples",
+        "flying across a star erupting with flares",
+        "casting glowing heat rays from hands"
+      ]
+    },
+    {
+      "id": "steel-paw",
+      "hero": "Steel Paw",
+      "identity": "armored exosuit of futuristic metal plating and glowing core",
+      "scene_options": [
+        "standing in a futuristic military base",
+        "hovering with jet boosters mid-air",
+        "charging forward firing energy blasts",
+        "standing in front of steel fortress",
+        "walking through a battlefield of machines",
+        "hovering above a futuristic city",
+        "posing in glowing hangar of ships",
+        "charging cannons glowing on back",
+        "standing in a robotic scrapyard",
+        "surrounded by sparks in metallic ruins"
+      ]
+    },
+    {
+      "id": "aether-wing",
+      "hero": "Aether Wing",
+      "identity": "glowing silver armor with radiant energy wings",
+      "scene_options": [
+        "hovering above clouds glowing with aura",
+        "standing at dawn on a cliff with wings spread",
+        "flying across galaxies with stardust trails",
+        "casting radiant beams from wings",
+        "hovering over ancient floating ruins",
+        "standing in front of glowing sky portals",
+        "flying through storm clouds glowing bright",
+        "hovering in cosmic battlefield of stars",
+        "standing with divine aura behind",
+        "flying above oceans glowing blue"
+      ]
+    },
+    {
+      "id": "obsidian-fang",
+      "hero": "Obsidian Fang",
+      "identity": "armor of sharp black stone with molten orange cracks",
+      "scene_options": [
+        "emerging from a volcano glowing bright",
+        "standing in a wasteland of ash",
+        "casting lava blasts across battlefield",
+        "standing in front of magma waterfalls",
+        "hovering with cracks glowing fire",
+        "roaring with molten aura glowing",
+        "standing on cracked earth lava flows",
+        "hovering in a cave glowing orange",
+        "standing in ash storms with fire trails",
+        "smashing rocks glowing with magma"
+      ]
+    },
+    {
+      "id": "celestial-fang",
+      "hero": "Celestial Fang",
+      "identity": "star-forged armor glowing with cosmic runes",
+      "scene_options": [
+        "standing in a galaxy battlefield",
+        "hovering above planets glowing bright",
+        "casting cosmic energy beams",
+        "floating above constellations glowing",
+        "standing near a collapsing star",
+        "hovering in zero gravity with aura",
+        "standing inside a space temple glowing",
+        "surrounded by cosmic dust storms",
+        "hovering near black hole horizon",
+        "glowing in multiverse rift"
+      ]
+    },
+    {
+      "id": "toxic-maw",
+      "hero": "Toxic Maw",
+      "identity": "hazmat-style suit with glowing green toxic aura",
+      "scene_options": [
+        "standing in a ruined industrial plant",
+        "emerging from toxic swamp glowing",
+        "casting acid blasts glowing green",
+        "hovering above radioactive wasteland",
+        "standing inside nuclear reactor room",
+        "surrounded by leaking barrels of waste",
+        "walking in foggy city glowing neon green",
+        "hovering above polluted river glowing",
+        "standing in abandoned factory",
+        "glowing in chemical firestorm"
+      ]
+    },
+    {
+      "id": "blaze-wing",
+      "hero": "Blaze Wing",
+      "identity": "armored suit with burning fire wings and molten gauntlets",
+      "scene_options": [
+        "hovering in front of erupting volcano",
+        "flying through fiery skies glowing red",
+        "casting fire from wings mid-air",
+        "standing in molten wasteland glowing",
+        "hovering above lava river",
+        "standing inside a flaming ruin",
+        "flying across city engulfed in fire",
+        "hovering under firestorm clouds",
+        "standing on burning mountain top",
+        "gliding through smoke with glowing aura"
+      ]
+    },
+    {
+      "id": "chrono-claw",
+      "hero": "Chrono Claw",
+      "identity": "armor embedded with glowing clocks and time runes",
+      "scene_options": [
+        "standing in a glowing time vortex",
+        "hovering in broken clock ruins",
+        "casting time energy blasts",
+        "surrounded by floating gears and watches",
+        "standing inside glowing hourglass",
+        "hovering in cosmic time rift",
+        "posing on broken ruins frozen in time",
+        "casting golden time chains",
+        "hovering above sands of time desert",
+        "standing in shattered timelines glowing"
+      ]
+    },
+    {
+      "id": "lunar-howl",
+      "hero": "Lunar Howl",
+      "identity": "silver armor glowing with moonlight energy and crescent emblems",
+      "scene_options": [
+        "standing under full moon glowing bright",
+        "hovering above glowing lunar craters",
+        "casting moonlight beams in battle",
+        "standing in mystical night forest",
+        "glowing under eclipsed moonlight",
+        "hovering in cosmic night sky",
+        "standing on lunar temple glowing",
+        "howling under starry sky with aura",
+        "standing on mountain peaks glowing silver",
+        "hovering across ocean glowing with moonlight"
+      ]
+    }
+  ]
+}
+

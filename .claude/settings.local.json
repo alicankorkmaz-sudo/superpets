@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(test:*)",
+      "Bash(npm run dev:*)",
+      "Bash(lsof:*)",
+      "Bash(timeout 5 npm run dev)",
+      "Read(//private/tmp/**)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(cat:*)",
+      "WebSearch",
+      "WebFetch(domain:mvnrepository.com)",
+      "Bash(./gradlew build:*)",
+      "Bash(curl:*)",
+      "Bash(xargs kill:*)",
+      "Bash(./gradlew:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "outputStyle": "default"
+}

@@ -1,0 +1,571 @@
+package com.alicankorkmaz
+
+import com.alicankorkmaz.models.*
+import com.alicankorkmaz.services.FirebaseAuthService
+import com.alicankorkmaz.services.FirestoreService
+import com.alicankorkmaz.services.NanoBananaService
+import com.alicankorkmaz.services.HeroService
+import com.alicankorkmaz.services.StripeService
+import com.alicankorkmaz.services.buildPrompt
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.http.content.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.http.content.*
+import io.ktor.utils.io.*
+import io.ktor.utils.io.jvm.javaio.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+
+fun Application.configureRouting() {
+    val nanoBananaService = NanoBananaService(this)
+    val firestoreService = FirestoreService(this)
+    val firebaseAuthService = FirebaseAuthService(this)
+    val heroService = HeroService(this)
+    val stripeService = StripeService(this)
+
+    routing {
+        // Serve index.html at root
+        get("/") {
+            call.respondRedirect("/index.html")
+        }
+
+        // Serve static files from resources/static
+        staticResources("/", "static")
+
+        // Get all heroes (public endpoint)
+        get("/heroes") {
+            try {
+                val heroes = heroService.getAllHeroes()
+                call.respond(HttpStatusCode.OK, HeroesResponse(
+                    classics = heroes.classics,
+                    uniques = heroes.uniques
+                ))
+            } catch (e: Exception) {
+                application.log.error("Error getting heroes", e)
+                call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+            }
+        }
+
+        authenticate("firebase-auth") {
+            // Get user profile
+            get("/user/profile") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
+
+                    // Get email from token
+                    val authHeader = call.request.headers["Authorization"]
+                    val token = authHeader?.removePrefix("Bearer ")
+                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
+
+                    // Auto-create user with 5 free credits on first access
+                    val user = firestoreService.getUserOrCreate(userId, email, initialCredits = 5)
+
+                    call.respond(HttpStatusCode.OK, com.alicankorkmaz.models.UserProfile(
+                        uid = user.uid,
+                        email = user.email,
+                        credits = user.credits,
+                        createdAt = user.createdAt
+                    ))
+                } catch (e: Exception) {
+                    application.log.error("Error getting user profile", e)
+                    call.respond(HttpStatusCode.InternalServerError, com.alicankorkmaz.models.ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            // Get credit balance
+            get("/user/credits") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
+
+                    // Get email from token
+                    val authHeader = call.request.headers["Authorization"]
+                    val token = authHeader?.removePrefix("Bearer ")
+                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
+
+                    // Auto-create user with 5 free credits on first access
+                    val user = firestoreService.getUserOrCreate(userId, email, initialCredits = 5)
+
+                    call.respond(HttpStatusCode.OK, com.alicankorkmaz.models.CreditBalanceResponse(user.credits))
+                } catch (e: Exception) {
+                    application.log.error("Error getting credits", e)
+                    call.respond(HttpStatusCode.InternalServerError, com.alicankorkmaz.models.ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            // Get transaction history
+            get("/user/transactions") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
+
+                    val transactions = firestoreService.getTransactionHistory(userId)
+                    call.respond(HttpStatusCode.OK, com.alicankorkmaz.models.TransactionHistoryResponse(transactions))
+                } catch (e: Exception) {
+                    application.log.error("Error getting transactions", e)
+                    call.respond(HttpStatusCode.InternalServerError, com.alicankorkmaz.models.ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            // Get edit history
+            get("/user/edits") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, EditHistoryResponse(emptyList()))
+
+                    val edits = firestoreService.getEditHistory(userId)
+                    call.respond(HttpStatusCode.OK, EditHistoryResponse(edits))
+                } catch (e: Exception) {
+                    application.log.error("Error getting edit history", e)
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            // Add credits (admin only or payment webhook)
+            post("/user/credits/add") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
+
+                    val body = call.receive<AddCreditsRequest>()
+
+                    val success = firestoreService.addCredits(
+                        userId = userId,
+                        amount = body.amount,
+                        type = TransactionType.PURCHASE,
+                        description = body.description
+                    )
+
+                    if (success) {
+                        val user = firestoreService.getUser(userId)
+                        call.respond(HttpStatusCode.OK, AddCreditsResponse(
+                            success = true,
+                            credits = user?.credits
+                        ))
+                    } else {
+                        call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Failed to add credits"))
+                    }
+                } catch (e: Exception) {
+                    application.log.error("Error adding credits", e)
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            post("/nano-banana/edit") {
+                try {
+                    // Get authenticated user ID
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@post call.respondText(
+                            "Unauthorized",
+                            status = HttpStatusCode.Unauthorized
+                        )
+
+                    val request = call.receive<NanoBananaEditRequest>()
+
+                    // Validate request
+                    if (request.imageUrl.isBlank()) {
+                        return@post call.respondText(
+                            "Image URL is required",
+                            status = HttpStatusCode.BadRequest
+                        )
+                    }
+
+                    if (request.numImages !in 1..10) {
+                        return@post call.respondText(
+                            "Number of images must be between 1 and 10",
+                            status = HttpStatusCode.BadRequest
+                        )
+                    }
+
+                    // Get hero
+                    val hero = heroService.getHeroById(request.heroId)
+                        ?: return@post call.respondText(
+                            "Invalid heroId: ${request.heroId}",
+                            status = HttpStatusCode.BadRequest
+                        )
+
+                    // Get or create user (first time users get 5 free credits)
+                    val authHeader = call.request.headers["Authorization"]
+                    val token = authHeader?.removePrefix("Bearer ")
+                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown"
+
+                    val user = firestoreService.getUserOrCreate(userId, email, initialCredits = 5)
+
+                    // Check if user has enough credits (cost: 1 credit per image generated)
+                    val creditCost = request.numImages.toLong()
+                    if (user.credits < creditCost) {
+                        return@post call.respondText(
+                            "Insufficient credits. You have ${user.credits} credits but need $creditCost.",
+                            status = HttpStatusCode.PaymentRequired
+                        )
+                    }
+
+                    // Deduct credits before making the API call(s)
+                    val deducted = firestoreService.deductCredits(
+                        userId = userId,
+                        amount = creditCost,
+                        description = "Image edit: hero ${request.heroId} (${request.numImages} images)"
+                    )
+
+                    if (!deducted) {
+                        return@post call.respondText(
+                            "Failed to deduct credits. Please try again.",
+                            status = HttpStatusCode.InternalServerError
+                        )
+                    }
+
+                    // Generate all unique prompts upfront to ensure variety
+                    val prompts = (1..request.numImages).map { hero.buildPrompt() }
+
+                    // Make parallel API calls, each with its unique prompt
+                    val results = coroutineScope {
+                        prompts.mapIndexed { index, prompt ->
+                            async {
+                                val editRequest = NanoBananaEditRequest(
+                                    heroId = request.heroId,
+                                    imageUrl = request.imageUrl,
+                                    numImages = 1,  // Each call generates 1 image
+                                    outputFormat = request.outputFormat,
+                                    syncMode = request.syncMode
+                                )
+                                nanoBananaService.editImage(prompt, editRequest)
+                            }
+                        }.map { it.await() }
+                    }
+
+                    // Aggregate results
+                    val response = NanoBananaEditResponse(
+                        images = results.flatMap { it.images },
+                        description = "Edited with hero: ${hero.hero}"
+                    )
+
+                    // Save edit history
+                    firestoreService.saveEditHistory(
+                        userId = userId,
+                        prompt = prompts.joinToString(" | "),
+                        inputImages = listOf(request.imageUrl),
+                        outputImages = response.images.map { it.url },
+                        creditsCost = creditCost
+                    )
+
+                    call.respond(HttpStatusCode.OK, response)
+
+                } catch (e: Exception) {
+                    application.log.error("Error processing request", e)
+                    call.respondText(
+                        "Error processing request: ${e.message}",
+                        status = HttpStatusCode.InternalServerError
+                    )
+                }
+            }
+
+            post("/nano-banana/upload-and-edit") {
+                try {
+                    // Get authenticated user ID
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@post call.respondText(
+                            "Unauthorized",
+                            status = HttpStatusCode.Unauthorized
+                        )
+
+                    // Parse multipart form data
+                    val multipart = call.receiveMultipart()
+                    var imageFile: Pair<ByteArray, Pair<String, String>>? = null // bytes, (fileName, contentType)
+                    var heroId: String? = null
+                    var numImages: Int = 1
+                    var outputFormat: String = "jpeg"
+
+                    multipart.forEachPart { part ->
+                        when (part) {
+                            is PartData.FileItem -> {
+                                if (part.name == "file" && imageFile == null) {
+                                    val fileName = part.originalFileName ?: "image.jpg"
+                                    val contentType = part.contentType?.toString() ?: "image/jpeg"
+                                    val bytes = part.provider().toInputStream().readBytes()
+                                    imageFile = bytes to (fileName to contentType)
+                                }
+                            }
+                            is PartData.FormItem -> {
+                                when (part.name) {
+                                    "hero_id" -> heroId = part.value
+                                    "num_images" -> numImages = part.value.toIntOrNull() ?: 1
+                                    "output_format" -> outputFormat = part.value
+                                }
+                            }
+                            else -> {}
+                        }
+                        part.dispose()
+                    }
+
+                    // Validate inputs
+                    if (imageFile == null) {
+                        return@post call.respondText(
+                            "Image file is required",
+                            status = HttpStatusCode.BadRequest
+                        )
+                    }
+
+                    if (heroId.isNullOrBlank()) {
+                        return@post call.respondText(
+                            "heroId is required",
+                            status = HttpStatusCode.BadRequest
+                        )
+                    }
+
+                    // Get hero
+                    val hero = heroService.getHeroById(heroId)
+                        ?: return@post call.respondText(
+                            "Invalid heroId: $heroId",
+                            status = HttpStatusCode.BadRequest
+                        )
+
+                    if (numImages !in 1..10) {
+                        return@post call.respondText(
+                            "Number of images must be between 1 and 10",
+                            status = HttpStatusCode.BadRequest
+                        )
+                    }
+
+                    // Get or create user (first time users get 5 free credits)
+                    val authHeader = call.request.headers["Authorization"]
+                    val token = authHeader?.removePrefix("Bearer ")
+                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown"
+
+                    val user = firestoreService.getUserOrCreate(userId, email, initialCredits = 5)
+
+                    // Check if user has enough credits (cost: 1 credit per image generated)
+                    val creditCost = numImages.toLong()
+                    if (user.credits < creditCost) {
+                        return@post call.respondText(
+                            "Insufficient credits. You have ${user.credits} credits but need $creditCost.",
+                            status = HttpStatusCode.PaymentRequired
+                        )
+                    }
+
+                    // Deduct credits before making the API call(s)
+                    val deducted = firestoreService.deductCredits(
+                        userId = userId,
+                        amount = creditCost,
+                        description = "Image edit (upload): hero $heroId ($numImages images)"
+                    )
+
+                    if (!deducted) {
+                        return@post call.respondText(
+                            "Failed to deduct credits. Please try again.",
+                            status = HttpStatusCode.InternalServerError
+                        )
+                    }
+
+                    // Upload image to fal.ai storage
+                    val (bytes, fileInfo) = imageFile!!
+                    val (fileName, contentType) = fileInfo
+                    val imageUrl = nanoBananaService.uploadFile(bytes, fileName, contentType)
+
+                    // Generate all unique prompts upfront to ensure variety
+                    val prompts = (1..numImages).map { hero.buildPrompt() }
+
+                    // Make parallel API calls, each with its unique prompt
+                    val results = coroutineScope {
+                        prompts.mapIndexed { index, prompt ->
+                            async {
+                                val editRequest = NanoBananaEditRequest(
+                                    heroId = heroId,
+                                    imageUrl = imageUrl,
+                                    numImages = 1,  // Each call generates 1 image
+                                    outputFormat = outputFormat
+                                )
+                                nanoBananaService.editImage(prompt, editRequest)
+                            }
+                        }.map { it.await() }
+                    }
+
+                    // Aggregate results
+                    val response = NanoBananaEditResponse(
+                        images = results.flatMap { it.images },
+                        description = "Edited with hero: ${hero.hero}"
+                    )
+
+                    // Save edit history
+                    firestoreService.saveEditHistory(
+                        userId = userId,
+                        prompt = prompts.joinToString(" | "),
+                        inputImages = listOf(imageUrl),
+                        outputImages = response.images.map { it.url },
+                        creditsCost = creditCost
+                    )
+
+                    call.respond(HttpStatusCode.OK, response)
+
+                } catch (e: Exception) {
+                    application.log.error("Error processing upload and edit request", e)
+                    call.respondText(
+                        "Error processing request: ${e.message}",
+                        status = HttpStatusCode.InternalServerError
+                    )
+                }
+            }
+
+            // Stripe checkout session creation
+            post("/stripe/create-checkout-session") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
+
+                    val authHeader = call.request.headers["Authorization"]
+                    val token = authHeader?.removePrefix("Bearer ")
+                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
+
+                    val request = call.receive<CreateCheckoutSessionRequest>()
+
+                    // Validate credit amount
+                    if (request.credits !in listOf(10, 25, 50, 100)) {
+                        return@post call.respond(
+                            HttpStatusCode.BadRequest,
+                            ErrorResponse("Invalid credit amount. Must be 10, 25, 50, or 100")
+                        )
+                    }
+
+                    // Create Stripe checkout session
+                    val session = stripeService.createCheckoutSession(
+                        credits = request.credits,
+                        userId = userId,
+                        userEmail = email,
+                        successUrl = "http://localhost:5173?payment=success",
+                        cancelUrl = "http://localhost:5173?payment=cancelled"
+                    )
+
+                    call.respond(
+                        HttpStatusCode.OK,
+                        CreateCheckoutSessionResponse(
+                            sessionId = session.id,
+                            url = session.url
+                        )
+                    )
+                } catch (e: Exception) {
+                    application.log.error("Error creating checkout session", e)
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+        }
+
+        // Stripe webhook (not authenticated)
+        post("/stripe/webhook") {
+            try {
+                val payload = call.receiveText()
+                val signature = call.request.headers["Stripe-Signature"]
+                    ?: return@post call.respond(HttpStatusCode.BadRequest, ErrorResponse("Missing signature"))
+
+                // Verify webhook signature
+                if (!stripeService.verifyWebhookSignature(payload, signature)) {
+                    return@post call.respond(HttpStatusCode.BadRequest, ErrorResponse("Invalid signature"))
+                }
+
+                // Parse the event
+                val event = com.stripe.model.Event.GSON.fromJson(payload, com.stripe.model.Event::class.java)
+
+                when (event.type) {
+                    "checkout.session.completed" -> {
+                        // Parse the session from the event data
+                        val sessionJson = event.data.`object`
+                        val session = com.stripe.model.checkout.Session.GSON.fromJson(
+                            sessionJson.toJson(),
+                            com.stripe.model.checkout.Session::class.java
+                        )
+
+                        val userId = session.clientReferenceId
+                        val credits = session.metadata["credits"]?.toLongOrNull() ?: 0L
+
+                        if (userId != null && credits > 0) {
+                            // Add credits to user account
+                            val success = firestoreService.addCredits(
+                                userId = userId,
+                                amount = credits,
+                                type = TransactionType.PURCHASE,
+                                description = "Purchased $credits credits via Stripe"
+                            )
+
+                            if (success) {
+                                application.log.info("Successfully added $credits credits to user $userId")
+                            } else {
+                                application.log.error("Failed to add credits to user $userId")
+                            }
+                        }
+                    }
+
+                    "payment_intent.payment_failed" -> {
+                        val paymentIntentJson = event.data.`object`
+                        val paymentIntent = com.stripe.model.PaymentIntent.GSON.fromJson(
+                            paymentIntentJson.toJson(),
+                            com.stripe.model.PaymentIntent::class.java
+                        )
+                        application.log.warn("Payment failed for payment intent: ${paymentIntent.id}")
+                        // Could notify user via email here
+                    }
+
+                    "charge.refunded" -> {
+                        val chargeJson = event.data.`object`
+                        val charge = com.stripe.model.Charge.GSON.fromJson(
+                            chargeJson.toJson(),
+                            com.stripe.model.Charge::class.java
+                        )
+
+                        // Extract metadata from the charge to find the user and credits
+                        val metadata = charge.metadata
+                        val userId = metadata["userId"]
+                        val credits = metadata["credits"]?.toLongOrNull()
+
+                        if (userId != null && credits != null && credits > 0) {
+                            // Deduct refunded credits
+                            val success = firestoreService.deductCredits(
+                                userId = userId,
+                                amount = credits,
+                                description = "Refund: ${credits} credits removed (Charge: ${charge.id})"
+                            )
+
+                            if (success) {
+                                application.log.info("Successfully deducted $credits credits from user $userId due to refund")
+                            } else {
+                                application.log.error("Failed to deduct credits for refund from user $userId")
+                            }
+                        } else {
+                            application.log.warn("Refund received but missing metadata: chargeId=${charge.id}")
+                        }
+                    }
+
+                    "charge.dispute.created" -> {
+                        val disputeJson = event.data.`object`
+                        val dispute = com.stripe.model.Dispute.GSON.fromJson(
+                            disputeJson.toJson(),
+                            com.stripe.model.Dispute::class.java
+                        )
+                        application.log.warn("Dispute created for charge: ${dispute.charge}. Amount: ${dispute.amount}")
+                        // Could flag the user account or send admin notification
+                    }
+
+                    "charge.dispute.closed" -> {
+                        val disputeJson = event.data.`object`
+                        val dispute = com.stripe.model.Dispute.GSON.fromJson(
+                            disputeJson.toJson(),
+                            com.stripe.model.Dispute::class.java
+                        )
+                        application.log.info("Dispute closed for charge: ${dispute.charge}. Status: ${dispute.status}")
+                    }
+
+                    else -> {
+                        application.log.info("Unhandled webhook event type: ${event.type}")
+                    }
+                }
+
+                call.respond(HttpStatusCode.OK, mapOf("received" to true))
+            } catch (e: Exception) {
+                application.log.error("Error processing webhook", e)
+                call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+            }
+        }
+    }
+}

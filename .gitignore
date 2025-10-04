@@ -1,0 +1,27 @@
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Security - Sensitive Files
+.env
+.env.*
+.env.local
+.env.production
+!.env.example
+*.env
+firebase-service-account.json
+*.key
+*.pem
+*.p12
+secrets/
+
+# Temporary/Build (each subproject has its own .gitignore for specifics)
+*.log
+*.tmp

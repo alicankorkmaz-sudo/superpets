@@ -10,7 +10,6 @@ import com.alicankorkmaz.services.buildPrompt
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -28,13 +27,15 @@ fun Application.configureRouting() {
     val stripeService = StripeService(this)
 
     routing {
-        // Serve index.html at root
+        // Status page
         get("/") {
-            call.respondRedirect("/index.html")
+            call.respond(HttpStatusCode.OK, StatusResponse(
+                status = "ok",
+                service = "superpets-backend",
+                version = "0.0.1",
+                timestamp = System.currentTimeMillis()
+            ))
         }
-
-        // Serve static files from resources/static
-        staticResources("/", "static")
 
         // Get all heroes (public endpoint)
         get("/heroes") {

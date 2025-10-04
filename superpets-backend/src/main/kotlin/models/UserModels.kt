@@ -76,3 +76,11 @@ data class EditHistory(
 data class EditHistoryResponse(
     val edits: List<EditHistory>
 )
+
+@Serializable
+data class StatusResponse(
+    val status: String,
+    val service: String,
+    val version: String,
+    val timestamp: Long
+)

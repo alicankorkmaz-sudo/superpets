@@ -1,4 +1,4 @@
-import { Download } from 'lucide-react';
+import { Download, Sparkles } from 'lucide-react';
 import type { ImageFile } from '../../lib/types';
 
 interface ResultsGalleryProps {
@@ -17,22 +17,33 @@ export function ResultsGallery({ images, description }: ResultsGalleryProps) {
   };
 
   return (
-    <div className="card">
-      <h3 className="text-xl font-bold mb-2">Generated Images</h3>
-      <p className="text-gray-600 text-sm mb-6">{description}</p>
+    <div className="card shadow-lg animate-fade-in">
+      <div className="flex items-start gap-3 mb-6">
+        <Sparkles className="text-primary-600 mt-1" size={28} />
+        <div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Your Superhero Pets!</h3>
+          <p className="text-gray-600">{description}</p>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {images.map((image, index) => (
-          <div key={index} className="relative group">
+          <div
+            key={index}
+            className="relative group rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 animate-scale-in"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
             <img
               src={image.url}
               alt={`Result ${index + 1}`}
-              className="w-full aspect-square object-cover rounded-lg"
+              className="w-full aspect-square object-cover transform group-hover:scale-105 transition-transform duration-300"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-lg flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
+              <span className="text-white font-medium text-sm">Image {index + 1}</span>
               <button
                 onClick={() => downloadImage(image.url, index)}
-                className="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-3 rounded-full hover:bg-gray-100 transition-all"
+                className="bg-white text-gray-800 p-3 rounded-full hover:bg-primary-500 hover:text-white transition-all shadow-lg transform hover:scale-110"
+                title="Download image"
               >
                 <Download size={20} />
               </button>

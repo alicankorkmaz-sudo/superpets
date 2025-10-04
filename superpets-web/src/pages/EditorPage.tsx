@@ -5,7 +5,7 @@ import { OutputSettings } from '../components/Editor/OutputSettings';
 import { ResultsGallery } from '../components/Editor/ResultsGallery';
 import { useImageEdit } from '../hooks/useImageEdit';
 import { useCredits } from '../contexts/CreditsContext';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 
 export function EditorPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -55,37 +55,58 @@ export function EditorPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-      <div className="card">
-        <h2 className="text-2xl font-bold mb-6">Create AI-Edited Pet Images</h2>
+      {/* Hero Section */}
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-3">
+          Transform Your Pet into a Superhero
+        </h1>
+        <p className="text-gray-600 text-lg">
+          Upload a photo, choose a hero, and watch the magic happen ✨
+        </p>
+      </div>
 
+      <div className="card shadow-lg">
         <div className="space-y-6">
           <ImageUploader file={file} onFileChange={setFile} />
-          <HeroSelector selectedHeroId={selectedHeroId} onHeroSelect={setSelectedHeroId} />
-          <OutputSettings
-            numImages={numImages}
-            onNumImagesChange={handleNumImagesChange}
-            outputFormat={outputFormat}
-            onOutputFormatChange={setOutputFormat}
-          />
+
+          <div className="border-t border-gray-200 pt-6">
+            <HeroSelector selectedHeroId={selectedHeroId} onHeroSelect={setSelectedHeroId} />
+          </div>
+
+          <div className="border-t border-gray-200 pt-6">
+            <OutputSettings
+              numImages={numImages}
+              onNumImagesChange={handleNumImagesChange}
+              outputFormat={outputFormat}
+              onOutputFormatChange={setOutputFormat}
+            />
+          </div>
 
           {(error || validationError) && (
-            <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
-              {error || validationError}
+            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg flex items-start gap-3">
+              <span className="text-xl">⚠️</span>
+              <div>
+                <p className="font-medium">Error</p>
+                <p className="text-sm">{error || validationError}</p>
+              </div>
             </div>
           )}
 
           <button
             onClick={handleGenerate}
             disabled={!canGenerate}
-            className="btn-primary w-full flex items-center justify-center gap-2"
+            className="btn-primary w-full flex items-center justify-center gap-2 text-lg py-4 shadow-lg hover:shadow-xl transition-all"
           >
             {loading ? (
               <>
-                <Loader2 className="animate-spin" size={20} />
-                Generating...
+                <Loader2 className="animate-spin" size={24} />
+                <span>Generating Your Superhero...</span>
               </>
             ) : (
-              <>Generate Images ({numImages} {numImages === 1 ? 'credit' : 'credits'})</>
+              <>
+                <Sparkles size={24} />
+                <span>Generate Images ({numImages} {numImages === 1 ? 'credit' : 'credits'})</span>
+              </>
             )}
           </button>
         </div>

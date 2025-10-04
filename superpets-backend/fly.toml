@@ -8,6 +8,10 @@ primary_region = 'fra'
 
 [build]
 
+[env]
+  GRPC_DNS_RESOLVER = "native"
+  JAVA_NET_PREFERIPV4STACK = "true"
+
 [http_service]
   internal_port = 8080
   force_https = true

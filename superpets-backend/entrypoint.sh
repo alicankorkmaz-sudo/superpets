@@ -6,5 +6,5 @@ if [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
     echo "Firebase service account file created from environment variable"
 fi
 
-# Start the application
-exec java -jar app.jar
+# Start the application with IPv4 preference for gRPC
+exec java -Djava.net.preferIPv4Stack=true -Dio.grpc.netty.shaded.io.netty.transport.noNative=true -jar app.jar

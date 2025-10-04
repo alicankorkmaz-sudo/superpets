@@ -6,5 +6,5 @@ if [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
     echo "Firebase service account file created from environment variable"
 fi
 
-# Start with minimal JVM options
-exec java -Xmx512m -jar app.jar
+# Start the application
+exec java -jar app.jar

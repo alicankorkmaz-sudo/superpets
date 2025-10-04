@@ -13,17 +13,13 @@ object FirebaseConfig {
                 .property("firebase.serviceAccountPath")
                 .getString()
 
-            val credentials = GoogleCredentials.fromStream(FileInputStream(serviceAccountPath))
-
             val options = FirebaseOptions.builder()
-                .setCredentials(credentials)
-                .setProjectId("superpets-a42c5")
-                .setDatabaseUrl("https://superpets-a42c5.firebaseio.com")
+                .setCredentials(GoogleCredentials.fromStream(FileInputStream(serviceAccountPath)))
                 .build()
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options)
-                application.log.info("Firebase initialized successfully for project: superpets-a42c5")
+                application.log.info("Firebase initialized successfully")
             }
         } catch (e: Exception) {
             application.log.error("Failed to initialize Firebase", e)

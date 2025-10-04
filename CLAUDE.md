@@ -253,3 +253,5 @@ See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.
 - All secrets managed via environment variables (never committed to git)
 - Firebase service account JSON stored as environment variable for deployment
 - Hero prompt system is server-side only (clients cannot send custom prompts)
+- Deployed to gcp run
+- memorize

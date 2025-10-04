@@ -20,7 +20,7 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 # Copy the built JAR from build stage
-COPY --from=build /app/build/libs/*-all.jar app.jar
+COPY --from=build /app/build/libs/app.jar app.jar
 
 # Copy pets.json (required by HeroService)
 COPY pets.json ./pets.json

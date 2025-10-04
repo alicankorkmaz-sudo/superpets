@@ -7,4 +7,5 @@ if [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
 fi
 
 # Start the application
+# IPv4 settings are now configured in FirebaseConfig.kt before gRPC initialization
 exec java -jar app.jar

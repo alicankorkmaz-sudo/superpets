@@ -20,7 +20,21 @@
       "Bash(git init:*)",
       "Bash(git branch:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(flyctl:*)",
+      "Bash(git rm:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(tree:*)",
+      "Bash(grep:*)",
+      "Bash(gcloud:*)",
+      "Bash(firebase login:*)",
+      "Bash(firebase projects:list:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(git log:*)",
+      "Bash(docker build:*)",
+      "Bash(docker push:*)",
+      "Bash(firebase init:*)"
     ],
     "deny": [],
     "ask": []

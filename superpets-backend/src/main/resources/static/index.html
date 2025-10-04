@@ -478,8 +478,8 @@
         window.selectedHeroId = null;
         window.heroesData = null;
 
-        // API base URL
-        const API_BASE = 'http://localhost:8080';
+        // API base URL - empty string makes requests relative to current domain
+        const API_BASE = '';
 
         // Auth state observer
         onAuthStateChanged(auth, async (user) => {

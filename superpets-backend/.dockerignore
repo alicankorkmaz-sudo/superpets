@@ -1,0 +1,27 @@
+# Build outputs
+build/
+.gradle/
+*.log
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Sensitive files
+firebase-service-account.json
+.env
+.env.*
+*.key
+*.pem
+
+# Git
+.git/
+.gitignore
+
+# Misc
+README.md
+insomnia-collection.json
+.DS_Store

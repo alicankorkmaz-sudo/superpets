@@ -48,7 +48,12 @@
       "Bash(export FAL_API_KEY=:*)",
       "Bash(export STRIPE_SECRET_KEY=:*)",
       "Bash(export STRIPE_WEBHOOK_SECRET=:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(brew install:*)",
+      "Bash(render whoami)",
+      "Bash(render login)",
+      "Bash(render services:*)",
+      "Bash(render workspace list:*)"
     ],
     "deny": [],
     "ask": []

@@ -28,7 +28,8 @@ Transform your pet photos into superhero versions using AI-powered image editing
 - **Custom Domain:** https://superpets.fun
 - **Firebase URL:** https://superpets-ee0ab.web.app
 - **Build Tool:** Vite
-- **Deployment:** Manual via `firebase deploy`
+- **Deployment:** Automatic via GitHub Actions (on push to `main`)
+- **CI/CD:** GitHub Actions workflow (.github/workflows/firebase-deploy.yml)
 
 ### Infrastructure
 - **Database:** Supabase PostgreSQL (with Transaction Pooler for IPv4 compatibility)
@@ -129,15 +130,30 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 - Port 8080 (configurable via `PORT` env var)
 
 ### Frontend Deployment (Firebase Hosting)
+
+**Automatic Deployment (GitHub Actions):**
+1. Push changes to `main` branch (affecting `superpets-web/` directory)
+2. GitHub Actions workflow triggers automatically
+3. Workflow checks out code, installs dependencies
+4. Creates `.env.production` from GitHub secrets
+5. Builds production bundle: `npm run build`
+6. Deploys to Firebase Hosting via Firebase GitHub Action
+7. Changes live at https://superpets.fun within 2-3 minutes
+
+**Manual Deployment (Alternative):**
 1. Build production bundle: `npm run build` (uses `.env.production`)
 2. Deploy to Firebase: `firebase deploy`
-3. Firebase builds and deploys to hosting
-4. Custom domain automatically routes traffic
+3. Custom domain automatically routes traffic
 
 **Build configuration:**
 - Vite production build with optimizations
-- Environment variables injected at build time
+- Environment variables injected at build time from GitHub secrets
 - Output directory: `dist/`
+- GitHub Actions workflow: `.github/workflows/firebase-deploy.yml`
+
+**Setup Required:**
+- See `GITHUB_ACTIONS_SETUP.md` for configuring GitHub secrets
+- Requires `FIREBASE_SERVICE_ACCOUNT` and `VITE_STRIPE_PUBLISHABLE_KEY` secrets
 
 ---
 

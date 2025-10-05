@@ -24,7 +24,8 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 - Production URL: https://superpets.fun (custom domain)
 - Firebase Hosting URL: https://superpets-ee0ab.web.app
 - Connected to Render backend via environment variables
-- Deployment: Manual via `firebase deploy`
+- Deployment: Automatic via GitHub Actions (on push to `main`)
+- CI/CD: `.github/workflows/firebase-deploy.yml`
 - Status: Live and operational
 
 **Domain:**
@@ -215,7 +216,7 @@ npm run build
 # Preview production build
 npm run preview
 
-# Deploy to Firebase Hosting
+# Deploy to Firebase Hosting (manual)
 firebase deploy
 
 # Lint code
@@ -226,6 +227,12 @@ npm run lint
 - `.env` - Development configuration (localhost backend)
 - `.env.production` - Production configuration (Render backend)
 - Vite automatically loads correct env file based on mode
+
+**CI/CD:**
+- Automatic deployment via GitHub Actions on push to `main`
+- Workflow file: `.github/workflows/firebase-deploy.yml`
+- Setup instructions: See `GITHUB_ACTIONS_SETUP.md`
+- Requires GitHub secrets: `FIREBASE_SERVICE_ACCOUNT`, `VITE_STRIPE_PUBLISHABLE_KEY`
 
 ## Important Implementation Details
 

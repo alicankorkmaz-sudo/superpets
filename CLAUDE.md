@@ -13,16 +13,23 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 
 ## Current Deployment Status
 
-**Backend:** Deployed to Render
-- URL: https://superpets-backend.onrender.com
+**Backend:** Deployed to Render ✅
+- Production URL: https://superpets-backend-pipp.onrender.com
 - Database: Supabase PostgreSQL (migrated from Firebase Firestore)
 - Authentication: Supabase Auth (migrated from Firebase Auth)
 - Deployment: Automatic from `main` branch on GitHub
+- Status: Live and operational
 
-**Frontend:** Not yet deployed
-- Currently running locally only
-- API base URL needs update for production
-- Planned deployment to Vercel/Netlify/Firebase Hosting
+**Frontend:** Deployed to Firebase Hosting ✅
+- Production URL: https://superpets.fun (custom domain)
+- Firebase Hosting URL: https://superpets-ee0ab.web.app
+- Connected to Render backend via environment variables
+- Deployment: Manual via `firebase deploy`
+- Status: Live and operational
+
+**Domain:**
+- Custom domain: **superpets.fun**
+- Configured through Firebase Hosting
 
 ## Architecture
 
@@ -128,7 +135,9 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - Dynamic credit cost display: "Generate Images (5 credits)"
 
 **API Configuration:**
-- Base URL: `http://localhost:8080` (in `src/lib/api.ts` - needs update for production)
+- Development: `http://localhost:8080`
+- Production: `https://superpets-backend-pipp.onrender.com` (configured in `.env.production`)
+- Base URL managed via `VITE_API_BASE_URL` environment variable
 - Authentication: Bearer tokens from Supabase Auth
 - Image generation limit: 1-10 images per request
 
@@ -206,9 +215,17 @@ npm run build
 # Preview production build
 npm run preview
 
+# Deploy to Firebase Hosting
+firebase deploy
+
 # Lint code
 npm run lint
 ```
+
+**Environment Variables:**
+- `.env` - Development configuration (localhost backend)
+- `.env.production` - Production configuration (Render backend)
+- Vite automatically loads correct env file based on mode
 
 ## Important Implementation Details
 
@@ -293,13 +310,19 @@ See `supabase_migration.sql` for complete schema. Key tables:
 
 See `PROJECT_STATE.md` for current progress and next steps.
 
-Key priorities:
-1. **Update Render deployment with correct Supabase pooler connection**
-2. **Update frontend to use Supabase Auth**
-3. **Deploy frontend to Vercel/Netlify/Firebase Hosting**
-4. **Implement CORS restrictions**
-5. **Complete Stripe payment integration**
-6. **Add rate limiting and input validation**
+**Completed (Oct 5, 2025):**
+- ✅ Deployed backend to Render with Supabase pooler connection
+- ✅ Migrated frontend to Supabase Auth
+- ✅ Deployed frontend to Firebase Hosting
+- ✅ Configured custom domain: superpets.fun
+
+**Remaining priorities:**
+1. **Implement CORS restrictions** (currently set to `anyHost()` - security risk)
+2. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
+3. **Add rate limiting and input validation**
+4. **Configure custom domain SSL/HTTPS** (if not auto-configured by Firebase)
+5. **Monitor and optimize Render backend performance** (free tier may spin down)
+6. **Set up error monitoring and analytics** (Sentry, LogRocket, etc.)
 
 See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.
 

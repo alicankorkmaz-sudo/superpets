@@ -26,7 +26,7 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 - ✅ Stripe integration code (checkout, webhook)
 - ✅ Docker containerization ready
 - ✅ Environment variable configuration
-- ✅ **Deployed to Render** (https://superpets-backend-pipp.onrender.com)
+- ✅ **Deployed to Render** (https://superpets.fun)
 - ✅ Supabase Transaction Pooler configured for IPv4 compatibility
 - ✅ Test HTML interface at `/index.html`
 
@@ -111,7 +111,7 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 3. **Deployed Backend to Render**
    - Pushed Supabase migration code to GitHub
    - Configured Render environment variables with Transaction Pooler
-   - Successfully deployed to https://superpets-backend-pipp.onrender.com
+   - Successfully deployed to https://superpets.fun
    - Verified PostgreSQL connection and API endpoints
 
 ### Frontend Deployment
@@ -143,7 +143,7 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 ## Deployment History
 
 **Live Production Deployments:**
-- ✅ **Render** (backend) - https://superpets-backend-pipp.onrender.com
+- ✅ **Render** (backend) - https://superpets.fun
 - ✅ **Firebase Hosting** (frontend) - https://superpets.fun
 
 **Failed Attempts (Historical):**
@@ -192,7 +192,7 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 **Production (.env.production):**
 ```bash
 # Backend URL (production)
-VITE_API_BASE_URL=https://superpets-backend-pipp.onrender.com
+VITE_API_BASE_URL=https://superpets.fun
 
 # Stripe
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
@@ -319,7 +319,7 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ## Production URLs
 
 **Live Application:** https://superpets.fun ✨
-**Backend API:** https://superpets-backend-pipp.onrender.com
+**Backend API:** https://superpets.fun
 **Firebase Hosting:** https://superpets-ee0ab.web.app (alternative URL)
 
 ## Contact & Resources

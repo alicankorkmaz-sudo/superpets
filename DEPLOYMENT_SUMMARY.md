@@ -17,7 +17,7 @@ Transform your pet photos into superhero versions using AI-powered image editing
 
 ### Backend (Ktor/Kotlin)
 - **Platform:** Render
-- **URL:** https://superpets-backend-pipp.onrender.com
+- **URL:** https://superpets.fun
 - **Database:** Supabase PostgreSQL
 - **Authentication:** Supabase Auth (JWT tokens)
 - **Storage:** fal.ai cloud storage
@@ -108,7 +108,7 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 
 **Production (`.env.production`):**
 ```bash
-VITE_API_BASE_URL=https://superpets-backend-pipp.onrender.com
+VITE_API_BASE_URL=https://superpets.fun
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 ```
 
@@ -120,7 +120,7 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 1. Push code to GitHub `main` branch
 2. Render automatically detects changes
 3. Builds Docker image using multi-stage build (Gradle + OpenJDK 17)
-4. Deploys to https://superpets-backend-pipp.onrender.com
+4. Deploys to https://superpets.fun
 5. Environment variables loaded from Render dashboard
 
 **Dockerfile highlights:**
@@ -347,7 +347,7 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 
 ### Production
 - **Live App:** https://superpets.fun
-- **Backend API:** https://superpets-backend-pipp.onrender.com
+- **Backend API:** https://superpets.fun
 
 ### Development
 - **GitHub:** https://github.com/alicankorkmaz-sudo/superpets

@@ -14,7 +14,7 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 ## Current Deployment Status
 
 **Backend:** Deployed to Render ✅
-- Production URL: https://superpets-backend-pipp.onrender.com
+- Production URL: https://superpets.fun
 - Database: Supabase PostgreSQL (migrated from Firebase Firestore)
 - Authentication: Supabase Auth (migrated from Firebase Auth)
 - Deployment: Automatic from `main` branch on GitHub
@@ -137,7 +137,7 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 
 **API Configuration:**
 - Development: `http://localhost:8080`
-- Production: `https://superpets-backend-pipp.onrender.com` (configured in `.env.production`)
+- Production: `https://superpets.fun` (configured in `.env.production`)
 - Base URL managed via `VITE_API_BASE_URL` environment variable
 - Authentication: Bearer tokens from Supabase Auth
 - Image generation limit: 1-10 images per request

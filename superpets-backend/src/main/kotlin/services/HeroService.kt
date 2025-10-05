@@ -17,10 +17,10 @@ class HeroService(private val app: Application) {
     }
 
     private fun loadHeroesFromFile(): HeroesData {
-        val file = File("pets.json")
+        val file = File("heroes.json")
         if (!file.exists()) {
-            app.log.error("pets.json not found in project root")
-            throw IllegalStateException("pets.json not found")
+            app.log.error("heroes.json not found in project root")
+            throw IllegalStateException("heroes.json not found")
         }
 
         val jsonString = file.readText()

@@ -22,8 +22,8 @@ WORKDIR /app
 # Copy the built JAR from build stage
 COPY --from=build /app/build/libs/app.jar app.jar
 
-# Copy pets.json (required by HeroService)
-COPY pets.json ./pets.json
+# Copy heroes.json (required by HeroService)
+COPY heroes.json ./pets.json
 
 # Expose port 8080
 EXPOSE 8080

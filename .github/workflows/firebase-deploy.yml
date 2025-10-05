@@ -34,6 +34,8 @@ jobs:
       - name: Create production environment file
         run: |
           cat > .env.production << EOF
+          VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_API_BASE_URL=https://superpets-backend-pipp.onrender.com
           VITE_STRIPE_PUBLISHABLE_KEY=${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
           EOF

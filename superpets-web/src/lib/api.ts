@@ -1,4 +1,4 @@
-import { auth } from './firebase';
+import { supabase } from './supabase';
 import type {
   User,
   EditImageRequest,
@@ -12,13 +12,13 @@ import type {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 async function getAuthToken(): Promise<string> {
-  const user = auth.currentUser;
-  if (!user) throw new Error('Not authenticated');
-  return await user.getIdToken();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error('Not authenticated');
+  return session.access_token;
 }
 
 async function apiCall<T>(
-  endpoint: string, 
+  endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
   const token = await getAuthToken();
@@ -130,5 +130,3 @@ export const api = {
     });
   },
 };
-
-

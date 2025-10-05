@@ -34,7 +34,21 @@
       "Bash(git log:*)",
       "Bash(docker build:*)",
       "Bash(docker push:*)",
-      "Bash(firebase init:*)"
+      "Bash(firebase init:*)",
+      "Bash(firebase use:*)",
+      "Bash(source .env)",
+      "Bash(export FAL_API_KEY=:*)",
+      "Bash(export STRIPE_SECRET_KEY=:*)",
+      "Bash(export STRIPE_WEBHOOK_SECRET=:*)",
+      "Bash(npx vite:*)",
+      "Bash(git reset:*)",
+      "Bash(export SUPABASE_DB_URL=:*)",
+      "Bash(export SUPABASE_URL=:*)",
+      "Bash(export SUPABASE_JWT_SECRET=:*)",
+      "Bash(export FAL_API_KEY=:*)",
+      "Bash(export STRIPE_SECRET_KEY=:*)",
+      "Bash(export STRIPE_WEBHOOK_SECRET=:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []

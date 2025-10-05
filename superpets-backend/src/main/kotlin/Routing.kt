@@ -1,8 +1,8 @@
 package com.alicankorkmaz
 
 import com.alicankorkmaz.models.*
-import com.alicankorkmaz.services.FirebaseAuthService
-import com.alicankorkmaz.services.FirestoreService
+import com.alicankorkmaz.services.SupabaseAuthService
+import com.alicankorkmaz.services.SupabaseService
 import com.alicankorkmaz.services.NanoBananaService
 import com.alicankorkmaz.services.HeroService
 import com.alicankorkmaz.services.StripeService
@@ -21,8 +21,8 @@ import kotlinx.coroutines.coroutineScope
 
 fun Application.configureRouting() {
     val nanoBananaService = NanoBananaService(this)
-    val firestoreService = FirestoreService(this)
-    val firebaseAuthService = FirebaseAuthService(this)
+    val supabaseService = SupabaseService(this)
+    val supabaseAuthService = SupabaseAuthService(this)
     val heroService = HeroService(this)
     val stripeService = StripeService(this)
 
@@ -51,7 +51,7 @@ fun Application.configureRouting() {
             }
         }
 
-        authenticate("firebase-auth") {
+        authenticate("supabase-auth") {
             // Get user profile
             get("/user/profile") {
                 try {
@@ -61,10 +61,10 @@ fun Application.configureRouting() {
                     // Get email from token
                     val authHeader = call.request.headers["Authorization"]
                     val token = authHeader?.removePrefix("Bearer ")
-                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
+                    val email = token?.let { supabaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
 
                     // Auto-create user with 5 free credits on first access
-                    val user = firestoreService.getUserOrCreate(userId, email, initialCredits = 5)
+                    val user = supabaseService.getUserOrCreate(userId, email, initialCredits = 5)
 
                     call.respond(HttpStatusCode.OK, com.alicankorkmaz.models.UserProfile(
                         uid = user.uid,
@@ -87,10 +87,10 @@ fun Application.configureRouting() {
                     // Get email from token
                     val authHeader = call.request.headers["Authorization"]
                     val token = authHeader?.removePrefix("Bearer ")
-                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
+                    val email = token?.let { supabaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
 
                     // Auto-create user with 5 free credits on first access
-                    val user = firestoreService.getUserOrCreate(userId, email, initialCredits = 5)
+                    val user = supabaseService.getUserOrCreate(userId, email, initialCredits = 5)
 
                     call.respond(HttpStatusCode.OK, com.alicankorkmaz.models.CreditBalanceResponse(user.credits))
                 } catch (e: Exception) {
@@ -105,7 +105,7 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
 
-                    val transactions = firestoreService.getTransactionHistory(userId)
+                    val transactions = supabaseService.getTransactionHistory(userId)
                     call.respond(HttpStatusCode.OK, com.alicankorkmaz.models.TransactionHistoryResponse(transactions))
                 } catch (e: Exception) {
                     application.log.error("Error getting transactions", e)
@@ -119,7 +119,7 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, EditHistoryResponse(emptyList()))
 
-                    val edits = firestoreService.getEditHistory(userId)
+                    val edits = supabaseService.getEditHistory(userId)
                     call.respond(HttpStatusCode.OK, EditHistoryResponse(edits))
                 } catch (e: Exception) {
                     application.log.error("Error getting edit history", e)
@@ -135,7 +135,7 @@ fun Application.configureRouting() {
 
                     val body = call.receive<AddCreditsRequest>()
 
-                    val success = firestoreService.addCredits(
+                    val success = supabaseService.addCredits(
                         userId = userId,
                         amount = body.amount,
                         type = TransactionType.PURCHASE,
@@ -143,7 +143,7 @@ fun Application.configureRouting() {
                     )
 
                     if (success) {
-                        val user = firestoreService.getUser(userId)
+                        val user = supabaseService.getUser(userId)
                         call.respond(HttpStatusCode.OK, AddCreditsResponse(
                             success = true,
                             credits = user?.credits
@@ -193,9 +193,9 @@ fun Application.configureRouting() {
                     // Get or create user (first time users get 5 free credits)
                     val authHeader = call.request.headers["Authorization"]
                     val token = authHeader?.removePrefix("Bearer ")
-                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown"
+                    val email = token?.let { supabaseAuthService.getUserEmail(it) } ?: "unknown"
 
-                    val user = firestoreService.getUserOrCreate(userId, email, initialCredits = 5)
+                    val user = supabaseService.getUserOrCreate(userId, email, initialCredits = 5)
 
                     // Check if user has enough credits (cost: 1 credit per image generated)
                     val creditCost = request.numImages.toLong()
@@ -207,7 +207,7 @@ fun Application.configureRouting() {
                     }
 
                     // Deduct credits before making the API call(s)
-                    val deducted = firestoreService.deductCredits(
+                    val deducted = supabaseService.deductCredits(
                         userId = userId,
                         amount = creditCost,
                         description = "Image edit: hero ${request.heroId} (${request.numImages} images)"
@@ -246,7 +246,7 @@ fun Application.configureRouting() {
                     )
 
                     // Save edit history
-                    firestoreService.saveEditHistory(
+                    supabaseService.saveEditHistory(
                         userId = userId,
                         prompt = prompts.joinToString(" | "),
                         inputImages = listOf(request.imageUrl),
@@ -335,9 +335,9 @@ fun Application.configureRouting() {
                     // Get or create user (first time users get 5 free credits)
                     val authHeader = call.request.headers["Authorization"]
                     val token = authHeader?.removePrefix("Bearer ")
-                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown"
+                    val email = token?.let { supabaseAuthService.getUserEmail(it) } ?: "unknown"
 
-                    val user = firestoreService.getUserOrCreate(userId, email, initialCredits = 5)
+                    val user = supabaseService.getUserOrCreate(userId, email, initialCredits = 5)
 
                     // Check if user has enough credits (cost: 1 credit per image generated)
                     val creditCost = numImages.toLong()
@@ -349,7 +349,7 @@ fun Application.configureRouting() {
                     }
 
                     // Deduct credits before making the API call(s)
-                    val deducted = firestoreService.deductCredits(
+                    val deducted = supabaseService.deductCredits(
                         userId = userId,
                         amount = creditCost,
                         description = "Image edit (upload): hero $heroId ($numImages images)"
@@ -392,7 +392,7 @@ fun Application.configureRouting() {
                     )
 
                     // Save edit history
-                    firestoreService.saveEditHistory(
+                    supabaseService.saveEditHistory(
                         userId = userId,
                         prompt = prompts.joinToString(" | "),
                         inputImages = listOf(imageUrl),
@@ -419,7 +419,7 @@ fun Application.configureRouting() {
 
                     val authHeader = call.request.headers["Authorization"]
                     val token = authHeader?.removePrefix("Bearer ")
-                    val email = token?.let { firebaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
+                    val email = token?.let { supabaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
 
                     val request = call.receive<CreateCheckoutSessionRequest>()
 
@@ -483,7 +483,7 @@ fun Application.configureRouting() {
 
                         if (userId != null && credits > 0) {
                             // Add credits to user account
-                            val success = firestoreService.addCredits(
+                            val success = supabaseService.addCredits(
                                 userId = userId,
                                 amount = credits,
                                 type = TransactionType.PURCHASE,
@@ -522,7 +522,7 @@ fun Application.configureRouting() {
 
                         if (userId != null && credits != null && credits > 0) {
                             // Deduct refunded credits
-                            val success = firestoreService.deductCredits(
+                            val success = supabaseService.deductCredits(
                                 userId = userId,
                                 amount = credits,
                                 description = "Refund: ${credits} credits removed (Charge: ${charge.id})"

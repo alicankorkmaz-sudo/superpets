@@ -39,10 +39,17 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:9.2.0")
     implementation("com.stripe:stripe-java:25.0.0")
 
-    // Explicit gRPC dependencies to ensure LoadBalancerProvider services are available
-    // Use grpc-netty (not shaded) so it respects -Djava.net.preferIPv4Stack=true
-    implementation("io.grpc:grpc-core:1.55.1")
-    implementation("io.grpc:grpc-netty:1.55.1")
+    // PostgreSQL + Exposed ORM (replaces Firestore)
+    implementation("org.postgresql:postgresql:42.7.1")
+    implementation("org.jetbrains.exposed:exposed-core:0.44.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.44.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.44.1")
+    implementation("com.zaxxer:HikariCP:5.1.0")
+
+    // JWT for Supabase auth token verification
+    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
 
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)

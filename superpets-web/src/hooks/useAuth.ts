@@ -1,39 +1,61 @@
 import { useState, useEffect } from 'react';
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-} from 'firebase/auth';
-import type { User as FirebaseUser } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { supabase } from '../lib/supabase';
+import type { User, Session } from '@supabase/supabase-js';
 
 export function useAuth() {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return unsubscribe;
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw error;
+    return data;
   };
 
   const signUp = async (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) throw error;
+    return data;
   };
 
   const signOut = async () => {
-    return firebaseSignOut(auth);
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   };
 
-  return { user, loading, signIn, signUp, signOut };
+  const getToken = async (): Promise<string | null> => {
+    if (!session) return null;
+    return session.access_token;
+  };
+
+  return { user, session, loading, signIn, signUp, signOut, getToken };
 }
-
-

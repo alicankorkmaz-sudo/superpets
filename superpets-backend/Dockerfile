@@ -25,15 +25,8 @@ COPY --from=build /app/build/libs/app.jar app.jar
 # Copy pets.json (required by HeroService)
 COPY pets.json ./pets.json
 
-# Copy entrypoint script
-COPY entrypoint.sh ./entrypoint.sh
-RUN chmod +x entrypoint.sh
-
 # Expose port 8080
 EXPOSE 8080
 
-# Set default environment variables
-ENV FIREBASE_SERVICE_ACCOUNT_PATH=/app/firebase-service-account.json
-
-# Run the application via entrypoint
-CMD ["./entrypoint.sh"]
+# Run the application
+CMD ["java", "-jar", "app.jar"]

@@ -1,7 +1,7 @@
 package com.alicankorkmaz
 
-import com.alicankorkmaz.config.FirebaseConfig
-import com.alicankorkmaz.services.FirebaseAuthService
+import com.alicankorkmaz.database.DatabaseFactory
+import com.alicankorkmaz.services.SupabaseAuthService
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -15,8 +15,8 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-    // Initialize Firebase
-    FirebaseConfig.initialize(this)
+    // Initialize Supabase database connection
+    DatabaseFactory.init(this)
 
     install(CORS) {
         allowMethod(HttpMethod.Options)
@@ -39,14 +39,14 @@ fun Application.module() {
         })
     }
 
-    val firebaseAuthService = FirebaseAuthService(this)
+    val supabaseAuthService = SupabaseAuthService(this)
 
     install(Authentication) {
-        bearer("firebase-auth") {
+        bearer("supabase-auth") {
             authenticate { credential ->
-                val decodedToken = firebaseAuthService.verifyIdToken(credential.token)
-                if (decodedToken != null) {
-                    UserIdPrincipal(decodedToken.uid)
+                val user = supabaseAuthService.verifyToken(credential.token)
+                if (user != null) {
+                    UserIdPrincipal(user.sub)
                 } else {
                     null
                 }

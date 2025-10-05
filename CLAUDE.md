@@ -14,7 +14,7 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 ## Current Deployment Status
 
 **Backend:** Deployed to Render ✅
-- Production URL: https://superpets.fun
+- Production URL: https://superpets-backend-pipp.onrender.com
 - Database: Supabase PostgreSQL (migrated from Firebase Firestore)
 - Authentication: Supabase Auth (migrated from Firebase Auth)
 - Deployment: Automatic from `main` branch on GitHub
@@ -82,7 +82,7 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` header.
 
 **Hero-Based Prompt System:**
-- Heroes defined in `pets.json` (10 classics + 19 unique heroes)
+- Heroes defined in `heroes.json` (10 classics + 19 unique heroes)
 - Categories: "classics" (Superman, Batman, etc.) and "uniques" (custom characters)
 - Edit endpoints **require** `hero_id` (custom prompts removed)
 - **Multi-image variety**: When `num_images > 1`, each gets a unique random scene
@@ -137,7 +137,7 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 
 **API Configuration:**
 - Development: `http://localhost:8080`
-- Production: `https://superpets.fun` (configured in `.env.production`)
+- Production: `https://superpets-backend-pipp.onrender.com` (configured in `.env.production`)
 - Base URL managed via `VITE_API_BASE_URL` environment variable
 - Authentication: Bearer tokens from Supabase Auth
 - Image generation limit: 1-10 images per request
@@ -191,7 +191,7 @@ docker run -p 8080:8080 \
 
 **Environment Configuration:**
 - Requires `.env` file in project root with Supabase credentials (DO NOT COMMIT)
-- `pets.json` must be in project root (contains hero definitions)
+- `heroes.json` must be in project root (contains hero definitions)
 - See `SUPABASE_MIGRATION.md` for database setup
 
 **Test Interface:**
@@ -265,7 +265,7 @@ npm run lint
 
 ### Hero System Files
 **Backend:**
-- `pets.json` - Hero data file (10 classics + 19 uniques)
+- `heroes.json` - Hero data file (10 classics + 19 uniques)
 - `src/main/kotlin/models/HeroModels.kt` - Data models
 - `src/main/kotlin/services/HeroService.kt` - Hero loading and prompt building
 

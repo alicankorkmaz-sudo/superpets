@@ -23,7 +23,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/app.jar app.jar
 
 # Copy heroes.json (required by HeroService)
-COPY heroes.json ./pets.json
+COPY heroes.json ./heroes.json
 
 # Expose port 8080
 EXPOSE 8080

@@ -53,10 +53,7 @@
       "Bash(render whoami)",
       "Bash(render login)",
       "Bash(render services:*)",
-      "Bash(render workspace list:*)",
-      "Bash(firebase login:ci:*)",
-      "Bash(echo \"\n\n=================================================================\nGITHUB SECRETS SETUP - Action Required\n=================================================================\n\nThe GitHub Action failed because secrets are not configured yet.\n\nPlease follow these steps:\n\nSTEP 1: Get Firebase Service Account\n------------------------------------\n1. Go to: https://console.firebase.google.com/project/superpets-ee0ab/settings/serviceaccounts/adminsdk\n\n2. Click ''Generate new private key''\n\n3. Download the JSON file\n\n4. Open it and COPY the entire JSON content\n\n\nSTEP 2: Add GitHub Secrets\n------------------------------------\n1. Go to: https://github.com/alicankorkmaz-sudo/superpets/settings/secrets/actions\n\n2. Click ''New repository secret''\n\n3. Add Secret #1:\n   Name: FIREBASE_SERVICE_ACCOUNT\n   Value: [Paste the entire JSON from Step 1]\n   \n4. Add Secret #2:\n   Name: VITE_STRIPE_PUBLISHABLE_KEY\n   Value: pk_test_51SEGggRVlNnZcpuImz9GGK0ItrObzZlpPG1zcZpaUghrH1WZdZ6FN0zUooV1LarZetr4d3eWs1QqJ7lCtHHXphCb00TfK18rVV\n\n\nSTEP 3: Re-run the Failed Workflow\n------------------------------------\nAfter adding secrets:\n1. Go to: https://github.com/alicankorkmaz-sudo/superpets/actions\n2. Click on the failed workflow run\n3. Click ''Re-run all jobs''\n\n=================================================================\n\nDetailed instructions: See GITHUB_ACTIONS_SETUP.md\n\n\")",
-      "Bash(firebase hosting:sites:list:*)"
+      "Bash(render workspace list:*)"
     ],
     "deny": [],
     "ask": []

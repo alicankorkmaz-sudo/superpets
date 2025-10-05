@@ -41,22 +41,47 @@ You should see:
 
 ## Step 3: Get Supabase Credentials
 
-1. In Supabase dashboard, go to **Project Settings** → **Database**
-2. Find **Connection String** section
-3. Copy the **Connection String** (URI format)
-4. It looks like: `postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres`
+### ⚠️ CRITICAL: Use Transaction Pooler for Cloud Deployments
 
-**Save these values:**
+**For local development:**
+- Direct connection (port 5432) works fine
+
+**For cloud deployments (Render, Cloud Run, etc.):**
+- ✅ **MUST use Transaction Pooler** (port 6543) - IPv4 compatible
+- ❌ **DO NOT use Direct Connection** (port 5432) - IPv6 only, will fail on most cloud platforms
+
+### Getting the Connection String
+
+1. In Supabase dashboard, go to **Project Settings** → **Database**
+2. Scroll down to **Connection String** section
+3. Find the **Transaction mode** tab
+4. Select **URI** format
+5. Click **Copy** to get the full connection string
+
+**Connection String Format (Transaction Pooler):**
 ```bash
+# For cloud deployments (Render, Cloud Run, etc.) - USE THIS
+SUPABASE_DB_URL=postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres
+
+# Example for project 'zrivjktyzllaevduydai' in eu-central-1:
+# postgresql://postgres.zrivjktyzllaevduydai:T8OzqpzjKHk3KZfZ@aws-1-eu-central-1.pooler.supabase.com:6543/postgres
+```
+
+**Connection String Format (Direct - Local Only):**
+```bash
+# For local development only
 SUPABASE_DB_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
 ```
 
-Alternative: Get individual connection details:
-- **Host**: `db.[PROJECT-REF].supabase.co`
-- **Port**: `5432`
-- **Database**: `postgres`
-- **User**: `postgres`
-- **Password**: [your database password]
+**Key Differences:**
+- **Pooler**: `postgres.[PROJECT-REF]@aws-X-[REGION].pooler.supabase.com:6543`
+- **Direct**: `postgres@db.[PROJECT-REF].supabase.co:5432`
+
+**Important Notes:**
+- Notice the username format changes: `postgres.[PROJECT-REF]` (pooler) vs `postgres` (direct)
+- Host changes: `pooler.supabase.com` vs `db.supabase.co`
+- Port changes: `6543` (pooler) vs `5432` (direct)
+- Do NOT include braces `[]` - replace with actual values
 
 ## Step 4: Update Backend Dependencies
 
@@ -129,25 +154,55 @@ If you have existing users in Firestore, you'll need to export and import:
 
 **Note**: If you have no production users yet, skip this step.
 
-## Step 8: Deploy to Google Cloud Run
+## Step 8: Deploy to Cloud Platform
 
-Update your deployment to remove Firestore dependencies:
+### ⚠️ CRITICAL: Use Transaction Pooler Connection String
+
+When deploying to any cloud platform (Render, Google Cloud Run, Fly.io, etc.), you **MUST** use the Transaction Pooler connection string (port 6543), not the direct connection (port 5432).
+
+### Render Deployment
+
+1. Go to Render dashboard
+2. Navigate to your service → **Environment**
+3. Update `SUPABASE_DB_URL` to use **Transaction Pooler** connection:
+
+```bash
+# ✅ CORRECT (Transaction Pooler - port 6543)
+SUPABASE_DB_URL=postgresql://postgres.zrivjktyzllaevduydai:T8OzqpzjKHk3KZfZ@aws-1-eu-central-1.pooler.supabase.com:6543/postgres
+
+# ❌ WRONG (Direct connection - port 5432) - Will fail with "Network unreachable"
+SUPABASE_DB_URL=postgresql://postgres:T8OzqpzjKHk3KZfZ@db.zrivjktyzllaevduydai.supabase.co:5432/postgres
+```
+
+4. Click **Save Changes**
+5. Render will automatically redeploy with the new connection string
+
+### Google Cloud Run Deployment
 
 ```bash
 # Build and deploy
 docker build -t gcr.io/[PROJECT-ID]/superpets-backend .
 docker push gcr.io/[PROJECT-ID]/superpets-backend
 
+# Deploy with Transaction Pooler connection (port 6543)
 gcloud run deploy superpets-backend \
   --image gcr.io/[PROJECT-ID]/superpets-backend \
   --platform managed \
   --region us-central1 \
-  --set-env-vars="SUPABASE_DB_URL=postgresql://..." \
-  --set-env-vars="FIREBASE_SERVICE_ACCOUNT_JSON={...}" \
+  --set-env-vars="SUPABASE_DB_URL=postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-X-[REGION].pooler.supabase.com:6543/postgres" \
+  --set-env-vars="SUPABASE_URL=https://[PROJECT-REF].supabase.co" \
+  --set-env-vars="SUPABASE_JWT_SECRET=[YOUR-JWT-SECRET]" \
   --set-env-vars="FAL_API_KEY=..." \
   --set-env-vars="STRIPE_SECRET_KEY=..." \
   --set-env-vars="STRIPE_WEBHOOK_SECRET=..."
 ```
+
+### Why Transaction Pooler is Required
+
+- **Direct Connection (port 5432)**: IPv6 only, fails on most cloud platforms
+- **Transaction Pooler (port 6543)**: IPv4 compatible, works everywhere
+- Most cloud platforms (Render, Cloud Run, Fly.io) use IPv4-only networking
+- Using the wrong connection will result in "Network unreachable" or "No route to host" errors
 
 ## Benefits After Migration
 

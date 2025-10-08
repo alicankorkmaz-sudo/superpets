@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { ArrowLeft } from 'lucide-react';
 
-export function SignupForm({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
+export function SignupForm({ onSwitchToLogin, onBack }: { onSwitchToLogin: () => void; onBack?: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,6 +25,15 @@ export function SignupForm({ onSwitchToLogin }: { onSwitchToLogin: () => void })
 
   return (
     <div className="card max-w-md mx-auto">
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span>Back to home</span>
+        </button>
+      )}
       <h2 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
         Create your Superpets account
       </h2>

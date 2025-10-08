@@ -3,6 +3,7 @@ import { Header } from './components/Dashboard/Header';
 import { Footer } from './components/Dashboard/Footer';
 import { LoginForm } from './components/Auth/LoginForm';
 import { SignupForm } from './components/Auth/SignupForm';
+import { LandingPage } from './pages/LandingPage';
 import { EditorPage } from './pages/EditorPage';
 import { PricingPage } from './pages/PricingPage';
 import { TermsOfServicePage } from './pages/TermsOfServicePage';
@@ -12,12 +13,42 @@ import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
 
 type View = 'editor' | 'pricing' | 'terms' | 'privacy';
+type AuthView = 'landing' | 'login' | 'signup';
 
 function App() {
   const { user, loading } = useAuth();
-  const [showSignup, setShowSignup] = useState(false);
   const [currentView, setCurrentView] = useState<View>('editor');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // Get auth view from URL
+  const getAuthViewFromUrl = (): AuthView => {
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get('auth');
+    if (view === 'login' || view === 'signup') return view;
+    return 'landing';
+  };
+
+  const [authView, setAuthView] = useState<AuthView>(getAuthViewFromUrl());
+
+  // Navigate to auth view with URL update
+  const navigateToAuthView = (view: AuthView) => {
+    setAuthView(view);
+    if (view === 'landing') {
+      window.history.pushState({}, '', '/');
+    } else {
+      window.history.pushState({}, '', `/?auth=${view}`);
+    }
+  };
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      setAuthView(getAuthViewFromUrl());
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Check for payment status in URL
   useEffect(() => {
@@ -55,12 +86,27 @@ function App() {
   }
 
   if (!user) {
+    if (authView === 'landing') {
+      return (
+        <LandingPage
+          onGetStarted={() => navigateToAuthView('signup')}
+          onLogin={() => navigateToAuthView('login')}
+        />
+      );
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center p-4">
-        {showSignup ? (
-          <SignupForm onSwitchToLogin={() => setShowSignup(false)} />
+        {authView === 'signup' ? (
+          <SignupForm
+            onSwitchToLogin={() => navigateToAuthView('login')}
+            onBack={() => navigateToAuthView('landing')}
+          />
         ) : (
-          <LoginForm onSwitchToSignup={() => setShowSignup(true)} />
+          <LoginForm
+            onSwitchToSignup={() => navigateToAuthView('signup')}
+            onBack={() => navigateToAuthView('landing')}
+          />
         )}
       </div>
     );

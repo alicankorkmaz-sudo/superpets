@@ -6,6 +6,7 @@ import com.alicankorkmaz.services.SupabaseService
 import com.alicankorkmaz.services.NanoBananaService
 import com.alicankorkmaz.services.HeroService
 import com.alicankorkmaz.services.StripeService
+import com.alicankorkmaz.services.RateLimitingService
 import com.alicankorkmaz.services.buildPrompt
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -25,10 +26,29 @@ fun Application.configureRouting() {
     val supabaseAuthService = SupabaseAuthService(this)
     val heroService = HeroService(this)
     val stripeService = StripeService(this)
+    val rateLimitingService = RateLimitingService()
 
     routing {
         // Status page
         get("/") {
+            // IP-based rate limiting: 60 requests per minute
+            val ipAddress = call.request.local.remoteAddress
+            val rateLimitResult = rateLimitingService.checkIpRateLimit(ipAddress, maxRequests = 60, windowSeconds = 60)
+
+            if (!rateLimitResult.allowed) {
+                call.response.headers.append("X-RateLimit-Limit", "60")
+                call.response.headers.append("X-RateLimit-Remaining", "0")
+                call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                return@get call.respond(
+                    HttpStatusCode.TooManyRequests,
+                    ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                )
+            }
+
+            call.response.headers.append("X-RateLimit-Limit", "60")
+            call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+            call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+
             call.respond(HttpStatusCode.OK, StatusResponse(
                 status = "ok",
                 service = "superpets-backend",
@@ -40,6 +60,24 @@ fun Application.configureRouting() {
         // Get all heroes (public endpoint)
         get("/heroes") {
             try {
+                // IP-based rate limiting: 60 requests per minute
+                val ipAddress = call.request.local.remoteAddress
+                val rateLimitResult = rateLimitingService.checkIpRateLimit(ipAddress, maxRequests = 60, windowSeconds = 60)
+
+                if (!rateLimitResult.allowed) {
+                    call.response.headers.append("X-RateLimit-Limit", "60")
+                    call.response.headers.append("X-RateLimit-Remaining", "0")
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                    return@get call.respond(
+                        HttpStatusCode.TooManyRequests,
+                        ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                    )
+                }
+
+                call.response.headers.append("X-RateLimit-Limit", "60")
+                call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+
                 val heroes = heroService.getAllHeroes()
                 call.respond(HttpStatusCode.OK, HeroesResponse(
                     classics = heroes.classics,
@@ -57,6 +95,21 @@ fun Application.configureRouting() {
                 try {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
+
+                    // Per-user rate limiting: 30 requests per minute
+                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 30, windowSeconds = 60)
+                    if (!rateLimitResult.allowed) {
+                        call.response.headers.append("X-RateLimit-Limit", "30")
+                        call.response.headers.append("X-RateLimit-Remaining", "0")
+                        call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                        return@get call.respond(
+                            HttpStatusCode.TooManyRequests,
+                            com.alicankorkmaz.models.ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                        )
+                    }
+                    call.response.headers.append("X-RateLimit-Limit", "30")
+                    call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
 
                     // Get email from token
                     val authHeader = call.request.headers["Authorization"]
@@ -84,6 +137,21 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
 
+                    // Per-user rate limiting: 30 requests per minute
+                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 30, windowSeconds = 60)
+                    if (!rateLimitResult.allowed) {
+                        call.response.headers.append("X-RateLimit-Limit", "30")
+                        call.response.headers.append("X-RateLimit-Remaining", "0")
+                        call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                        return@get call.respond(
+                            HttpStatusCode.TooManyRequests,
+                            com.alicankorkmaz.models.ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                        )
+                    }
+                    call.response.headers.append("X-RateLimit-Limit", "30")
+                    call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+
                     // Get email from token
                     val authHeader = call.request.headers["Authorization"]
                     val token = authHeader?.removePrefix("Bearer ")
@@ -105,6 +173,21 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
 
+                    // Per-user rate limiting: 30 requests per minute
+                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 30, windowSeconds = 60)
+                    if (!rateLimitResult.allowed) {
+                        call.response.headers.append("X-RateLimit-Limit", "30")
+                        call.response.headers.append("X-RateLimit-Remaining", "0")
+                        call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                        return@get call.respond(
+                            HttpStatusCode.TooManyRequests,
+                            com.alicankorkmaz.models.ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                        )
+                    }
+                    call.response.headers.append("X-RateLimit-Limit", "30")
+                    call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+
                     val transactions = supabaseService.getTransactionHistory(userId)
                     call.respond(HttpStatusCode.OK, com.alicankorkmaz.models.TransactionHistoryResponse(transactions))
                 } catch (e: Exception) {
@@ -119,6 +202,21 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, EditHistoryResponse(emptyList()))
 
+                    // Per-user rate limiting: 30 requests per minute
+                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 30, windowSeconds = 60)
+                    if (!rateLimitResult.allowed) {
+                        call.response.headers.append("X-RateLimit-Limit", "30")
+                        call.response.headers.append("X-RateLimit-Remaining", "0")
+                        call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                        return@get call.respond(
+                            HttpStatusCode.TooManyRequests,
+                            ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                        )
+                    }
+                    call.response.headers.append("X-RateLimit-Limit", "30")
+                    call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+
                     val edits = supabaseService.getEditHistory(userId)
                     call.respond(HttpStatusCode.OK, EditHistoryResponse(edits))
                 } catch (e: Exception) {
@@ -132,6 +230,21 @@ fun Application.configureRouting() {
                 try {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
+
+                    // Per-user rate limiting: 10 requests per minute (admin/webhook operations)
+                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 10, windowSeconds = 60)
+                    if (!rateLimitResult.allowed) {
+                        call.response.headers.append("X-RateLimit-Limit", "10")
+                        call.response.headers.append("X-RateLimit-Remaining", "0")
+                        call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                        return@post call.respond(
+                            HttpStatusCode.TooManyRequests,
+                            ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                        )
+                    }
+                    call.response.headers.append("X-RateLimit-Limit", "10")
+                    call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
 
                     val body = call.receive<AddCreditsRequest>()
 
@@ -165,6 +278,21 @@ fun Application.configureRouting() {
                             "Unauthorized",
                             status = HttpStatusCode.Unauthorized
                         )
+
+                    // Per-user rate limiting: 5 requests per minute (expensive operation)
+                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 5, windowSeconds = 60)
+                    if (!rateLimitResult.allowed) {
+                        call.response.headers.append("X-RateLimit-Limit", "5")
+                        call.response.headers.append("X-RateLimit-Remaining", "0")
+                        call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                        return@post call.respondText(
+                            "Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.",
+                            status = HttpStatusCode.TooManyRequests
+                        )
+                    }
+                    call.response.headers.append("X-RateLimit-Limit", "5")
+                    call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
 
                     val request = call.receive<NanoBananaEditRequest>()
 
@@ -273,6 +401,21 @@ fun Application.configureRouting() {
                             "Unauthorized",
                             status = HttpStatusCode.Unauthorized
                         )
+
+                    // Per-user rate limiting: 5 requests per minute (expensive operation)
+                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 5, windowSeconds = 60)
+                    if (!rateLimitResult.allowed) {
+                        call.response.headers.append("X-RateLimit-Limit", "5")
+                        call.response.headers.append("X-RateLimit-Remaining", "0")
+                        call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                        return@post call.respondText(
+                            "Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.",
+                            status = HttpStatusCode.TooManyRequests
+                        )
+                    }
+                    call.response.headers.append("X-RateLimit-Limit", "5")
+                    call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
 
                     // Parse multipart form data
                     val multipart = call.receiveMultipart()
@@ -417,6 +560,21 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
+                    // Per-user rate limiting: 10 requests per minute
+                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 10, windowSeconds = 60)
+                    if (!rateLimitResult.allowed) {
+                        call.response.headers.append("X-RateLimit-Limit", "10")
+                        call.response.headers.append("X-RateLimit-Remaining", "0")
+                        call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                        return@post call.respond(
+                            HttpStatusCode.TooManyRequests,
+                            ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                        )
+                    }
+                    call.response.headers.append("X-RateLimit-Limit", "10")
+                    call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+
                     val authHeader = call.request.headers["Authorization"]
                     val token = authHeader?.removePrefix("Bearer ")
                     val email = token?.let { supabaseAuthService.getUserEmail(it) } ?: "unknown@example.com"
@@ -457,6 +615,24 @@ fun Application.configureRouting() {
         // Stripe webhook (not authenticated)
         post("/stripe/webhook") {
             try {
+                // IP-based rate limiting: 100 requests per minute (Stripe webhooks)
+                val ipAddress = call.request.local.remoteAddress
+                val rateLimitResult = rateLimitingService.checkIpRateLimit(ipAddress, maxRequests = 100, windowSeconds = 60)
+
+                if (!rateLimitResult.allowed) {
+                    call.response.headers.append("X-RateLimit-Limit", "100")
+                    call.response.headers.append("X-RateLimit-Remaining", "0")
+                    call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+                    return@post call.respond(
+                        HttpStatusCode.TooManyRequests,
+                        ErrorResponse("Rate limit exceeded. Try again in ${rateLimitResult.resetTime - java.time.Instant.now().epochSecond} seconds.")
+                    )
+                }
+
+                call.response.headers.append("X-RateLimit-Limit", "100")
+                call.response.headers.append("X-RateLimit-Remaining", rateLimitResult.remainingRequests.toString())
+                call.response.headers.append("X-RateLimit-Reset", rateLimitResult.resetTime.toString())
+
                 val payload = call.receiveText()
                 val signature = call.request.headers["Stripe-Signature"]
                     ?: return@post call.respond(HttpStatusCode.BadRequest, ErrorResponse("Missing signature"))

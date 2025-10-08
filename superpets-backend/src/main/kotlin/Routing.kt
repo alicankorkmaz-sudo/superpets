@@ -8,6 +8,7 @@ import com.alicankorkmaz.services.HeroService
 import com.alicankorkmaz.services.StripeService
 import com.alicankorkmaz.services.RateLimitingService
 import com.alicankorkmaz.services.buildPrompt
+import com.alicankorkmaz.utils.FileValidation
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -454,6 +455,22 @@ fun Application.configureRouting() {
                         )
                     }
 
+                    // Validate file size, content type, and extension
+                    val (bytes, fileInfo) = imageFile!!
+                    val (fileName, contentType) = fileInfo
+                    val fileValidation = FileValidation.validateFile(
+                        fileSize = bytes.size.toLong(),
+                        contentType = contentType,
+                        filename = fileName
+                    )
+
+                    if (!fileValidation.isValid) {
+                        return@post call.respondText(
+                            fileValidation.errorMessage ?: "Invalid file",
+                            status = HttpStatusCode.BadRequest
+                        )
+                    }
+
                     if (heroId.isNullOrBlank()) {
                         return@post call.respondText(
                             "heroId is required",
@@ -505,9 +522,7 @@ fun Application.configureRouting() {
                         )
                     }
 
-                    // Upload image to fal.ai storage
-                    val (bytes, fileInfo) = imageFile!!
-                    val (fileName, contentType) = fileInfo
+                    // Upload image to fal.ai storage (already validated above)
                     val imageUrl = nanoBananaService.uploadFile(bytes, fileName, contentType)
 
                     // Generate all unique prompts upfront to ensure variety

@@ -644,7 +644,12 @@ fun Application.configureRouting() {
                     }
 
                     val updatedUser = supabaseService.getUser(request.userId)
-                    call.respond(HttpStatusCode.OK, mapOf("success" to true, "user" to updatedUser))
+                        ?: return@post call.respond(HttpStatusCode.NotFound, ErrorResponse("User not found"))
+
+                    call.respond(HttpStatusCode.OK, AdminUpdateUserResponse(
+                        success = true,
+                        user = updatedUser
+                    ))
                 } catch (e: Exception) {
                     application.log.error("Error updating user", e)
                     call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))

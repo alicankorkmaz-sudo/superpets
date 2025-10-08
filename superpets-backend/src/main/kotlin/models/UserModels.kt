@@ -125,3 +125,9 @@ data class AdminUpdateUserRequest(
     val isAdmin: Boolean? = null,
     val credits: Long? = null
 )
+
+@Serializable
+data class AdminUpdateUserResponse(
+    val success: Boolean,
+    val user: User
+)

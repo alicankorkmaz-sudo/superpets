@@ -8,6 +8,7 @@ import type {
   CreditBalance,
   HeroesResponse
 } from './types';
+import * as Sentry from '@sentry/react';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
@@ -21,30 +22,57 @@ async function apiCall<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const token = await getAuthToken();
+  try {
+    const token = await getAuthToken();
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        ...options.headers,
+      },
+    });
 
-  if (response.status === 401) {
-    throw new Error('UNAUTHORIZED');
+    if (response.status === 401) {
+      throw new Error('UNAUTHORIZED');
+    }
+
+    if (response.status === 402) {
+      throw new Error('INSUFFICIENT_CREDITS');
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      const error = new Error(errorText || 'Request failed');
+
+      // Report API errors to Sentry
+      Sentry.captureException(error, {
+        contexts: {
+          api: {
+            endpoint,
+            status: response.status,
+            statusText: response.statusText,
+          },
+        },
+      });
+
+      throw error;
+    }
+
+    return response.json();
+  } catch (error) {
+    // Don't re-report errors we already reported
+    if (error instanceof Error && error.message !== 'UNAUTHORIZED' && error.message !== 'INSUFFICIENT_CREDITS') {
+      Sentry.captureException(error, {
+        contexts: {
+          api: {
+            endpoint,
+          },
+        },
+      });
+    }
+    throw error;
   }
-
-  if (response.status === 402) {
-    throw new Error('INSUFFICIENT_CREDITS');
-  }
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || 'Request failed');
-  }
-
-  return response.json();
 }
 
 export const api = {

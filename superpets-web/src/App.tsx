@@ -12,6 +12,7 @@ import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { CreditsProvider } from './contexts/CreditsContext';
 import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
+import * as Sentry from '@sentry/react';
 
 type View = 'editor' | 'pricing' | 'terms' | 'privacy' | 'admin';
 type AuthView = 'landing' | 'login' | 'signup';
@@ -20,6 +21,18 @@ function App() {
   const { user, loading } = useAuth();
   const [currentView, setCurrentView] = useState<View>('editor');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // Set Sentry user context when user logs in
+  useEffect(() => {
+    if (user) {
+      Sentry.setUser({
+        id: user.id,
+        email: user.email,
+      });
+    } else {
+      Sentry.setUser(null);
+    }
+  }, [user]);
 
   // Get auth view from URL
   const getAuthViewFromUrl = (): AuthView => {

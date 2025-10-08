@@ -8,6 +8,7 @@ object UsersTable : Table("users") {
     val email = varchar("email", 255)
     val credits = long("credits").default(0)
     val createdAt = long("created_at")
+    val isAdmin = bool("is_admin").default(false)
 
     override val primaryKey = PrimaryKey(uid)
 }

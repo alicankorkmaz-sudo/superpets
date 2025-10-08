@@ -3,6 +3,7 @@ export interface User {
   email: string;
   credits: number;
   createdAt: number;
+  isAdmin?: boolean;
 }
 
 export interface EditImageRequest {

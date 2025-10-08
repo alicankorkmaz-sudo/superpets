@@ -7,7 +7,8 @@ data class User(
     val uid: String = "",
     val email: String = "",
     val credits: Long = 0,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val isAdmin: Boolean = false
 )
 
 @Serializable
@@ -31,7 +32,8 @@ data class UserProfile(
     val uid: String,
     val email: String,
     val credits: Long,
-    val createdAt: Long
+    val createdAt: Long,
+    val isAdmin: Boolean = false
 )
 
 @Serializable
@@ -83,4 +85,43 @@ data class StatusResponse(
     val service: String,
     val version: String,
     val timestamp: Long
+)
+
+// Admin-specific models
+@Serializable
+data class AdminStats(
+    val totalUsers: Long,
+    val totalCreditsDistributed: Long,
+    val totalEdits: Long,
+    val totalRevenue: Long,
+    val activeUsersToday: Long,
+    val activeUsersWeek: Long,
+    val editsToday: Long,
+    val editsWeek: Long
+)
+
+@Serializable
+data class AdminUserDetails(
+    val uid: String,
+    val email: String,
+    val credits: Long,
+    val createdAt: Long,
+    val isAdmin: Boolean,
+    val totalEdits: Long,
+    val totalCreditsUsed: Long,
+    val totalCreditsPurchased: Long,
+    val lastActivity: Long?
+)
+
+@Serializable
+data class AdminUsersResponse(
+    val users: List<AdminUserDetails>,
+    val total: Long
+)
+
+@Serializable
+data class AdminUpdateUserRequest(
+    val userId: String,
+    val isAdmin: Boolean? = null,
+    val credits: Long? = null
 )

@@ -8,11 +8,12 @@ import { EditorPage } from './pages/EditorPage';
 import { PricingPage } from './pages/PricingPage';
 import { TermsOfServicePage } from './pages/TermsOfServicePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { CreditsProvider } from './contexts/CreditsContext';
 import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
 
-type View = 'editor' | 'pricing' | 'terms' | 'privacy';
+type View = 'editor' | 'pricing' | 'terms' | 'privacy' | 'admin';
 type AuthView = 'landing' | 'login' | 'signup';
 
 function App() {
@@ -146,6 +147,7 @@ function App() {
           {currentView === 'pricing' && <PricingPage />}
           {currentView === 'terms' && <TermsOfServicePage />}
           {currentView === 'privacy' && <PrivacyPolicyPage />}
+          {currentView === 'admin' && <AdminDashboardPage />}
         </div>
 
         <Footer onNavigate={setCurrentView} />

@@ -129,4 +129,41 @@ export const api = {
       body: JSON.stringify({ credits }),
     });
   },
+
+  // Admin endpoints
+  async getAdminStats(): Promise<any> {
+    return apiCall('/admin/stats');
+  },
+
+  async getAdminUsers(limit?: number, offset?: number): Promise<any> {
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit.toString());
+    if (offset) params.append('offset', offset.toString());
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return apiCall(`/admin/users${query}`);
+  },
+
+  async updateUser(userId: string, updates: { isAdmin?: boolean; credits?: number }): Promise<any> {
+    return apiCall('/admin/users/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, ...updates }),
+    });
+  },
+
+  async getAdminTransactions(limit?: number, offset?: number): Promise<any> {
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit.toString());
+    if (offset) params.append('offset', offset.toString());
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return apiCall(`/admin/transactions${query}`);
+  },
+
+  async getAdminEdits(limit?: number, offset?: number): Promise<any> {
+    const params = new URLSearchParams();
+    if (limit) params.append('limit', limit.toString());
+    if (offset) params.append('offset', offset.toString());
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return apiCall(`/admin/edits${query}`);
+  },
 };

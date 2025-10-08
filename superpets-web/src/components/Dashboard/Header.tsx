@@ -1,10 +1,10 @@
-import { LogOut, Coins, RefreshCw, ShoppingCart, Home } from 'lucide-react';
+import { LogOut, Coins, RefreshCw, ShoppingCart, Home, Shield } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCredits } from '../../contexts/CreditsContext';
 
 interface HeaderProps {
-  currentView?: 'editor' | 'pricing' | 'terms' | 'privacy';
-  onNavigate?: (view: 'editor' | 'pricing' | 'terms' | 'privacy') => void;
+  currentView?: 'editor' | 'pricing' | 'terms' | 'privacy' | 'admin';
+  onNavigate?: (view: 'editor' | 'pricing' | 'terms' | 'privacy' | 'admin') => void;
 }
 
 export function Header({ currentView = 'editor', onNavigate }: HeaderProps) {
@@ -45,6 +45,20 @@ export function Header({ currentView = 'editor', onNavigate }: HeaderProps) {
               <ShoppingCart size={20} />
               <span>Buy Credits</span>
             </button>
+
+            {user?.isAdmin && (
+              <button
+                onClick={() => onNavigate?.('admin')}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                  currentView === 'admin'
+                    ? 'bg-purple-100 text-purple-700'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <Shield size={20} />
+                <span>Admin</span>
+              </button>
+            )}
 
             <div className="flex items-center gap-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-4 py-2 rounded-full">
               <Coins size={20} />

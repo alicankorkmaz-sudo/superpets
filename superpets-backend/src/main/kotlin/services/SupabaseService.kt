@@ -31,12 +31,13 @@ class SupabaseService(private val application: Application) {
         }
     }
 
-    suspend fun createUser(userId: String, email: String, initialCredits: Long = 0): User {
+    suspend fun createUser(userId: String, email: String, initialCredits: Long = 0, isAdmin: Boolean = false): User {
         val user = User(
             uid = userId,
             email = email,
             credits = initialCredits,
-            createdAt = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            isAdmin = isAdmin
         )
 
         try {
@@ -46,6 +47,7 @@ class SupabaseService(private val application: Application) {
                     it[UsersTable.email] = user.email
                     it[credits] = user.credits
                     it[createdAt] = user.createdAt
+                    it[UsersTable.isAdmin] = user.isAdmin
                 }
             }
             application.log.info("Created user: $userId with $initialCredits credits")
@@ -201,7 +203,8 @@ class SupabaseService(private val application: Application) {
             uid = row[UsersTable.uid],
             email = row[UsersTable.email],
             credits = row[UsersTable.credits],
-            createdAt = row[UsersTable.createdAt]
+            createdAt = row[UsersTable.createdAt],
+            isAdmin = row[UsersTable.isAdmin]
         )
     }
 
@@ -225,5 +228,222 @@ class SupabaseService(private val application: Application) {
             creditsCost = row[EditHistoryTable.creditsCost],
             timestamp = row[EditHistoryTable.timestamp]
         )
+    }
+
+    // Admin-specific functions
+    suspend fun updateUserAdmin(userId: String, isAdmin: Boolean): Boolean {
+        return try {
+            transaction {
+                UsersTable.update({ UsersTable.uid eq userId }) {
+                    it[UsersTable.isAdmin] = isAdmin
+                }
+            }
+            application.log.info("Updated admin status for user $userId to $isAdmin")
+            true
+        } catch (e: Exception) {
+            application.log.error("Failed to update admin status for user: $userId", e)
+            false
+        }
+    }
+
+    suspend fun updateUserCredits(userId: String, newCredits: Long): Boolean {
+        return try {
+            transaction {
+                UsersTable.update({ UsersTable.uid eq userId }) {
+                    it[credits] = newCredits
+                }
+            }
+            application.log.info("Updated credits for user $userId to $newCredits")
+            true
+        } catch (e: Exception) {
+            application.log.error("Failed to update credits for user: $userId", e)
+            false
+        }
+    }
+
+    suspend fun getAllUsersWithDetails(limit: Int = 100, offset: Int = 0): List<com.alicankorkmaz.models.AdminUserDetails> {
+        return try {
+            transaction {
+                val users = UsersTable.selectAll()
+                    .orderBy(UsersTable.createdAt to SortOrder.DESC)
+                    .limit(limit, offset.toLong())
+                    .map { userRow ->
+                        val userId = userRow[UsersTable.uid]
+
+                        // Get total edits
+                        val totalEdits = EditHistoryTable.select { EditHistoryTable.userId eq userId }.count()
+
+                        // Get total credits used (sum of negative transactions)
+                        val totalCreditsUsed = CreditTransactionsTable
+                            .slice(CreditTransactionsTable.amount.sum())
+                            .select {
+                                (CreditTransactionsTable.userId eq userId) and
+                                (CreditTransactionsTable.amount less 0)
+                            }
+                            .map { it[CreditTransactionsTable.amount.sum()] ?: 0L }
+                            .firstOrNull() ?: 0L
+
+                        // Get total credits purchased (sum of positive transactions)
+                        val totalCreditsPurchased = CreditTransactionsTable
+                            .slice(CreditTransactionsTable.amount.sum())
+                            .select {
+                                (CreditTransactionsTable.userId eq userId) and
+                                (CreditTransactionsTable.amount greater 0)
+                            }
+                            .map { it[CreditTransactionsTable.amount.sum()] ?: 0L }
+                            .firstOrNull() ?: 0L
+
+                        // Get last activity (most recent edit or transaction)
+                        val lastEdit = EditHistoryTable
+                            .slice(EditHistoryTable.timestamp)
+                            .select { EditHistoryTable.userId eq userId }
+                            .orderBy(EditHistoryTable.timestamp to SortOrder.DESC)
+                            .limit(1)
+                            .map { it[EditHistoryTable.timestamp] }
+                            .firstOrNull()
+
+                        val lastTransaction = CreditTransactionsTable
+                            .slice(CreditTransactionsTable.timestamp)
+                            .select { CreditTransactionsTable.userId eq userId }
+                            .orderBy(CreditTransactionsTable.timestamp to SortOrder.DESC)
+                            .limit(1)
+                            .map { it[CreditTransactionsTable.timestamp] }
+                            .firstOrNull()
+
+                        val lastActivity = listOfNotNull(lastEdit, lastTransaction).maxOrNull()
+
+                        com.alicankorkmaz.models.AdminUserDetails(
+                            uid = userId,
+                            email = userRow[UsersTable.email],
+                            credits = userRow[UsersTable.credits],
+                            createdAt = userRow[UsersTable.createdAt],
+                            isAdmin = userRow[UsersTable.isAdmin],
+                            totalEdits = totalEdits,
+                            totalCreditsUsed = -totalCreditsUsed,
+                            totalCreditsPurchased = totalCreditsPurchased,
+                            lastActivity = lastActivity
+                        )
+                    }
+                users
+            }
+        } catch (e: Exception) {
+            application.log.error("Failed to get all users with details", e)
+            emptyList()
+        }
+    }
+
+    suspend fun getAdminStats(): com.alicankorkmaz.models.AdminStats {
+        return try {
+            transaction {
+                // Total users
+                val totalUsers = UsersTable.selectAll().count()
+
+                // Total credits distributed
+                val totalCreditsDistributed = CreditTransactionsTable
+                    .slice(CreditTransactionsTable.amount.sum())
+                    .select { CreditTransactionsTable.amount greater 0 }
+                    .map { it[CreditTransactionsTable.amount.sum()] ?: 0L }
+                    .firstOrNull() ?: 0L
+
+                // Total edits
+                val totalEdits = EditHistoryTable.selectAll().count()
+
+                // Total revenue (assuming each credit purchased = revenue, you can adjust the logic)
+                val totalRevenue = CreditTransactionsTable
+                    .slice(CreditTransactionsTable.amount.sum())
+                    .select { CreditTransactionsTable.type eq TransactionType.PURCHASE.name }
+                    .map { it[CreditTransactionsTable.amount.sum()] ?: 0L }
+                    .firstOrNull() ?: 0L
+
+                // Active users today (users with edits or transactions in last 24 hours)
+                val oneDayAgo = System.currentTimeMillis() - 24 * 60 * 60 * 1000
+                val activeUsersToday = (EditHistoryTable
+                    .slice(EditHistoryTable.userId)
+                    .select { EditHistoryTable.timestamp greater oneDayAgo }
+                    .map { it[EditHistoryTable.userId] }
+                    .toSet() + CreditTransactionsTable
+                    .slice(CreditTransactionsTable.userId)
+                    .select { CreditTransactionsTable.timestamp greater oneDayAgo }
+                    .map { it[CreditTransactionsTable.userId] }
+                    .toSet()).size.toLong()
+
+                // Active users this week
+                val oneWeekAgo = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000
+                val activeUsersWeek = (EditHistoryTable
+                    .slice(EditHistoryTable.userId)
+                    .select { EditHistoryTable.timestamp greater oneWeekAgo }
+                    .map { it[EditHistoryTable.userId] }
+                    .toSet() + CreditTransactionsTable
+                    .slice(CreditTransactionsTable.userId)
+                    .select { CreditTransactionsTable.timestamp greater oneWeekAgo }
+                    .map { it[CreditTransactionsTable.userId] }
+                    .toSet()).size.toLong()
+
+                // Edits today
+                val editsToday = EditHistoryTable
+                    .select { EditHistoryTable.timestamp greater oneDayAgo }
+                    .count()
+
+                // Edits this week
+                val editsWeek = EditHistoryTable
+                    .select { EditHistoryTable.timestamp greater oneWeekAgo }
+                    .count()
+
+                com.alicankorkmaz.models.AdminStats(
+                    totalUsers = totalUsers,
+                    totalCreditsDistributed = totalCreditsDistributed,
+                    totalEdits = totalEdits,
+                    totalRevenue = totalRevenue,
+                    activeUsersToday = activeUsersToday,
+                    activeUsersWeek = activeUsersWeek,
+                    editsToday = editsToday,
+                    editsWeek = editsWeek
+                )
+            }
+        } catch (e: Exception) {
+            application.log.error("Failed to get admin stats", e)
+            com.alicankorkmaz.models.AdminStats(0, 0, 0, 0, 0, 0, 0, 0)
+        }
+    }
+
+    suspend fun getTotalUsers(): Long {
+        return try {
+            transaction {
+                UsersTable.selectAll().count()
+            }
+        } catch (e: Exception) {
+            application.log.error("Failed to get total users", e)
+            0L
+        }
+    }
+
+    suspend fun getAllTransactions(limit: Int = 100, offset: Int = 0): List<CreditTransaction> {
+        return try {
+            transaction {
+                CreditTransactionsTable
+                    .selectAll()
+                    .orderBy(CreditTransactionsTable.timestamp to SortOrder.DESC)
+                    .limit(limit, offset.toLong())
+                    .map { rowToCreditTransaction(it) }
+            }
+        } catch (e: Exception) {
+            application.log.error("Failed to get all transactions", e)
+            emptyList()
+        }
+    }
+
+    suspend fun getAllEdits(limit: Int = 100, offset: Int = 0): List<EditHistory> {
+        return try {
+            transaction {
+                EditHistoryTable
+                    .selectAll()
+                    .orderBy(EditHistoryTable.timestamp to SortOrder.DESC)
+                    .limit(limit, offset.toLong())
+                    .map { rowToEditHistory(it) }
+            }
+        } catch (e: Exception) {
+            application.log.error("Failed to get all edits", e)
+            emptyList()
+        }
     }
 }

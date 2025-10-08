@@ -569,6 +569,131 @@ fun Application.configureRouting() {
                 }
             }
 
+            // Admin routes
+            get("/admin/stats") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
+
+                    // Check if user is admin
+                    val user = supabaseService.getUser(userId)
+                    if (user == null || !user.isAdmin) {
+                        return@get call.respond(HttpStatusCode.Forbidden, ErrorResponse("Admin access required"))
+                    }
+
+                    val stats = supabaseService.getAdminStats()
+                    call.respond(HttpStatusCode.OK, stats)
+                } catch (e: Exception) {
+                    application.log.error("Error getting admin stats", e)
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            get("/admin/users") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
+
+                    // Check if user is admin
+                    val user = supabaseService.getUser(userId)
+                    if (user == null || !user.isAdmin) {
+                        return@get call.respond(HttpStatusCode.Forbidden, ErrorResponse("Admin access required"))
+                    }
+
+                    val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 100
+                    val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0
+
+                    val users = supabaseService.getAllUsersWithDetails(limit, offset)
+                    val total = supabaseService.getTotalUsers()
+
+                    call.respond(HttpStatusCode.OK, AdminUsersResponse(users, total))
+                } catch (e: Exception) {
+                    application.log.error("Error getting admin users", e)
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            post("/admin/users/update") {
+                try {
+                    val adminUserId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
+
+                    // Check if requesting user is admin
+                    val adminUser = supabaseService.getUser(adminUserId)
+                    if (adminUser == null || !adminUser.isAdmin) {
+                        return@post call.respond(HttpStatusCode.Forbidden, ErrorResponse("Admin access required"))
+                    }
+
+                    val request = call.receive<AdminUpdateUserRequest>()
+
+                    // Update admin status if provided
+                    if (request.isAdmin != null) {
+                        val success = supabaseService.updateUserAdmin(request.userId, request.isAdmin)
+                        if (!success) {
+                            return@post call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Failed to update admin status"))
+                        }
+                    }
+
+                    // Update credits if provided
+                    if (request.credits != null) {
+                        val success = supabaseService.updateUserCredits(request.userId, request.credits)
+                        if (!success) {
+                            return@post call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Failed to update credits"))
+                        }
+                    }
+
+                    val updatedUser = supabaseService.getUser(request.userId)
+                    call.respond(HttpStatusCode.OK, mapOf("success" to true, "user" to updatedUser))
+                } catch (e: Exception) {
+                    application.log.error("Error updating user", e)
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            get("/admin/transactions") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
+
+                    // Check if user is admin
+                    val user = supabaseService.getUser(userId)
+                    if (user == null || !user.isAdmin) {
+                        return@get call.respond(HttpStatusCode.Forbidden, ErrorResponse("Admin access required"))
+                    }
+
+                    val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 100
+                    val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0
+
+                    val transactions = supabaseService.getAllTransactions(limit, offset)
+                    call.respond(HttpStatusCode.OK, TransactionHistoryResponse(transactions))
+                } catch (e: Exception) {
+                    application.log.error("Error getting admin transactions", e)
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
+            get("/admin/edits") {
+                try {
+                    val userId = call.principal<UserIdPrincipal>()?.name
+                        ?: return@get call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
+
+                    // Check if user is admin
+                    val user = supabaseService.getUser(userId)
+                    if (user == null || !user.isAdmin) {
+                        return@get call.respond(HttpStatusCode.Forbidden, ErrorResponse("Admin access required"))
+                    }
+
+                    val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 100
+                    val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0
+
+                    val edits = supabaseService.getAllEdits(limit, offset)
+                    call.respond(HttpStatusCode.OK, EditHistoryResponse(edits))
+                } catch (e: Exception) {
+                    application.log.error("Error getting admin edits", e)
+                    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Unknown error"))
+                }
+            }
+
             // Stripe checkout session creation
             post("/stripe/create-checkout-session") {
                 try {

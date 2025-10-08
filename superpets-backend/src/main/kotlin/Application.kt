@@ -9,12 +9,30 @@ import io.ktor.server.auth.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import kotlinx.serialization.json.Json
+import io.sentry.Sentry
+import io.sentry.SentryOptions
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
 fun Application.module() {
+    // Initialize Sentry for error tracking
+    val sentryDsn = System.getenv("SENTRY_DSN")
+    if (sentryDsn != null) {
+        Sentry.init { options ->
+            options.dsn = sentryDsn
+            options.environment = System.getenv("SENTRY_ENVIRONMENT") ?: "production"
+            options.release = "superpets-backend@0.0.1"
+            options.tracesSampleRate = 1.0 // Capture 100% of transactions for performance monitoring
+            options.isEnableUncaughtExceptionHandler = true
+            options.isDebug = false
+        }
+        log.info("Sentry initialized for environment: ${System.getenv("SENTRY_ENVIRONMENT") ?: "production"}")
+    } else {
+        log.warn("SENTRY_DSN not configured - error tracking disabled")
+    }
+
     // Initialize Supabase database connection
     DatabaseFactory.init(this)
 

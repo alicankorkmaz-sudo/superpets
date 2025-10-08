@@ -51,6 +51,10 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
     implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
 
+    // Sentry error tracking and performance monitoring
+    implementation("io.sentry:sentry:7.18.1")
+    implementation("io.sentry:sentry-logback:7.18.1")
+
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
 }

@@ -1,6 +1,9 @@
 import { LogOut, Coins, RefreshCw, ShoppingCart, Home, Shield } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCredits } from '../../contexts/CreditsContext';
+import { useState, useEffect } from 'react';
+import { api } from '../../lib/api';
+import type { User as AppUser } from '../../lib/types';
 
 interface HeaderProps {
   currentView?: 'editor' | 'pricing' | 'terms' | 'privacy' | 'admin';
@@ -10,8 +13,24 @@ interface HeaderProps {
 export function Header({ currentView = 'editor', onNavigate }: HeaderProps) {
   const { user, signOut } = useAuth();
   const { credits, refreshing } = useCredits();
+  const [userProfile, setUserProfile] = useState<AppUser | null>(null);
 
   console.log('🎯 Header rendering with credits:', credits);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await api.getUserProfile();
+        setUserProfile(profile);
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+      }
+    };
+
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-10">
@@ -46,7 +65,7 @@ export function Header({ currentView = 'editor', onNavigate }: HeaderProps) {
               <span>Buy Credits</span>
             </button>
 
-            {user?.isAdmin && (
+            {userProfile?.isAdmin && (
               <button
                 onClick={() => onNavigate?.('admin')}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${

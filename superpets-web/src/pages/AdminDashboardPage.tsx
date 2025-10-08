@@ -7,13 +7,10 @@ import {
   TrendingUp,
   Activity,
   DollarSign,
-  Calendar,
-  Clock,
   Shield,
   ChevronDown,
   ChevronUp,
   Search,
-  Filter,
 } from 'lucide-react';
 
 interface AdminStats {

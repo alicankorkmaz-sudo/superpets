@@ -124,7 +124,8 @@ fun Application.configureRouting() {
                         uid = user.uid,
                         email = user.email,
                         credits = user.credits,
-                        createdAt = user.createdAt
+                        createdAt = user.createdAt,
+                        isAdmin = user.isAdmin
                     ))
                 } catch (e: Exception) {
                     application.log.error("Error getting user profile", e)

@@ -53,7 +53,9 @@
       "Bash(render whoami)",
       "Bash(render login)",
       "Bash(render services:*)",
-      "Bash(render workspace list:*)"
+      "Bash(render workspace list:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run watch:*)"
     ],
     "deny": [],
     "ask": []

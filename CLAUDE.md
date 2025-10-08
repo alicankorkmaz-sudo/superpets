@@ -138,7 +138,20 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - `src/contexts/` - React contexts (CreditsContext for global credit state)
 - `src/hooks/` - Custom hooks (`useAuth`, `useImageEdit`)
 - `src/components/` - Feature-organized components (Auth, Dashboard, Editor)
-- `src/pages/` - Page components (EditorPage, PricingPage)
+- `src/pages/` - Page components (LandingPage, EditorPage, PricingPage, Terms, Privacy)
+
+**Landing Page & Navigation:**
+- **LandingPage component** - Welcoming first-time visitors before signup/login
+  - Hero section with value proposition and CTAs
+  - Features section (AI-powered, 29+ heroes, lightning-fast)
+  - "How It Works" 3-step guide
+  - Pricing teaser highlighting 5 free credits
+- **URL-based navigation** - Proper browser history support
+  - `/` - Landing page (non-authenticated users)
+  - `/?auth=login` - Login form
+  - `/?auth=signup` - Signup form
+  - Browser back/forward buttons work correctly via History API
+- **Back buttons** - "Back to home" on login/signup forms for easy navigation
 
 **Key Patterns:**
 - Supabase authentication via `useAuth` hook
@@ -355,19 +368,24 @@ See `supabase_migration.sql` for complete schema. Key tables:
 
 See `PROJECT_STATE.md` for current progress and next steps.
 
-**Completed (Oct 5, 2025):**
+**Completed (Oct 5-8, 2025):**
 - ✅ Deployed backend to Render with Supabase pooler connection
 - ✅ Migrated frontend to Supabase Auth
 - ✅ Deployed frontend to Firebase Hosting
 - ✅ Configured custom domain: superpets.fun
+- ✅ Implemented CORS restrictions (production and development domains)
+- ✅ Added comprehensive rate limiting (per-user and IP-based)
+- ✅ Added file upload validation (10MB max, type checking)
+- ✅ Created welcoming landing page for new users
+- ✅ Implemented URL-based navigation with browser history support
+- ✅ Removed orphaned Firebase service files from backend
 
 **Remaining priorities:**
-1. **Implement CORS restrictions** (currently set to `anyHost()` - security risk)
-2. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
-3. **Add rate limiting and input validation**
-4. **Configure custom domain SSL/HTTPS** (if not auto-configured by Firebase)
-5. **Monitor and optimize Render backend performance** (free tier may spin down)
-6. **Set up error monitoring and analytics** (Sentry, LogRocket, etc.)
+1. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
+2. **Configure custom domain SSL/HTTPS** (if not auto-configured by Firebase)
+3. **Monitor and optimize Render backend performance** (free tier may spin down)
+4. **Set up error monitoring and analytics** (Sentry, LogRocket, etc.)
+5. **Test and refine user onboarding flow**
 
 See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.
 

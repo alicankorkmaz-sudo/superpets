@@ -67,6 +67,22 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 - Full transaction history tracked in `credit_transactions` table
 - Client-side and server-side credit validation before processing
 
+**Rate Limiting:**
+- Sliding window algorithm with in-memory tracking (`RateLimitingService`)
+- **Public endpoints** (IP-based): 60 requests/minute (/, /heroes)
+- **User profile endpoints** (per-user): 30 requests/minute
+- **Image generation endpoints** (per-user): 5 requests/minute
+- **Admin operations** (per-user): 10 requests/minute
+- **Stripe webhook** (IP-based): 100 requests/minute
+- Returns HTTP 429 with `X-RateLimit-*` headers when exceeded
+
+**File Upload Validation:**
+- Maximum file size: **10MB** (enforced via `FileValidation` utility)
+- Allowed types: `image/jpeg`, `image/png`, `image/webp`, `image/gif`
+- Validates both MIME type and file extension
+- Returns HTTP 400 with specific error message on validation failure
+- Mobile apps should compress images to 2048x2048 before upload
+
 **Main API Routes:**
 - `/heroes` - Get all available heroes (public, no auth)
 - `/nano-banana/edit` - Edit images from URLs (requires `hero_id`, 1-10 outputs)
@@ -149,6 +165,28 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - Supabase JS SDK for authentication
 - Lucide React for icons
 - date-fns for date formatting
+
+### Mobile (Future Development)
+
+**Directory:** `superpets-mobile/` (placeholder)
+
+**Image Upload Strategy:**
+- **Backend validation**: 10MB maximum file size
+- **Client-side compression required**: Resize images to max 2048x2048 before upload
+  - Typical compressed size: 1-3MB (JPEG quality 80-90%)
+  - Rationale: Modern phones capture 5-25MB photos; compression prevents upload failures
+  - Libraries: React Native Image Picker with compression, or similar
+- **Validation flow**:
+  1. User selects photo from device storage
+  2. App compresses/resizes to 2048x2048 if larger
+  3. App uploads to `/nano-banana/upload-and-edit`
+  4. Backend validates: file size ≤10MB, type is image/jpeg|png|webp|gif
+- **Error handling**: Show user-friendly messages for oversized or invalid files
+
+**API Integration:**
+- Same REST API as web app: `https://superpets-backend-pipp.onrender.com`
+- Supabase Auth for authentication
+- Same credit system and rate limiting applies
 
 ## Development Commands
 

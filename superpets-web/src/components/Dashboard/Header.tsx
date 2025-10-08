@@ -3,8 +3,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { useCredits } from '../../contexts/CreditsContext';
 
 interface HeaderProps {
-  currentView?: 'editor' | 'pricing';
-  onNavigate?: (view: 'editor' | 'pricing') => void;
+  currentView?: 'editor' | 'pricing' | 'terms' | 'privacy';
+  onNavigate?: (view: 'editor' | 'pricing' | 'terms' | 'privacy') => void;
 }
 
 export function Header({ currentView = 'editor', onNavigate }: HeaderProps) {

@@ -1,14 +1,17 @@
 import { useAuth } from './hooks/useAuth';
 import { Header } from './components/Dashboard/Header';
+import { Footer } from './components/Dashboard/Footer';
 import { LoginForm } from './components/Auth/LoginForm';
 import { SignupForm } from './components/Auth/SignupForm';
 import { EditorPage } from './pages/EditorPage';
 import { PricingPage } from './pages/PricingPage';
+import { TermsOfServicePage } from './pages/TermsOfServicePage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { CreditsProvider } from './contexts/CreditsContext';
 import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
 
-type View = 'editor' | 'pricing';
+type View = 'editor' | 'pricing' | 'terms' | 'privacy';
 
 function App() {
   const { user, loading } = useAuth();
@@ -65,7 +68,7 @@ function App() {
 
   return (
     <CreditsProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header currentView={currentView} onNavigate={setCurrentView} />
 
         {/* Payment Notification Toast */}
@@ -92,7 +95,14 @@ function App() {
           </div>
         )}
 
-        {currentView === 'editor' ? <EditorPage /> : <PricingPage />}
+        <div className="flex-grow">
+          {currentView === 'editor' && <EditorPage />}
+          {currentView === 'pricing' && <PricingPage />}
+          {currentView === 'terms' && <TermsOfServicePage />}
+          {currentView === 'privacy' && <PrivacyPolicyPage />}
+        </div>
+
+        <Footer onNavigate={setCurrentView} />
       </div>
     </CreditsProvider>
   );

@@ -28,7 +28,14 @@ fun Application.module() {
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
         allowCredentials = true
-        anyHost() // For development - restrict in production
+
+        // Production domains
+        allowHost("superpets.fun", schemes = listOf("https"))
+        allowHost("superpets-ee0ab.web.app", schemes = listOf("https"))
+
+        // Development domains
+        allowHost("localhost:5173", schemes = listOf("http"))
+        allowHost("localhost:8080", schemes = listOf("http"))
     }
 
     install(ContentNegotiation) {

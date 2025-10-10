@@ -9,7 +9,7 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 **Monorepo Structure:**
 - **Backend** (`superpets-backend/`): Ktor (Kotlin) REST API server
 - **Frontend** (`superpets-web/`): React + TypeScript + Vite web application
-- **Mobile** (`superpets-mobile/`): Empty placeholder for future development
+- **Mobile** (`superpets-mobile/`): Compose Multiplatform (Android & iOS)
 
 ## Current Deployment Status
 
@@ -179,16 +179,45 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - Lucide React for icons
 - date-fns for date formatting
 
-### Mobile (Future Development)
+### Mobile (Compose Multiplatform)
 
-**Directory:** `superpets-mobile/` (placeholder)
+**Directory:** `superpets-mobile/`
+
+**Platform Support:**
+- **Android** - Native Android app
+- **iOS** - Native iOS app
+
+**Project Structure:**
+- Template: [AstroturfStudio/cmp-template](https://github.com/AstroturfStudio/cmp-template)
+- Package: `fun.superpets.mobile`
+- Architecture: MVVM with clean architecture
+- `composeApp/src/commonMain/` - Shared business logic and UI
+- `composeApp/src/androidMain/` - Android-specific code
+- `composeApp/src/iosMain/` - iOS-specific code
+
+**Tech Stack:**
+- **UI:** Compose Multiplatform with Material 3
+- **Networking:** Ktor Client
+- **Database:** Room Database
+- **DI:** Koin
+- **Navigation:** Navigation Compose
+- **Image Loading:** Coil
+- **Serialization:** Kotlinx Serialization
+- **Async:** Kotlin Coroutines & Flow
+
+**Configuration:**
+- Min SDK: 24 (Android 7.0)
+- Target SDK: 35 (Android 15)
+- iOS Deployment Target: iOS 15+
+- App Name: "Superpets"
+- Bundle ID: `fun.superpets.mobile`
 
 **Image Upload Strategy:**
 - **Backend validation**: 10MB maximum file size
 - **Client-side compression required**: Resize images to max 2048x2048 before upload
   - Typical compressed size: 1-3MB (JPEG quality 80-90%)
   - Rationale: Modern phones capture 5-25MB photos; compression prevents upload failures
-  - Libraries: React Native Image Picker with compression, or similar
+  - Image compression libraries available in Compose Multiplatform
 - **Validation flow**:
   1. User selects photo from device storage
   2. App compresses/resizes to 2048x2048 if larger
@@ -198,8 +227,17 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 
 **API Integration:**
 - Same REST API as web app: `https://superpets-backend-pipp.onrender.com`
-- Supabase Auth for authentication
+- Supabase Auth for authentication (Supabase Kotlin client)
 - Same credit system and rate limiting applies
+- Ktor Client configured with kotlinx.serialization for JSON parsing
+
+**Development Setup:**
+- Android Studio Hedgehog or newer
+- Xcode 15+ (for iOS development)
+- JDK 11+
+- Kotlin 1.9.0+
+- Run Android: Open in Android Studio, select Android target
+- Run iOS: Open `iosApp/iosApp.xcodeproj` in Xcode or use Android Studio iOS target
 
 ## Development Commands
 
@@ -285,6 +323,44 @@ npm run lint
 - Setup instructions: See `GITHUB_ACTIONS_SETUP.md`
 - Requires GitHub secrets: `FIREBASE_SERVICE_ACCOUNT`, `VITE_STRIPE_PUBLISHABLE_KEY`
 
+### Mobile (Compose Multiplatform)
+
+Navigate to `superpets-mobile/`:
+
+```bash
+# Open in Android Studio
+open -a "Android Studio" superpets-mobile/
+
+# Or open iOS project in Xcode
+open superpets-mobile/iosApp/iosApp.xcodeproj
+
+# Build Android (from command line)
+cd superpets-mobile
+./gradlew :composeApp:assembleDebug
+
+# Build iOS (from command line, requires Xcode)
+cd superpets-mobile
+./gradlew :composeApp:embedAndSignAppleFrameworkForXcode
+
+# Run tests (shared code)
+./gradlew :composeApp:test
+
+# Clean build
+./gradlew clean
+```
+
+**Project Configuration:**
+- Main code: `composeApp/src/commonMain/kotlin/fun/superpets/mobile/`
+- Android specific: `composeApp/src/androidMain/kotlin/fun/superpets/mobile/`
+- iOS specific: `composeApp/src/iosMain/kotlin/fun/superpets/mobile/`
+- Resources: `composeApp/src/commonMain/resources/`
+- Build config: `composeApp/build.gradle.kts`
+
+**Environment Variables:**
+- Configure API URL in shared code (point to production or local backend)
+- Supabase credentials for authentication
+- Same backend URL as web app: `https://superpets-backend-pipp.onrender.com`
+
 ## Important Implementation Details
 
 ### Supabase Configuration
@@ -368,7 +444,7 @@ See `supabase_migration.sql` for complete schema. Key tables:
 
 See `PROJECT_STATE.md` for current progress and next steps.
 
-**Completed (Oct 5-8, 2025):**
+**Completed (Oct 5-10, 2025):**
 - ✅ Deployed backend to Render with Supabase pooler connection
 - ✅ Migrated frontend to Supabase Auth
 - ✅ Deployed frontend to Firebase Hosting
@@ -379,6 +455,7 @@ See `PROJECT_STATE.md` for current progress and next steps.
 - ✅ Created welcoming landing page for new users
 - ✅ Implemented URL-based navigation with browser history support
 - ✅ Removed orphaned Firebase service files from backend
+- ✅ Set up Compose Multiplatform mobile project (Android & iOS)
 
 **Remaining priorities:**
 1. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)

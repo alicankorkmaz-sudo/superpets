@@ -38,6 +38,8 @@ jobs:
           VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_API_BASE_URL=https://superpets-backend-pipp.onrender.com
           VITE_STRIPE_PUBLISHABLE_KEY=${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+          VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}
+          VITE_SENTRY_ENVIRONMENT=production
           EOF
 
       - name: Build production bundle

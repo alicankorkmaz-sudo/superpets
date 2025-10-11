@@ -10,7 +10,6 @@ import { TermsOfServicePage } from './pages/TermsOfServicePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { CreditsProvider } from './contexts/CreditsContext';
-import { SentryTestButton } from './components/SentryTestButton';
 import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
 import * as Sentry from '@sentry/react';
@@ -22,9 +21,6 @@ function App() {
   const { user, loading } = useAuth();
   const [currentView, setCurrentView] = useState<View>('editor');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-
-  // Show Sentry test button when ?test=sentry is in URL
-  const showSentryTest = new URLSearchParams(window.location.search).get('test') === 'sentry';
 
   // Set Sentry user context when user logs in
   useEffect(() => {
@@ -168,9 +164,6 @@ function App() {
         </div>
 
         <Footer onNavigate={setCurrentView} />
-
-        {/* Sentry Test Button (only shows with ?test=sentry in URL) */}
-        {showSentryTest && <SentryTestButton />}
       </div>
     </CreditsProvider>
   );

@@ -2,7 +2,9 @@ package com.superpets.mobile.navigation
 
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -11,20 +13,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.superpets.mobile.screens.detail.DetailScreen
-import com.superpets.mobile.screens.list.ListScreen
-import com.superpets.mobile.screens.profile.ProfileScreen
 
 @Composable
 fun MainScreen(
@@ -47,7 +44,12 @@ fun MainScreen(
 fun BottomBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val allRoutes = listOf<MainRoute>(MainRoute.Home, MainRoute.Profile)
+    val allRoutes = listOf<MainRoute>(
+        MainRoute.Home,
+        MainRoute.Create,
+        MainRoute.History,
+        MainRoute.Profile
+    )
 
     BottomAppBar {
         allRoutes.forEach { route ->
@@ -82,41 +84,50 @@ fun BottomNavGraph(
         startDestination = MainRoute.Home,
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
-        navigation<MainRoute.Home>(
-            startDestination = HomeRoute.Master
+        composable<MainRoute.Home>(
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
         ) {
-            composable<HomeRoute.Master> {
-                ListScreen(
-                    navigateToDetails = { objectId ->
-                        navController.navigate(HomeRoute.Slave(objectId.toString()))
-                    }
-                )
-            }
-            composable<HomeRoute.Slave> { backStackEntry ->
-                val details = backStackEntry.toRoute<HomeRoute.Slave>()
-                DetailScreen(
-                    objectId = details.objectId.toInt(),
-                    navigateBack = {
-                        navController.popBackStack()
-                    }
-                )
-            }
+            // TODO: Implement HomeScreen (Phase 2)
+            PlaceholderScreen(text = "Home Screen\n\nComing soon...")
+        }
+
+        composable<MainRoute.Create>(
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
+        ) {
+            // TODO: Implement CreateScreen (Phase 3)
+            PlaceholderScreen(text = "Create Screen\n\nComing soon...")
+        }
+
+        composable<MainRoute.History>(
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
+        ) {
+            // TODO: Implement HistoryScreen (Phase 4)
+            PlaceholderScreen(text = "History Screen\n\nComing soon...")
         }
 
         composable<MainRoute.Profile>(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            ProfileScreen(
-                onLogout = {
-                    rootNavController.navigate(RootRoute.Onboarding) {
-                        popUpTo(RootRoute.MainRoute) {
-                            inclusive = true
-                        }
-                    }
-                }
-            )
+            // TODO: Implement ProfileScreen (Phase 4)
+            PlaceholderScreen(text = "Profile Screen\n\nComing soon...")
         }
+    }
+}
+
+/**
+ * Temporary placeholder screen for routes not yet implemented
+ */
+@Composable
+private fun PlaceholderScreen(text: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = text)
     }
 }
 

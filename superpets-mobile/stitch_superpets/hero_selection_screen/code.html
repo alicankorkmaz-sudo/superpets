@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Superpets Hero Selection</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#FAC638", "background-light": "#f8f8f5", "background-dark": "#231e0f"}, fontFamily: {display: "Be Vietnam Pro"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}}}};</script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center p-4">
+<button class="p-2 text-background-dark dark:text-background-light">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="flex-1 text-lg font-bold text-center text-background-dark dark:text-background-light pr-10">Choose your hero</h1>
+</div>
+<div class="px-4 pb-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">search</span>
+<input class="w-full h-12 pl-12 pr-4 rounded-xl bg-background-light dark:bg-background-dark border border-primary/20 dark:border-primary/30 focus:ring-primary focus:border-primary text-background-dark dark:text-background-light placeholder-primary/50 dark:placeholder-primary/40" placeholder="Search for a hero" type="text"/>
+</div>
+</div>
+<div class="px-4">
+<div class="flex border-b border-primary/20 dark:border-primary/30">
+<button class="flex-1 py-3 text-sm font-bold text-primary border-b-2 border-primary">
+            Classic Heroes
+          </button>
+<button class="flex-1 py-3 text-sm font-bold text-primary/60 dark:text-primary/50">
+            Unique Heroes
+          </button>
+</div>
+</div>
+</header>
+<main class="flex-1 p-4">
+<div class="grid grid-cols-2 gap-4">
+<div class="relative overflow-hidden rounded-xl aspect-square group cursor-pointer border-2 border-primary ring-2 ring-primary/50">
+<img alt="Captain Canine" class="absolute inset-0 object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyE75SgmJRRJcnRKE96M2mG9i7TzE1a8Zu9AxvG_NaPPCvLqp7NNRRmyZtxn7ewqdgVJWAhvZ70hVFwf46SGDrdhBxfvywE5wzy2Qp8dfkjGF5gi-NizbaRjzif_DCyaX_KoJc2l8R3CvfT4DH3FH8A4YBQHzuDEJNFBvErxFZNE4obMumh1zSZKYufhkN6G3QJoJAwVrrhIrPubdp-mzubslvVgGML59Hv_eEQePPyBcuMCrUpKfXbijJpQBzhuAyFB7IOr-Xq5I"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-3">
+<h3 class="font-bold text-white line-clamp-2">Captain Canine</h3>
+</div>
+<div class="absolute top-2 right-2 flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-base">check</span>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl aspect-square group cursor-pointer border-2 border-transparent">
+<img alt="Wonder Whiskers" class="absolute inset-0 object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7HfAJYKPEBr5KdbToS7ovZupbjM4rmci535e7iK6Cz0BDLsfQAbGYCQeekNLYajWD89gasuSxjGe65i99NnD-p5AjNYto5DfeodqI4J3UtbzrqZprEBTU1vVUjEI6WjOTwJXQzD7svyaZoXtEiQvAOSnjrFmcQ224SJPqmB4GEUDIZhlGJGKZB6_lmz99LqULwidPOqpP44pa6QkX5Egu6dxNrO8ewSUJ4vg0HR5ix23I3furnH6h_xp3L4lDqfB7Uh9jnD4qZXU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-3">
+<h3 class="font-bold text-white line-clamp-2">Wonder Whiskers</h3>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl aspect-square group cursor-pointer border-2 border-transparent">
+<img alt="Iron Paw" class="absolute inset-0 object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJTcVTlAyLoqkAWp5P-EqPhtr68sPcp4YLdwkZrE-3teKMiQnZ7gBrrByZtvjXFvgGDqu84LpkWtpqSpXJV7igctcNYvg-HxrlcH0IeY5RWjlZUBlyOPWwrI2xwwMa1qHvQZjEHJFcpUlOnyUFDcMEIfLXYLfhlCqM4nnyiLRuEKcI0RIrHFx4UubmU5GiiEJzphA1uoHD9_aBgoh-HidOh6WCCvxpVpltrmjdhY34wqOAkGhIlwIuEdTW7KaKRojCQxdrQEGcWAg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-3">
+<h3 class="font-bold text-white line-clamp-2">Iron Paw</h3>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl aspect-square group cursor-pointer border-2 border-transparent">
+<img alt="Spider-Pup" class="absolute inset-0 object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkEQ_F4hUltgJLmBwCQdV_hOImqgE__GkMEEAxsgT4DcWFGGZ8--DpjLcfPzEjcPhrWQtfvd9x9viRJHliAtr65xqOqHGqxwYCrYo-BZKWp3L52mjvlrMnfOCfYr9xePNdVRQtGBh0RBdWji12OFlOlxlGAk5G4dI7aXDB_4MI0G6AmGSc-IeONNl2kbabc1Ti7vLwgvjU46FVjNg-VG3hFF5wurEGc0r72ODGtkibmE8YSlK9nbd6aZEtwzmwFxuvGuE7saVOn_4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-3">
+<h3 class="font-bold text-white line-clamp-2">Spider-Pup</h3>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl aspect-square group cursor-pointer border-2 border-transparent">
+<img alt="Hulk Hound" class="absolute inset-0 object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT9IFhNkhcIOBep3FMSW8foNZ5HaDYB6-aqpPLyBv7pAyN4KgZAcOwLZ0JD7yjh37S-RSP1mwWYt1ctVibs2R0Q3OQSJ1zas3DhpZqpSNazn8DIp3e9DIMk2E7vt9tSoNiOK-tvxTyoqEK1pMYrPE75y6tBodVorg_b4KcVPIsQvebyoVrkGF1r51kg83Zlv0dLxzGsk2QNOf6IAg1aLHYkcgSFYl0Zsb9KvxiUWcyC8JjYyCI3DCeUAjCYQ48wznaI4X90Ig3VGU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-3">
+<h3 class="font-bold text-white line-clamp-2">Hulk Hound</h3>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl aspect-square group cursor-pointer border-2 border-transparent">
+<img alt="Thor Terrier" class="absolute inset-0 object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7QnAPE7BsKysHpXg3wLmKApLwh3F4I98BgH09tsGOdlF6bfs8rYH9BXppqddbTpxb8icXA7Wm_Cvwl1hvfVAed74GOIP6bXD-ltuNUvdFH1MTO146nJLqkxyqeJJKiO02xs790b0gRqtTJqiAdeZwIFkF9efOgo96r9lUK7OIxHI6F5S2kgEbsd1YETlxnKMTHqOPdGwhe6hOZeHCgeuInaldLoE-j7ZAzQ2DZzSig0NpXaIS-0ajLf41VcObj5n7KIdhMtKb3bE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-3">
+<h3 class="font-bold text-white line-clamp-2">Thor Terrier</h3>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl aspect-square group cursor-pointer border-2 border-transparent">
+<img alt="Black Panther Paws" class="absolute inset-0 object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXzeyjDUPeSATFgmbDUPq5S9pOpX-GhwNaq5le53iFoDG2wi21T10jfuNE9vj0J-Qm-wj0SG1HZ2Ls12U7c6E4_YM6k0pOb3M6u9J8MOLm6xAxAA9sjoySrnEzfXGgzhSFQzr1UZgaTP9d55o-ffebt3WixRmMv1BEAv6z_tcgc1AYxhLeXGlOOXkk2CHqoqGzKlUvRhDyOMAFQwDK4ta5RnyMlEWS0XonIduYZHpLc6wxTULZ9otsKlsFRPjCR4Mfj9-yIZhPX04"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-3">
+<h3 class="font-bold text-white line-clamp-2">Black Panther Paws</h3>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl aspect-square group cursor-pointer border-2 border-transparent">
+<img alt="Aqua Pup" class="absolute inset-0 object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7UbleFUOfufOGeQ0XsmaAssPNgG9Uk7beOjWxe-MR7hq7XhMXkxzuOxS9oiGN2WAQ5NWxcguaqJ2T_jrShU8OS6MMOJKNTjT8Ca9fr68O5gxZlGwnueywZefS2_FVa-h0aZoyejDM_nxjJoIRGxIgXi-UxQxQHsi3L1llhKFauot6tOi8UR6yyExZFYT3N-7RZE1qwmnhaF8g4fZqJF6ml6z6KXsLoWHRkvaDaOiwpe_YYgYVGvY71yvuKznjh-q73VvKEctjWR8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-3">
+<h3 class="font-bold text-white line-clamp-2">Aqua Pup</h3>
+</div>
+</div>
+</div>
+</main>
+<footer class="sticky bottom-0 bg-background-light dark:bg-background-dark p-4">
+<button class="w-full h-12 px-6 text-white bg-primary rounded-xl font-bold text-base flex items-center justify-center shadow-lg shadow-primary/30">
+        Continue
+      </button>
+</footer>
+</div>
+</body></html>

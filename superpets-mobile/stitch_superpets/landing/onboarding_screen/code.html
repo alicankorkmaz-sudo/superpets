@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Superpets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<script>tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#FAC638", "background-light": "#f8f8f5", "background-dark": "#231e0f"}, fontFamily: {display: "Be Vietnam Pro"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}}}};</script>
+<style>
+        .super-badge {
+            background: linear-gradient(135deg, #FFD700, #F7971E);
+            box-shadow: 0px 4px 15px rgba(247, 151, 30, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="relative min-h-screen flex flex-col justify-between p-4">
+<div class="absolute top-4 left-4 flex items-center gap-2">
+<img alt="Superpets Mascot" class="h-10 w-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1EtSJWmejn7NeqJF-7h7xZUiaejZMySuS9t71gIBAvmVWL_kalSuX-AJnZMSM2fXlyjRJHJnwOBcHtNnQJMPQwKEMQhZNTgajNiZvE6A4pqpfGUHHu2YfS5rdGVsJC5PyYgysOVeunHBkuzCn0fQFbeLKlp4GLMWykAcryiQ46ZpI148ptJZhHO9f3cdiLsgVaaT1J_2VQ9B5u8DsTFAbk-ZIZqxiQ3jCFEZmOTWLLbnoBBNL9XvI7HFXhyNREor2UUd_Ac1OJu0"/>
+<span class="text-lg font-bold text-gray-900 dark:text-white">Superpets</span>
+</div>
+<div class="absolute top-4 right-4 super-badge text-white font-bold text-sm py-2 px-4 rounded-full flex items-center gap-1">
+<svg class="h-4 w-4" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M5 2a1 1 0 011 1v1h8V3a1 1 0 112 0v1h1a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V6a2 2 0 012-2h1V3a1 1 0 011-1zm11 6H4v6a1 1 0 001 1h10a1 1 0 001-1V8z" fill-rule="evenodd"></path>
+</svg>
+<span>5 Free Credits</span>
+</div>
+<main class="flex-grow flex flex-col items-center justify-center text-center pt-24 pb-8">
+<div class="relative w-full max-w-sm mx-auto mb-8">
+<div class="relative aspect-[4/3] w-full">
+<div class="absolute inset-0 w-1/2 rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB00_X6Z8S-lKdU_EwW-Z9MtVy--hS1trqi1NgQyQGoqBnra5mLtCr_IBHWOQvOoMr2ciGcxOj8s01zOqGJ3oI--MHj3vDLERhM_zN3Qzn6DvWyn5Mj-8ks4pf1Vd2MfUdHnU2v5h-rHHzn33NQFm6xjdOsUFqJM7SSTGpuuGeWZPDqkLmm3GalePdLYYFhJlEYKy4Ga-_qoizhikFLw0Q2EpnLmiwx6L499jCNUVdPR0HxVQkyBZsa932sGzUB4aU8za9-beLmRe4"); transform: rotate(-8deg) translateX(-10%) translateY(5%);'></div>
+<div class="absolute inset-0 w-1/2 ml-auto rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAQQ_o7v6YVORG2jBa5cwmfNGF8czDfFjvr-bUTTlc9cWHP1IXuVBTrda_-W9mMmpI0o6-yCEBbfrLJJWAUrfHjP6IU0NwvpllRS9S3arqtWG6x2qiISch5Ht-cVknqgdIK69TlmitnBtQE0vkQuufKzlAbXW-Uer1ruuzmfUlxBttz1_c24J7cOKjCezj-MOP5V8wWeR8V9Q8EXxIu2D8Q74H1jcqRa3VmOx01updLzevr50QtYzVvw0GVtOo8TZ8hbPDjZE6t0C8"); z-index: 10; transform: rotate(8deg) translateX(10%) translateY(-5%); box-shadow: -10px 10px 30px rgba(0,0,0,0.2);'></div>
+</div>
+</div>
+<h1 class="text-4xl font-black text-gray-900 dark:text-white leading-tight mb-3">
+                Turn Your Pet into a <span class="text-primary">Superhero</span>
+</h1>
+<p class="text-gray-600 dark:text-gray-400 text-lg mb-8">
+                AI-Powered • 29+ Heroes • Lightning Fast
+            </p>
+<div class="w-full max-w-sm flex flex-col gap-4">
+<a class="w-full bg-primary text-white font-bold py-4 px-5 rounded-full text-lg shadow-lg shadow-primary/30 transform hover:scale-105 transition-transform duration-300" href="#">
+                    Get Started
+                </a>
+<a class="w-full bg-primary/10 dark:bg-primary/20 text-primary font-bold py-4 px-5 rounded-full text-lg hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors duration-300" href="#">
+                    Sign In
+                </a>
+</div>
+</main>
+</div>
+</body></html>

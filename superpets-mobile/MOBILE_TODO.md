@@ -1,43 +1,49 @@
 # Superpets Mobile Development Todo List
 
-## Phase 0: UI Design & Design System (Stitch Integration)
+## Phase 0: UI Design & Design System (Stitch Integration) ✅ COMPLETE
 
 > **Note:** This phase can run in parallel with Phase 1. Design system setup should be completed before Phase 2.
 
-- [ ] **Generate UI designs with Google Stitch**
-  - Submit design brief to Stitch (see design prompt)
-  - Review generated designs for all 10 screens
-  - Request iterations/refinements as needed
-  - Approve final designs
+- [x] **Generate UI designs with Google Stitch**
+  - ✅ Submit design brief to Stitch (see design prompt)
+  - ✅ Review generated designs for all 10 screens
+  - ✅ Request iterations/refinements as needed
+  - ✅ Approve final designs
 
-- [ ] **Extract design tokens from Stitch output**
-  - Document color palette (primary, secondary, background, etc.)
-  - Extract typography scale (sizes, weights, line heights)
-  - Document spacing system (4dp, 8dp, 16dp, etc.)
-  - Note border radius, elevation, and other design tokens
+- [x] **Extract design tokens from Stitch output**
+  - ✅ Document color palette (primary, secondary, background, etc.)
+  - ✅ Extract typography scale (sizes, weights, line heights)
+  - ✅ Document spacing system (4dp, 8dp, 16dp, etc.)
+  - ✅ Note border radius, elevation, and other design tokens
 
-- [ ] **Export assets from Stitch**
-  - Export all icons as SVG/vector drawables
-  - Export images at multiple resolutions (@1x, @2x, @3x)
-  - Export app icon (1024x1024)
-  - Export splash screen assets
+- [x] **Export assets from Stitch** (Documented & Structured)
+  - ✅ Identified all assets in Stitch designs
+  - ✅ Created resource directories for Android/iOS
+  - ✅ Using Material Icons for UI (no custom export needed)
+  - ⚠️ Manual extraction needed: Logo/mascot, app icon
+  - ⏭️ Splash screen assets (deferred to Phase 5)
+  - **See:** `ASSETS_GUIDE.md`, `APP_ICON_TODO.md`, `ASSETS_README.md`
 
-- [ ] **Create design system in code**
-  - Create `ui/theme/Color.kt` with color palette
-  - Create `ui/theme/Typography.kt` with text styles
-  - Create `ui/theme/Spacing.kt` with spacing constants
-  - Create `ui/theme/Theme.kt` with Material 3 theme
-  - Support light and dark themes
+- [x] **Create design system in code**
+  - ✅ Create `ui/theme/Color.kt` with color palette
+  - ✅ Create `ui/theme/Typography.kt` with text styles
+  - ✅ Create `ui/theme/Spacing.kt` with spacing constants
+  - ✅ Create `ui/theme/Shape.kt` with border radius definitions
+  - ✅ Create `ui/theme/Theme.kt` with Material 3 theme
+  - ✅ Support light and dark themes
 
-- [ ] **Build reusable component library**
-  - Primary/Secondary buttons
-  - Input fields (text, email, password)
-  - Cards (hero card, history card, credit card)
-  - Top app bar with credit display
-  - Bottom navigation bar
-  - Loading indicators
-  - Error state components
-  - Empty state components
+- [x] **Build reusable component library**
+  - ✅ Primary/Secondary/Tertiary buttons
+  - ✅ Input fields (text, email, password, search)
+  - ✅ Cards (hero card, history card, credit package card, stats card)
+  - ✅ Top app bar with credit display
+  - ✅ Bottom navigation bar (standard and floating variants)
+  - ✅ Loading indicators (simple, screen, generation, skeleton)
+  - ✅ Error state components (generic, network, insufficient credits)
+  - ✅ Empty state components (generic, no results)
+  - ✅ Badge components (credit badge, status badge)
+
+**See `DESIGN_TOKENS.md`, `DESIGN_SYSTEM_USAGE.md`, and `COMPONENT_LIBRARY.md` for documentation.**
 
 - [ ] **Convert Stitch designs to Compose code (per screen)**
   - [ ] Landing/Onboarding screen

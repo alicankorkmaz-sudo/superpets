@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Superpets Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#FAC638", "background-light": "#f8f8f5", "background-dark": "#231e0f"}, fontFamily: {display: "Be Vietnam Pro"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}}}};</script>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Be+Vietnam+Pro%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="flex flex-col min-h-screen">
+<main class="flex-1 px-4 py-6 space-y-8">
+<header class="flex items-center justify-between">
+<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Superpets</h1>
+<div class="flex items-center gap-2 px-3 py-2 rounded-full bg-primary/10 dark:bg-primary/20">
+<span class="text-lg">💎</span>
+<span class="font-bold text-primary">12 credits</span>
+</div>
+</header>
+<section>
+<button class="flex items-center justify-center w-full h-14 gap-3 px-6 text-lg font-bold text-white rounded-xl bg-primary">
+<svg class="feather feather-camera" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
+<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+<circle cx="12" cy="13" r="4"></circle>
+</svg>
+<span>Create New</span>
+</button>
+</section>
+<section class="space-y-4">
+<h2 class="text-xl font-bold text-gray-900 dark:text-white">Quick Stats</h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 space-y-1 bg-white rounded-lg dark:bg-black/20">
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total creations</p>
+<p class="text-3xl font-bold text-gray-900 dark:text-white">12</p>
+</div>
+<div class="p-4 space-y-1 bg-white rounded-lg dark:bg-black/20">
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Recent activity</p>
+<p class="text-lg font-semibold text-gray-900 dark:text-white">3 days ago</p>
+</div>
+</div>
+</section>
+<section class="space-y-4">
+<h2 class="text-xl font-bold text-gray-900 dark:text-white">Recent Creations</h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-lg aspect-square" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCW8jlW_vHZYQoN0oZtMJks4AhrzgcctzGFWAThwvZ5oYCofF2Gl6CpmKHUgiqJIOHeZcCjqVLwzLwxE-8RjWbECHesJC_L6FWKjjCgt6cLlKvCOSxac46YF6rsxf8ztjkcBEfhgTni8WZ4_CUTLfpCZg09sbOCUCR27jgKELgwqSVTwC6G0EjR0ZGm-Ei4v8J-acvO-doORz6d_SvUKdMNfFsq_y4kzY5huXMcL9EMOD3S7dG_jyNQJXwCDQcfXvp107nuIlLPaSM");'></div>
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-lg aspect-square" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCHAGmePuRjiFJ7DYCEaDa0af-vOaoWndkJ2wWbHanuMghTnLKQRabS3GLd3xKyNmXkbJ_B_5I1W8oTz7onfdREqu2cFbUbv9OG4XnYHViZK_ktyoqZIUskSHE3-TyXyGAW3wNGfcTovJXhWXD6--clyL-BfNn3AKSll1aVm1g9678WW0U2pl4AZ7GC3R5YS6mW-XgzwRXnG3Oz5ZQGgO_7MTgSqFU4I1TCQHNLnfcAjGKsd-z84GiGaFug-P0D1iTOViVyN9onenA");'></div>
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-lg aspect-square" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB5OhdGf_l6EPjh6uHjinvv0fr34E6PadNHIU6RCxP6a8cC3Ec7SplV6xxEksFO8w0Ueg-Qyr_tdHMcCqKtu3s1sfodN9TK7-xjRYyhwL8-zsuETdYRQTMkf1GUO7zsn7zb9cc2JpCWsfmRV5AKoF5iJZ1jIaeAGhaWlwGsqjfrNydTwTCmx-JjbUH2ZRT9mTgMetTFO4we07lV1NfQunHme79sqb4HeesJDfER23btB0FBdYQcsNA-r-HQxFw1FAJ6VvW1H8KVGFM");'></div>
+<div class="w-full bg-center bg-no-repeat bg-cover rounded-lg aspect-square" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCCf-aSTMKO05L51LMRx-tO25uZx1fEpO54IaioffLcbWudqjO6-Gpfa6zeAPRHTdQZbp09p-d2I0Zz-vBab6bMXkQZKnU4J0mEBaUd1xqpjqQuxpmBsc8PHTOBSe0KaT3V--hydeD8q5G9BUiuZrASFqb4J4ZOdShQ3-8MbkS7Y5kNglFDkGWtUZSGbdjlUYsN0ECh6Lw-x6DSW9uvtdUp4R0ediZWeE8PTKx2bxf1A_HU-IoIlqQU55mLp86mis8NYtTnpeLasK8");'></div>
+</div>
+</section>
+</main>
+<footer class="sticky bottom-0 pb-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-lg">
+<nav class="grid grid-cols-4 px-4 pt-2">
+<a class="flex flex-col items-center gap-1 py-1 text-primary" href="#">
+<svg class="w-7 h-7" fill="currentColor" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+</svg>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 text-gray-500 dark:text-gray-400" href="#">
+<svg class="w-7 h-7" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<rect height="18" rx="2" ry="2" width="18" x="3" y="3"></rect>
+<line x1="12" x2="12" y1="8" y2="16"></line>
+<line x1="8" x2="16" y1="12" y2="12"></line>
+</svg>
+<span class="text-xs font-medium">Create</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 text-gray-500 dark:text-gray-400" href="#">
+<svg class="w-7 h-7" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+<path d="M3 3v5h5"></path>
+<path d="M12 7v5l3.5 2"></path>
+</svg>
+<span class="text-xs font-medium">History</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 text-gray-500 dark:text-gray-400" href="#">
+<svg class="w-7 h-7" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+<circle cx="12" cy="7" r="4"></circle>
+</svg>
+<span class="text-xs font-medium">Profile</span>
+</a>
+</nav>
+</footer>
+</div>
+</body></html>

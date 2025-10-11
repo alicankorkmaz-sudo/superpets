@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Superpets Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#FAC638", "background-light": "#f8f8f5", "background-dark": "#231e0f"}, fontFamily: {display: "Be Vietnam Pro"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}}}};</script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-zinc-900 dark:text-zinc-200">
+<div class="max-w-md mx-auto">
+<header class="p-4 flex items-center justify-between">
+<button class="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold">Profile</h1>
+<div class="w-10"></div>
+</header>
+<main class="px-4 pb-24">
+<div class="flex flex-col items-center mt-4">
+<div class="relative">
+<img alt="User Avatar" class="w-32 h-32 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKxC6E_o1vaQqUE_UfpVxjvL0ajhtG4rNhLtznAJiSdn1CjAwWCYF-lUBqwHRx7bFTdX0aaAmMi0tQSP6CrCok66thjDr-lDLvBoSqQScEn7g2IRt7flzw19O0KEawSZLAn-IhVVV7jchx3IQUnf09VAQfmsDCZCvdD5mNq1EFEKofaq2amlxkdjAMx2vBaVMmX8jtrochFndbyEWIhb2f81yKrDIKSQ5B1tivAd92OyR1FXez29EDNo8oGHB4fIy_G_IHd2Im1U8"/>
+</div>
+<h2 class="mt-4 text-2xl font-bold">Sophia Carter</h2>
+<p class="text-zinc-500 dark:text-zinc-400">@sophiacarter</p>
+<p class="text-zinc-500 dark:text-zinc-400 text-sm">Joined 2023</p>
+</div>
+<div class="mt-8 p-4 bg-white dark:bg-zinc-900 rounded-lg flex items-center justify-between">
+<div class="flex items-center">
+<div class="p-3 bg-primary/10 dark:bg-primary/20 rounded-lg">
+<span class="material-symbols-outlined text-primary">toll</span>
+</div>
+<div class="ml-4">
+<p class="font-bold">100 Credits</p>
+<p class="text-sm text-zinc-500 dark:text-zinc-400">Your current balance</p>
+</div>
+</div>
+<button class="bg-primary text-white font-bold py-2 px-4 rounded-lg text-sm">Buy More</button>
+</div>
+<div class="mt-8">
+<h3 class="text-lg font-bold mb-2">Account</h3>
+<div class="bg-white dark:bg-zinc-900 rounded-lg">
+<div class="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800">
+<div class="flex items-center">
+<span class="material-symbols-outlined mr-4 text-zinc-500 dark:text-zinc-400">notifications</span>
+<span>Notifications</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-zinc-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<a class="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800" href="#">
+<div class="flex items-center">
+<span class="material-symbols-outlined mr-4 text-zinc-500 dark:text-zinc-400">verified_user</span>
+<span>Privacy</span>
+</div>
+<span class="material-symbols-outlined text-zinc-400 dark:text-zinc-500">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-4" href="#">
+<div class="flex items-center">
+<span class="material-symbols-outlined mr-4 text-zinc-500 dark:text-zinc-400">description</span>
+<span>Terms of Service</span>
+</div>
+<span class="material-symbols-outlined text-zinc-400 dark:text-zinc-500">chevron_right</span>
+</a>
+</div>
+</div>
+<div class="mt-8">
+<h3 class="text-lg font-bold mb-2">History</h3>
+<div class="bg-white dark:bg-zinc-900 rounded-lg">
+<a class="flex items-center justify-between p-4" href="#">
+<div class="flex items-center">
+<span class="material-symbols-outlined mr-4 text-zinc-500 dark:text-zinc-400">history</span>
+<span>Edit History</span>
+</div>
+<span class="material-symbols-outlined text-zinc-400 dark:text-zinc-500">chevron_right</span>
+</a>
+</div>
+</div>
+<div class="mt-8">
+<button class="w-full bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 font-bold py-3 px-4 rounded-lg">Log Out</button>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-background-light dark:bg-background-dark border-t border-zinc-200 dark:border-zinc-800">
+<nav class="flex justify-around py-2">
+<a class="flex flex-col items-center text-zinc-500 dark:text-zinc-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs">Home</span>
+</a>
+<a class="flex flex-col items-center text-zinc-500 dark:text-zinc-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">add_box</span>
+<span class="text-xs">Create</span>
+</a>
+<a class="flex flex-col items-center text-zinc-500 dark:text-zinc-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-xs">History</span>
+</a>
+<a class="flex flex-col items-center text-primary dark:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-xs">Profile</span>
+</a>
+</nav>
+<div class="h-3 bg-background-light dark:bg-background-dark"></div>
+</footer>
+</div>
+</body></html>

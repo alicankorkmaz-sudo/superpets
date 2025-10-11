@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Superpets - Sign Up / Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#FAC638", "background-light": "#f8f8f5", "background-dark": "#231e0f"}, fontFamily: {display: "Be Vietnam Pro"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}}}};</script>
+<style>
+    .form-input::placeholder {
+      color: #9ca3af;
+    }
+    .dark .form-input::placeholder {
+      color: #4b5563;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex flex-col min-h-screen">
+<header class="absolute top-0 left-0 w-full p-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm text-gray-800 dark:text-gray-200">
+<span class="material-symbols-outlined">
+          arrow_back
+        </span>
+</button>
+</header>
+<main class="flex-grow flex flex-col justify-center px-6">
+<div class="w-full max-w-sm mx-auto text-center">
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Join Superpets</h1>
+<p class="text-gray-600 dark:text-gray-400 mb-8">Sign up or log in to continue</p>
+<div class="space-y-6" x-data="{ isLogin: false }">
+<div class="space-y-4">
+<input class="form-input w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-white" placeholder="Email" type="email"/>
+<input class="form-input w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:ring-primary focus:border-primary text-gray-900 dark:text-white" placeholder="Password" type="password"/>
+</div>
+<div class="text-right" x-show="isLogin">
+<a class="text-sm font-medium text-primary hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="space-y-3">
+<button @click="isLogin = false" class="w-full py-3 px-4 rounded-lg bg-primary text-white font-bold text-base transition-transform transform hover:scale-105" x-show="isLogin">Sign Up</button>
+<button @click="isLogin = true" class="w-full py-3 px-4 rounded-lg bg-primary text-white font-bold text-base transition-transform transform hover:scale-105" x-show="!isLogin">Log In</button>
+</div>
+<div class="relative flex py-2 items-center">
+<div class="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+<span class="flex-shrink mx-4 text-gray-500 dark:text-gray-400 text-sm">OR</span>
+<div class="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+</div>
+<div class="space-y-3">
+<button class="w-full py-3 px-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold text-base flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+<img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj1UhGXwv-tre2sXfYaztV2wG7-wXTS3E6qyrtm4DCQTEfRceDkofzIesm83Ik-XgAterPodn2w3rX2lsT2UzqKZzORIFsf9y3ESNQDPoS3-Ed6rh75yJ9ppz2B9o6eaD1ul5P-mBG1PszTbpTWq_IrLQj16AtWkNZ752yGvcnPRT8a23D6MAhTToQeZV6OOho4ZUI3s6XKUCYsTajjkdqQrBxsB2FT_yn8SnmC2fQ6hqmjWpPyKZy5iaFDMfIdjXcSGxKak8N3VM"/>
+              Continue with Google
+            </button>
+<button class="w-full py-3 px-4 rounded-lg bg-black text-white font-semibold text-base flex items-center justify-center gap-2 hover:bg-gray-800">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 16 16">
+<path d="M8.016 16a7.13 7.13 0 0 1-2.915-1.013c-.328-.192-.375-.68-.113-.998.25-.308.71-.345.998-.124a5.617 5.617 0 0 0 2.03.626c1.1.002 1.91-.32 2.5-.945.626-.65.812-1.632.22-3.238-1.258-3.327-3.484-2.88-4.224-2.88-.74 0-2.03.187-3.125 1.32-1.2 1.259-1.062 3.242-.938 3.738.094.375.469.594.844.5.375-.093.594-.468.5-.843-.032-.282-.125-1.5.656-2.282.688-.687 1.5-.906 2.125-.906.938 0 2.219.531 3.28 2.345.813 1.406.688 2.187.313 2.656-.407.5-.969.75-1.688.75a4.23 4.23 0 0 1-1.812-.406Z"></path>
+<path d="M10.887 5.437c.72-.844 1.25-2.03 1.25-3.218 0-.188-.031-.344-.062-.532-.031-.156.125-.28.25-.28h.03c.125 0 .25.125.218.281-.031.188-.062.344-.062.532 0 1.28-.562 2.531-1.344 3.406-.687.844-1.72 1.344-2.845 1.344-1.124 0-2.156-.5-2.844-1.344-.781-.875-1.344-2.125-1.344-3.406 0-.188-.031-.344-.062-.532-.031-.156.125-.281.25-.281h.03c.125 0 .25.125.218.281-.031.188-.062.344-.062.532 0 1.188.532 2.375 1.25 3.218C6.01 6.53 7.01 7 8.016 7s2.005-.47 2.87-1.563Z"></path>
+</svg>
+              Continue with Apple
+            </button>
+</div>
+<div class="text-center text-sm text-gray-600 dark:text-gray-400">
+<span x-show="!isLogin">Already have an account? <button @click="isLogin = true" class="font-medium text-primary hover:underline">Log in</button></span>
+<span x-show="isLogin">Don't have an account? <button @click="isLogin = false" class="font-medium text-primary hover:underline">Sign up</button></span>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script defer="" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</body></html>

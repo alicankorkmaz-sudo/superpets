@@ -1,11 +1,14 @@
 package com.superpets.mobile.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import com.superpets.mobile.screens.onboarding.OnboardingScreen
 import com.superpets.mobile.screens.splash.SplashViewModel
 import com.superpets.mobile.screens.splash.SplashScreen
 
@@ -18,12 +21,12 @@ fun RootNavigationGraph(navController: NavHostController, splashViewModel: Splas
         composable<RootRoute.Splash> {
             SplashScreen(
                 navigateToOnboarding = {
-                    navController.navigate(RootRoute.Onboarding) {
+                    navController.navigate(RootRoute.Landing) {
                         popUpTo(RootRoute.Splash) { inclusive = true }
                     }
                 },
                 navigateToHome = {
-                    navController.navigate(RootRoute.MainRoute) {
+                    navController.navigate(RootRoute.Main) {
                         popUpTo(RootRoute.Splash) { inclusive = true }
                     }
                 },
@@ -31,20 +34,31 @@ fun RootNavigationGraph(navController: NavHostController, splashViewModel: Splas
             )
         }
 
-        composable<RootRoute.Onboarding> {
-            OnboardingScreen(
-                navigateToHome = {
-                    navController.navigate(RootRoute.MainRoute) {
-                        popUpTo(RootRoute.Onboarding) {
-                            inclusive = true
-                        }
-                    }
-                }
-            )
+        composable<RootRoute.Landing> {
+            // TODO: Implement LandingScreen (Phase 2)
+            PlaceholderScreen(text = "Landing Screen\n\nComing soon...")
         }
 
-        composable<RootRoute.MainRoute> {
+        composable<RootRoute.Auth> {
+            // TODO: Implement AuthScreen (Phase 2)
+            PlaceholderScreen(text = "Auth Screen\n\nComing soon...")
+        }
+
+        composable<RootRoute.Main> {
             MainScreen(rootNavController = navController)
         }
+    }
+}
+
+/**
+ * Temporary placeholder screen for routes not yet implemented
+ */
+@Composable
+private fun PlaceholderScreen(text: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = text)
     }
 } 

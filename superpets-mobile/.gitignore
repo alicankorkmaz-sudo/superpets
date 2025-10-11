@@ -9,6 +9,9 @@ gradle-app.setting
 # Cursor
 .cursor/
 
+# Claude Code
+.claude/
+
 # Android
 *.iml
 .idea/

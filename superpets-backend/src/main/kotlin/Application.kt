@@ -40,6 +40,7 @@ fun Application.module() {
 
     // Install StatusPages for exception handling and Sentry integration
     install(StatusPages) {
+        // Capture all unhandled exceptions
         exception<Throwable> { call, cause ->
             // Capture exception in Sentry
             Sentry.captureException(cause)
@@ -58,21 +59,7 @@ fun Application.module() {
             }
         }
 
-        // Capture HTTP error status codes in Sentry
-        status(HttpStatusCode.Unauthorized) { call, status ->
-            val message = "401 Unauthorized: ${call.request.local.uri}"
-            Sentry.captureMessage(message)
-            call.application.log.warn(message)
-            call.respond(status, "Unauthorized")
-        }
-
-        status(HttpStatusCode.NotFound) { call, status ->
-            val message = "404 Not Found: ${call.request.local.uri}"
-            Sentry.captureMessage(message)
-            call.application.log.warn(message)
-            call.respond(status, "Not Found")
-        }
-
+        // Capture 500 errors (real server errors worth tracking)
         status(HttpStatusCode.InternalServerError) { call, status ->
             val message = "500 Internal Server Error: ${call.request.local.uri}"
             Sentry.captureMessage(message)

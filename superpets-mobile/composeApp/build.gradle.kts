@@ -41,6 +41,11 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.client.mock)
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -55,8 +60,14 @@ kotlin {
             implementation(libs.material.icons.core)
 
             implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
             implementation(libs.ktor.serialization.kotlinx.json)
+
+            // Supabase
+            implementation(libs.supabase.client)
+            implementation(libs.supabase.gotrue)
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
@@ -72,11 +83,11 @@ kotlin {
 }
 
 android {
-    namespace = "fun.superpets.mobile"
+    namespace = "com.superpets.mobile"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "fun.superpets.mobile"
+        applicationId = "com.superpets.mobile"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -107,7 +118,7 @@ dependencies {
 }
 
 buildkonfig {
-    packageName = "fun.superpets.mobile"
+    packageName = "com.superpets.mobile"
     defaultConfigs {
         buildConfigField(STRING, "VERSION_NAME", android.defaultConfig.versionName!!)
     }

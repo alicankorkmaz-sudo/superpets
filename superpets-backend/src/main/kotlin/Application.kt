@@ -8,6 +8,8 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
 import kotlinx.serialization.json.Json
 import io.sentry.Sentry
 import io.sentry.SentryOptions
@@ -35,6 +37,49 @@ fun Application.module() {
 
     // Initialize Supabase database connection
     DatabaseFactory.init(this)
+
+    // Install StatusPages for exception handling and Sentry integration
+    install(StatusPages) {
+        exception<Throwable> { call, cause ->
+            // Capture exception in Sentry
+            Sentry.captureException(cause)
+
+            // Log the error
+            call.application.log.error("Unhandled exception", cause)
+
+            // Return appropriate error response
+            when (cause) {
+                is IllegalArgumentException -> {
+                    call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request")
+                }
+                else -> {
+                    call.respond(HttpStatusCode.InternalServerError, "Internal server error")
+                }
+            }
+        }
+
+        // Capture HTTP error status codes in Sentry
+        status(HttpStatusCode.Unauthorized) { call, status ->
+            val message = "401 Unauthorized: ${call.request.local.uri}"
+            Sentry.captureMessage(message)
+            call.application.log.warn(message)
+            call.respond(status, "Unauthorized")
+        }
+
+        status(HttpStatusCode.NotFound) { call, status ->
+            val message = "404 Not Found: ${call.request.local.uri}"
+            Sentry.captureMessage(message)
+            call.application.log.warn(message)
+            call.respond(status, "Not Found")
+        }
+
+        status(HttpStatusCode.InternalServerError) { call, status ->
+            val message = "500 Internal Server Error: ${call.request.local.uri}"
+            Sentry.captureMessage(message)
+            call.application.log.error(message)
+            call.respond(status, "Internal Server Error")
+        }
+    }
 
     install(CORS) {
         allowMethod(HttpMethod.Options)

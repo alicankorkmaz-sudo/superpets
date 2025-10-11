@@ -428,9 +428,26 @@ See `supabase_migration.sql` for complete schema. Key tables:
 - `credits_cost` - Credits deducted for this edit
 - `timestamp` - Edit timestamp
 
-### Error Handling
+### Error Handling & Monitoring
+
+**Error Tracking (Sentry):**
+- ✅ **Frontend:** Sentry integrated with React error tracking, session replay, and performance monitoring
+  - Dashboard: https://alican-korkmaz.sentry.io/issues/?project=4510156145098832
+  - Captures JavaScript errors, React errors, API failures
+  - Session replay enabled for debugging user issues
+  - User context tracking (email, user ID)
+- ✅ **Backend:** Sentry integrated with Ktor exception handling
+  - Dashboard: https://alican-korkmaz.sentry.io/issues/?project=4510156138348624
+  - Captures all unhandled exceptions via StatusPages plugin
+  - Captures 500 Internal Server errors
+  - Performance monitoring enabled
+  - Does NOT capture normal 401/404 responses (reduces noise)
+- See `SENTRY_DEPLOYMENT_GUIDE.md` for configuration details
+
+**HTTP Error Codes:**
 - `401 Unauthorized` - Invalid/expired Supabase JWT token
 - `402 Payment Required` - Insufficient credits
+- `500 Internal Server Error` - Server-side errors (tracked in Sentry)
 - Credits checked before API calls, refunds not implemented
 - All database operations wrapped in try/catch with logging
 
@@ -444,7 +461,7 @@ See `supabase_migration.sql` for complete schema. Key tables:
 
 See `PROJECT_STATE.md` for current progress and next steps.
 
-**Completed (Oct 5-10, 2025):**
+**Completed (Oct 5-11, 2025):**
 - ✅ Deployed backend to Render with Supabase pooler connection
 - ✅ Migrated frontend to Supabase Auth
 - ✅ Deployed frontend to Firebase Hosting
@@ -456,12 +473,13 @@ See `PROJECT_STATE.md` for current progress and next steps.
 - ✅ Implemented URL-based navigation with browser history support
 - ✅ Removed orphaned Firebase service files from backend
 - ✅ Set up Compose Multiplatform mobile project (Android & iOS)
+- ✅ **Integrated Sentry error tracking** (frontend and backend)
 
 **Remaining priorities:**
-1. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
-2. **Configure custom domain SSL/HTTPS** (if not auto-configured by Firebase)
-3. **Monitor and optimize Render backend performance** (free tier may spin down)
-4. **Set up error monitoring and analytics** (Sentry, LogRocket, etc.)
+1. **Build mobile app UI and features** (authentication, image editing, hero selection)
+2. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
+3. **Configure custom domain SSL/HTTPS** (if not auto-configured by Firebase)
+4. **Monitor and optimize Render backend performance** (free tier may spin down)
 5. **Test and refine user onboarding flow**
 
 See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.

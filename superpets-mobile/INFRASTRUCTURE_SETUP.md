@@ -59,7 +59,7 @@ Created all shared data models matching the backend API:
 ### 4. Network Layer (`composeApp/src/commonMain/kotlin/fun/superpets/mobile/data/network/`)
 
 - **HttpClientFactory.kt** - Creates configured Ktor HttpClient
-  - Base URL: `https://superpets-backend-pipp.onrender.com`
+  - Base URL: `https://api.superpets.fun`
   - Features:
     - JSON serialization (kotlinx.serialization)
     - Bearer token authentication (automatic token injection)
@@ -262,9 +262,8 @@ apiService.uploadAndEditImages(
 └────────────────┬────────────────────────┘
                  │
 ┌────────────────▼────────────────────────┐
-│     Superpets Backend (Render)          │
-│  https://superpets-backend-pipp.        │
-│  onrender.com                           │
+│     Superpets Backend (Railway)          │
+│  https://api.superpets.fun        │
 └─────────────────────────────────────────┘
 ```
 

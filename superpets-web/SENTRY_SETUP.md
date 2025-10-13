@@ -95,7 +95,7 @@ throw new Error("Testing Sentry error tracking");
 ### Option 3: Test API Error
 Try accessing an endpoint without auth:
 ```javascript
-fetch('https://superpets-backend-pipp.onrender.com/admin/stats')
+fetch('https://api.superpets.fun/admin/stats')
 ```
 
 ## Sentry Dashboard

@@ -270,7 +270,7 @@ Check your credentials in `SupabaseConfig.kt`:
 ### "Network error: Connection refused"
 
 Check that:
-1. Backend is running: https://superpets-backend-pipp.onrender.com
+1. Backend is running: https://api.superpets.fun
 2. Device/emulator has internet connection
 3. If using local backend, update `BASE_URL` in `HttpClientFactory.kt`
 
@@ -306,11 +306,11 @@ The JWT token might be expired. Check:
 For issues or questions:
 1. Check `INFRASTRUCTURE_SETUP.md` for detailed docs
 2. Review backend API docs in `../CLAUDE.md`
-3. Test backend endpoints at: https://superpets-backend-pipp.onrender.com
+3. Test backend endpoints at: https://api.superpets.fun
 
 **Backend API Health Check:**
 ```bash
-curl https://superpets-backend-pipp.onrender.com/
+curl https://api.superpets.fun/
 ```
 
 Should return: `{"message":"Superpets API is running"}`

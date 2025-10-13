@@ -1,11 +1,11 @@
 # PROJECT STATE
 
-**Last Updated:** October 5, 2025
-**Status:** ✅ FULLY DEPLOYED (Backend on Render / Frontend on Firebase Hosting)
+**Last Updated:** October 13, 2025
+**Status:** ✅ FULLY DEPLOYED (Backend on Railway / Frontend on Firebase Hosting)
 
 ## Quick Summary
 
-Superpets is a full-stack monorepo for AI-powered pet superhero transformations. Backend (Ktor/Kotlin) successfully migrated from Firebase to Supabase and deployed to Render. Frontend (React/TypeScript) migrated to Supabase Auth and deployed to Firebase Hosting with custom domain **superpets.fun**.
+Superpets is a full-stack monorepo for AI-powered pet superhero transformations. Backend (Ktor/Kotlin) successfully migrated from Firebase to Supabase and deployed to Railway. Frontend (React/TypeScript) migrated to Supabase Auth and deployed to Firebase Hosting with custom domain **superpets.fun**.
 
 ## Current State
 
@@ -26,8 +26,9 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 - ✅ Stripe integration code (checkout, webhook)
 - ✅ Docker containerization ready
 - ✅ Environment variable configuration
-- ✅ **Deployed to Render** (https://superpets-backend-pipp.onrender.com)
+- ✅ **Deployed to Railway** (https://api.superpets.fun)
 - ✅ Supabase Transaction Pooler configured for IPv4 compatibility
+- ✅ Custom domain configured (api.superpets.fun)
 - ✅ Test HTML interface at `/index.html`
 
 **Frontend (React - TypeScript):**
@@ -41,7 +42,7 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 - ✅ Error handling (UNAUTHORIZED, INSUFFICIENT_CREDITS)
 - ✅ **Deployed to Firebase Hosting** (https://superpets.fun)
 - ✅ Production environment configured (.env.production)
-- ✅ Connected to Render backend in production
+- ✅ Connected to Railway backend in production
 - ✅ **CI/CD via GitHub Actions** (automatic deployment on push to main)
 
 **Infrastructure:**
@@ -52,9 +53,10 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 - ✅ Supabase project setup ("superpets")
 - ✅ Database schema created in Supabase
 - ✅ Migration SQL documented (`supabase_migration.sql`)
-- ✅ **Custom domain configured** (superpets.fun)
+- ✅ **Custom domain configured** (superpets.fun and api.superpets.fun)
 - ✅ **Full production deployment** (backend + frontend)
-- ✅ **CI/CD pipelines** (Render auto-deploy + GitHub Actions)
+- ✅ **CI/CD pipelines** (Railway deployment + GitHub Actions for frontend)
+- ✅ **Error monitoring** (Sentry integrated on frontend and backend)
 
 ### 🚧 In Progress
 
@@ -108,11 +110,12 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
    - Removed FIREBASE_SERVICE_ACCOUNT_JSON requirement
    - Documented Transaction Pooler requirement for IPv4 compatibility
 
-3. **Deployed Backend to Render**
-   - Pushed Supabase migration code to GitHub
-   - Configured Render environment variables with Transaction Pooler
-   - Successfully deployed to https://superpets-backend-pipp.onrender.com
+3. **Deployed Backend to Railway** (migrated from Render on October 13, 2025)
+   - Initialized Railway project via Railway CLI
+   - Configured Railway environment variables with Transaction Pooler
+   - Successfully deployed to https://api.superpets.fun
    - Verified PostgreSQL connection and API endpoints
+   - Custom domain configured and working
 
 ### Frontend Deployment
 4. **Migrated Frontend to Supabase Auth**
@@ -121,7 +124,7 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
    - Deleted deprecated firebase.ts file
 
 5. **Deployed Frontend to Firebase Hosting**
-   - Created .env.production with Render backend URL
+   - Created .env.production with Railway backend URL (api.superpets.fun)
    - Built production bundle with optimized settings
    - Deployed to Firebase Hosting (project: superpets-ee0ab)
    - Configured custom domain: **superpets.fun**
@@ -143,12 +146,13 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 ## Deployment History
 
 **Live Production Deployments:**
-- ✅ **Render** (backend) - https://superpets-backend-pipp.onrender.com
+- ✅ **Railway** (backend) - https://api.superpets.fun
 - ✅ **Firebase Hosting** (frontend) - https://superpets.fun
 
-**Failed Attempts (Historical):**
-- ❌ Fly.io (backend) - Failed due to gRPC/Firestore IPv6 issues (before Supabase migration)
-- ❌ Google Cloud Run (backend) - Not attempted, switched to Render instead
+**Deployment History:**
+- ✅ **October 13, 2025:** Migrated backend from Render to Railway
+- ✅ **October 5, 2025:** Initial deployment to Render (backend) and Firebase Hosting (frontend)
+- ❌ **Failed Attempt:** Fly.io (backend) - Failed due to gRPC/Firestore IPv6 issues (before Supabase migration)
 
 ## Environment Configuration
 
@@ -192,7 +196,7 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 **Production (.env.production):**
 ```bash
 # Backend URL (production)
-VITE_API_BASE_URL=https://superpets-backend-pipp.onrender.com
+VITE_API_BASE_URL=https://api.superpets.fun
 
 # Stripe
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
@@ -209,9 +213,9 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
    - **Priority:** LOW (not used, but adds to bundle size)
    - **Solution:** Remove after confirming Supabase migration is stable in production
 
-3. **Render Free Tier Limitations:** Backend may spin down after inactivity
-   - **Priority:** MEDIUM (affects user experience)
-   - **Solution:** Consider upgrading to paid tier or implement health checks
+3. **Railway Usage Monitoring:** Backend deployed on Railway
+   - **Priority:** MEDIUM (monitor costs and usage)
+   - **Solution:** Monitor Railway dashboard and optimize if needed
 
 4. **No Error Monitoring:** Production errors not tracked
    - **Priority:** MEDIUM
@@ -243,10 +247,10 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ### Medium Term (Next 2 Weeks)
 
 4. **Monitoring & Analytics**
-   - Add error tracking (Sentry)
+   - ✅ Error tracking (Sentry integrated on frontend and backend)
    - Add analytics (Google Analytics or Mixpanel)
-   - Set up Render monitoring and alerts
-   - Monitor backend cold starts on Render free tier
+   - Monitor Railway backend performance and costs
+   - Set up Railway alerts for usage thresholds
 
 5. **Code Cleanup**
    - Remove FirestoreService and FirebaseAuthService
@@ -319,14 +323,14 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ## Production URLs
 
 **Live Application:** https://superpets.fun ✨
-**Backend API:** https://superpets-backend-pipp.onrender.com
+**Backend API:** https://api.superpets.fun
 **Firebase Hosting:** https://superpets-ee0ab.web.app (alternative URL)
 
 ## Contact & Resources
 
 **Repository:** https://github.com/alicankorkmaz-sudo/superpets
 **Supabase Dashboard:** https://supabase.com/dashboard/project/zrivjktyzllaevduydai
-**Render Dashboard:** https://dashboard.render.com
+**Railway Dashboard:** https://railway.com/project/b7df09da-2741-413c-8474-4baab3059775
 **Firebase Console:** https://console.firebase.google.com/project/superpets-ee0ab
 **fal.ai Model:** Nano Banana (image editing)
 
@@ -354,4 +358,4 @@ Update this file after significant changes:
 
 ---
 
-**Last session:** ✅ FULL DEPLOYMENT COMPLETE - Backend on Render, Frontend on Firebase Hosting with custom domain superpets.fun 🎉
+**Last session:** ✅ BACKEND MIGRATED TO RAILWAY - Backend now on Railway at api.superpets.fun, Frontend on Firebase Hosting at superpets.fun 🎉

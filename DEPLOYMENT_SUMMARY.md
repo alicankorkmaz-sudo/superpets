@@ -16,12 +16,12 @@ Transform your pet photos into superhero versions using AI-powered image editing
 ## Deployment Architecture
 
 ### Backend (Ktor/Kotlin)
-- **Platform:** Render
-- **URL:** https://superpets-backend-pipp.onrender.com
+- **Platform:** Railway
+- **URL:** https://api.superpets.fun (custom domain)
 - **Database:** Supabase PostgreSQL
 - **Authentication:** Supabase Auth (JWT tokens)
 - **Storage:** fal.ai cloud storage
-- **Deployment:** Automatic from GitHub `main` branch
+- **Deployment:** Manual via Railway CLI or automatic from GitHub
 
 ### Frontend (React/TypeScript)
 - **Platform:** Firebase Hosting
@@ -37,6 +37,7 @@ Transform your pet photos into superhero versions using AI-powered image editing
 - **Payment Processing:** Stripe (test mode)
 - **AI Model:** Google Nano Banana via fal.ai
 - **Repository:** GitHub (alicankorkmaz-sudo/superpets)
+- **Backend Platform:** Railway (migrated from Render on October 13, 2025)
 
 ---
 
@@ -72,7 +73,7 @@ Transform your pet photos into superhero versions using AI-powered image editing
 - Replaced Firebase Auth → Supabase Auth (JWT verification)
 - Implemented Exposed ORM with HikariCP connection pooling
 - Created database schema: `users`, `credit_transactions`, `edit_history`
-- Configured Transaction Pooler for Render IPv4 compatibility
+- Configured Transaction Pooler for cloud platform IPv4 compatibility
 
 **Frontend Changes:**
 - Migrated from Firebase Auth SDK → Supabase Auth SDK
@@ -80,13 +81,13 @@ Transform your pet photos into superhero versions using AI-powered image editing
 - Removed deprecated `firebase.ts` file
 - Configured production environment variables
 
-**Reason for Migration:** Firebase Firestore gRPC client had IPv6-only compatibility, causing deployment failures on cloud platforms like Fly.io and Render. Supabase PostgreSQL with Transaction Pooler resolved this issue.
+**Reason for Migration:** Firebase Firestore gRPC client had IPv6-only compatibility, causing deployment failures on cloud platforms like Fly.io. Supabase PostgreSQL with Transaction Pooler resolved this issue.
 
 ---
 
 ## Environment Configuration
 
-### Backend (Render)
+### Backend (Railway)
 ```bash
 SUPABASE_DB_URL=postgresql://postgres.zrivjktyzllaevduydai:***@aws-0-us-east-1.pooler.supabase.com:6543/postgres
 SUPABASE_URL=https://zrivjktyzllaevduydai.supabase.co
@@ -94,6 +95,8 @@ SUPABASE_JWT_SECRET=***
 FAL_API_KEY=***
 STRIPE_SECRET_KEY=sk_test_***
 STRIPE_WEBHOOK_SECRET=whsec_***
+SENTRY_DSN=***
+SENTRY_ENVIRONMENT=production
 ```
 
 ### Frontend (Firebase Hosting)
@@ -108,7 +111,7 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 
 **Production (`.env.production`):**
 ```bash
-VITE_API_BASE_URL=https://superpets-backend-pipp.onrender.com
+VITE_API_BASE_URL=https://api.superpets.fun
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 ```
 
@@ -116,18 +119,18 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 
 ## Deployment Process
 
-### Backend Deployment (Render)
-1. Push code to GitHub `main` branch
-2. Render automatically detects changes
+### Backend Deployment (Railway)
+1. Push code to GitHub `main` branch or use `railway up` command
+2. Railway automatically detects changes (if GitHub linked)
 3. Builds Docker image using multi-stage build (Gradle + OpenJDK 17)
-4. Deploys to https://superpets-backend-pipp.onrender.com
-5. Environment variables loaded from Render dashboard
+4. Deploys to https://api.superpets.fun
+5. Environment variables loaded from Railway dashboard
 
 **Dockerfile highlights:**
 - Multi-stage build for smaller image size
 - Gradle Shadow JAR with all dependencies
 - OpenJDK 17 runtime
-- Port 8080 (configurable via `PORT` env var)
+- Port 8080 (configurable via `PORT` env var for Railway)
 
 ### Frontend Deployment (Firebase Hosting)
 
@@ -293,9 +296,9 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 
 ## Known Limitations
 
-1. **Render Free Tier:** Backend may spin down after 15 minutes of inactivity
-   - First request after idle may take 30-60 seconds (cold start)
-   - Solution: Upgrade to paid tier or implement health check pings
+1. **Railway Free Tier:** Backend may have usage limits on free tier
+   - Monitor usage and costs in Railway dashboard
+   - Solution: Upgrade to paid tier if needed
 
 2. **Stripe Test Mode:** Payment processing currently in test mode
    - No real charges processed
@@ -329,9 +332,9 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 
 ### Short Term (Next 2 Weeks)
 4. **Monitoring & Analytics**
-   - Add Sentry for error tracking
+   - ✅ Sentry integrated for error tracking (frontend and backend)
    - Add Google Analytics for user metrics
-   - Monitor Render backend performance
+   - Monitor Railway backend performance and costs
 
 5. **Code Cleanup**
    - Remove old Firebase services
@@ -347,12 +350,12 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 
 ### Production
 - **Live App:** https://superpets.fun
-- **Backend API:** https://superpets-backend-pipp.onrender.com
+- **Backend API:** https://api.superpets.fun
 
 ### Development
 - **GitHub:** https://github.com/alicankorkmaz-sudo/superpets
 - **Supabase:** https://supabase.com/dashboard/project/zrivjktyzllaevduydai
-- **Render:** https://dashboard.render.com
+- **Railway:** https://railway.com/project/b7df09da-2741-413c-8474-4baab3059775
 - **Firebase:** https://console.firebase.google.com/project/superpets-ee0ab
 
 ### Documentation
@@ -368,12 +371,12 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 
 ### Backend Issues
 **Problem:** Backend returns 500 errors
-**Check:** Render logs for database connection errors
+**Check:** Railway logs for database connection errors
 **Solution:** Verify `SUPABASE_DB_URL` uses Transaction Pooler (port 6543)
 
-**Problem:** Cold start takes too long
-**Check:** Render free tier limitations
-**Solution:** Upgrade to paid tier or implement health check pings
+**Problem:** High usage or costs
+**Check:** Railway dashboard for usage metrics
+**Solution:** Optimize queries or upgrade to paid tier if needed
 
 ### Frontend Issues
 **Problem:** API calls fail with CORS errors
@@ -392,4 +395,5 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_***
 ---
 
 **Generated:** October 5, 2025
+**Updated:** October 13, 2025 (migrated backend to Railway)
 **Status:** ✅ Production deployment complete and operational

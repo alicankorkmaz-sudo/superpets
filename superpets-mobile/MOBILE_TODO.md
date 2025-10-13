@@ -61,7 +61,7 @@
 ## Phase 1: Core Infrastructure (Foundation) ✅ COMPLETE
 
 - [x] **Set up API client with Ktor for backend communication**
-  - ✅ Configure HTTP client to communicate with `https://superpets-backend-pipp.onrender.com`
+  - ✅ Configure HTTP client to communicate with `https://api.superpets.fun`
   - ✅ Add authentication interceptor for Bearer tokens
   - ✅ Implement request/response serialization
 
@@ -207,7 +207,7 @@
 
 ## Technical Requirements
 
-- **Backend URL:** `https://superpets-backend-pipp.onrender.com`
+- **Backend URL:** `https://api.superpets.fun`
 - **Authentication:** Bearer token (Supabase JWT)
 - **Image Upload:** Max 10MB, types: jpeg/png/webp/gif
 - **Compression:** 2048x2048px, JPEG 80-90%

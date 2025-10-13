@@ -2,7 +2,7 @@
 
 ## Environment Variables
 
-Add these environment variables to your Render service:
+Add these environment variables to your Railway service:
 
 ### Required:
 
@@ -13,13 +13,13 @@ SENTRY_DSN=https://fecdb6efce57b3b12addc0b24bbbd569@o4510156131008512.ingest.de.
 ### Optional (for local development):
 
 ```bash
-SENTRY_ENVIRONMENT=development  # Use "production" on Render
+SENTRY_ENVIRONMENT=development  # Use "production" on Railway
 SENTRY_AUTH_TOKEN=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
 ```
 
-## Render Setup
+## Railway Setup
 
-1. Go to your Render dashboard: https://dashboard.render.com/web/srv-d3gqch9r0fns73brgue0
+1. Go to your Railway dashboard: https://railway.com/project/b7df09da-2741-413c-8474-4baab3059775
 2. Click on **Environment** tab
 3. Add new environment variable:
    - **Key:** `SENTRY_DSN`
@@ -31,7 +31,7 @@ SENTRY_AUTH_TOKEN=sntrys_eyJpYXQiOjE3NTk5NjEyMjQuNjk5NzM4LCJ1cmwiOiJodHRwczovL3N
    - **Key:** `SENTRY_AUTH_TOKEN`
    - **Value:** `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`
 6. Click **Save Changes**
-7. Render will automatically redeploy with Sentry enabled
+7. Railway will automatically redeploy with Sentry enabled
 
 ## Local Development
 
@@ -78,7 +78,7 @@ After deployment, test Sentry by triggering an error:
 
 ```bash
 # This should create a Sentry event
-curl -X GET https://superpets-backend-pipp.onrender.com/admin/stats
+curl -X GET https://api.superpets.fun/admin/stats
 # Returns 401 - logged as warning in Sentry
 ```
 

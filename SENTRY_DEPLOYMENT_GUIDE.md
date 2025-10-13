@@ -21,10 +21,10 @@
 
 ## 🔧 What You Need to Do
 
-### Step 1: Configure Backend on Render (REQUIRED)
+### Step 1: Configure Backend on Railway (REQUIRED)
 
-1. **Go to Render Dashboard:**
-   - https://dashboard.render.com/web/srv-d3gqch9r0fns73brgue0
+1. **Go to Railway Dashboard:**
+   - https://railway.com/project/b7df09da-2741-413c-8474-4baab3059775
 
 2. **Click on "Environment" tab**
 
@@ -42,7 +42,7 @@
 
 6. **Click "Save Changes"**
 
-7. **Render will automatically redeploy** (~2-5 minutes)
+7. **Railway will automatically redeploy** (~2-5 minutes)
 
 ### Step 2: Verify Deployment
 
@@ -51,7 +51,7 @@ The frontend is already deploying via GitHub Actions. Check the workflow:
 - https://github.com/alicankorkmaz-sudo/superpets/actions
 
 #### Backend
-After configuring Render environment variables, it will auto-deploy from GitHub.
+After configuring Railway environment variables, it will auto-deploy from GitHub.
 
 ## 🧪 Testing Sentry
 
@@ -60,7 +60,7 @@ After configuring Render environment variables, it will auto-deploy from GitHub.
 1. **Trigger a test error:**
 ```bash
 # This should create a 401 error in Sentry
-curl -X GET https://superpets-backend-pipp.onrender.com/admin/stats
+curl -X GET https://api.superpets.fun/admin/stats
 ```
 
 2. **Check Sentry Dashboard:**
@@ -139,15 +139,15 @@ throw new Error("Testing Sentry frontend tracking");
 
 ## 🚀 Next Steps
 
-1. **Add Render environment variable** (SENTRY_DSN)
-2. **Wait for Render to redeploy** (~5 minutes)
+1. **Add Railway environment variable** (SENTRY_DSN)
+2. **Wait for Railway to redeploy** (~5 minutes)
 3. **Test error tracking** (curl command above)
 4. **Verify in Sentry dashboard**
 5. **Set up email alerts** (optional)
 
 ## 📝 Summary
 
-After you add the `SENTRY_DSN` to Render:
+After you add the `SENTRY_DSN` to Railway:
 
 - ✅ Backend errors → Sentry (backend project)
 - ✅ Frontend errors → Sentry (web project)
@@ -157,4 +157,4 @@ After you add the `SENTRY_DSN` to Render:
 
 **Total setup time:** ~5 minutes
 
-**You're almost done!** Just add the environment variable to Render and you'll have full error tracking and monitoring! 🎉
+**You're almost done!** Just add the environment variable to Railway and you'll have full error tracking and monitoring! 🎉

@@ -66,8 +66,10 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
 
             // Supabase
-            implementation(libs.supabase.client)
-            implementation(libs.supabase.gotrue)
+            implementation(platform("io.github.jan-tennert.supabase:bom:3.2.4"))
+            implementation(libs.supabase.auth)
+            implementation(libs.supabase.compose.auth)
+            implementation(libs.supabase.compose.auth.ui)
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
@@ -84,12 +86,12 @@ kotlin {
 
 android {
     namespace = "com.superpets.mobile"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.superpets.mobile"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = 26
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
     }

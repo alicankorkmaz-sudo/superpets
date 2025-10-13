@@ -4,6 +4,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.superpets.mobile.data.AppDatabase
 import com.superpets.mobile.data.DB_FILE_NAME
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.darwin.Darwin
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import platform.Foundation.NSDocumentDirectory
@@ -18,6 +20,11 @@ internal actual val platformModule: Module = module {
         Room.databaseBuilder<AppDatabase>(
             name = dbFilePath,
         )
+    }
+
+    // Platform-specific Ktor engine for iOS (Darwin)
+    single<HttpClientEngine> {
+        Darwin.create()
     }
 }
 

@@ -51,8 +51,8 @@ val dataModule = module {
  * Authentication and API services
  */
 val superpetsModule = module {
-    // Authentication
-    single<AuthManager> { AuthManager() }
+    // Authentication (inject platform-specific Ktor engine)
+    single<AuthManager> { AuthManager(httpClientEngine = get()) }
     single<AuthTokenProvider> { get<AuthManager>() }
 
     // HTTP Client configured with auth

@@ -13,18 +13,18 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 
 ## Current Deployment Status
 
-**Backend:** Deployed to Render ✅
+**Backend:** Deployed to Railway ✅
 - Production URL: https://api.superpets.fun (custom subdomain)
-- Backend URL: https://superpets-backend-pipp.onrender.com (Render)
+- Railway Project: https://railway.com/project/b7df09da-2741-413c-8474-4baab3059775
 - Database: Supabase PostgreSQL (migrated from Firebase Firestore)
 - Authentication: Supabase Auth (migrated from Firebase Auth)
-- Deployment: Automatic from `main` branch on GitHub
+- Deployment: Manual via Railway CLI (`railway up`) or automatic from GitHub
 - Status: Live and operational
 
 **Frontend:** Deployed to Firebase Hosting ✅
 - Production URL: https://superpets.fun (custom domain)
 - Firebase Hosting URL: https://superpets-ee0ab.web.app
-- Connected to Render backend via environment variables
+- Connected to Railway backend via environment variables
 - Deployment: Automatic via GitHub Actions (on push to `main`)
 - CI/CD: `.github/workflows/firebase-deploy.yml`
 - Status: Live and operational
@@ -125,7 +125,7 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
   - `STRIPE_WEBHOOK_SECRET`: Stripe webhook secret
 
 **Important Supabase Notes:**
-- Use **Transaction Pooler** connection string (port 6543) for cloud deployments (Render, Cloud Run, etc.)
+- Use **Transaction Pooler** connection string (port 6543) for cloud deployments (Railway, Render, Cloud Run, etc.)
 - Direct connection (port 5432) is **not IPv4 compatible** - will fail on most cloud platforms
 - Transaction pooler format: `postgresql://postgres.<project-ref>:<password>@aws-0-us-east-1.pooler.supabase.com:6543/postgres`
 - See `SUPABASE_MIGRATION.md` for complete migration details
@@ -315,7 +315,7 @@ npm run lint
 
 **Environment Variables:**
 - `.env` - Development configuration (localhost backend)
-- `.env.production` - Production configuration (Render backend)
+- `.env.production` - Production configuration (Railway backend)
 - Vite automatically loads correct env file based on mode
 
 **CI/CD:**
@@ -462,7 +462,7 @@ See `supabase_migration.sql` for complete schema. Key tables:
 
 See `PROJECT_STATE.md` for current progress and next steps.
 
-**Completed (Oct 5-11, 2025):**
+**Completed (Oct 5-13, 2025):**
 - ✅ Deployed backend to Render with Supabase pooler connection
 - ✅ Migrated frontend to Supabase Auth
 - ✅ Deployed frontend to Firebase Hosting
@@ -475,13 +475,13 @@ See `PROJECT_STATE.md` for current progress and next steps.
 - ✅ Removed orphaned Firebase service files from backend
 - ✅ Set up Compose Multiplatform mobile project (Android & iOS)
 - ✅ **Integrated Sentry error tracking** (frontend and backend)
+- ✅ **Migrated backend from Render to Railway** (October 13, 2025)
 
 **Remaining priorities:**
 1. **Build mobile app UI and features** (authentication, image editing, hero selection)
 2. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
-3. **Configure custom domain SSL/HTTPS** (if not auto-configured by Firebase)
-4. **Monitor and optimize Render backend performance** (free tier may spin down)
-5. **Test and refine user onboarding flow**
+3. **Test and refine user onboarding flow**
+4. **Monitor Railway backend performance and costs**
 
 See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.
 
@@ -492,5 +492,5 @@ See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.
 - Supabase credentials stored as environment variables for deployment
 - Hero prompt system is server-side only (clients cannot send custom prompts)
 - **Migrated from Firebase to Supabase** (October 5, 2025)
-- Deployed to Render (backend)
+- **Deployed to Railway** (backend, October 13, 2025)
 - memorize

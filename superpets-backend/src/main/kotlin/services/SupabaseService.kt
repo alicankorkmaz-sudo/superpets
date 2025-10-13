@@ -60,7 +60,31 @@ class SupabaseService(private val application: Application) {
     }
 
     suspend fun getUserOrCreate(userId: String, email: String, initialCredits: Long = 5): User {
-        return getUser(userId) ?: createUser(userId, email, initialCredits)
+        // Use atomic operation to handle race conditions
+        val wasInserted = try {
+            transaction {
+                // insertIgnore returns the number of inserted rows (0 if already exists)
+                UsersTable.insertIgnore {
+                    it[uid] = userId
+                    it[UsersTable.email] = email
+                    it[credits] = initialCredits
+                    it[createdAt] = System.currentTimeMillis()
+                    it[UsersTable.isAdmin] = false
+                }.insertedCount > 0
+            }
+        } catch (e: Exception) {
+            application.log.warn("Error during user creation attempt for $userId", e)
+            false
+        }
+
+        if (wasInserted) {
+            application.log.info("Created user: $userId with $initialCredits credits")
+        } else {
+            application.log.debug("User $userId already exists, fetching existing record")
+        }
+
+        // Fetch and return the user (whether newly created or existing)
+        return getUser(userId) ?: throw IllegalStateException("User $userId should exist but not found")
     }
 
     suspend fun getUserCredits(userId: String): Long? {

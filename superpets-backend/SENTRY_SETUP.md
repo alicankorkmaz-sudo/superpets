@@ -19,20 +19,19 @@ SENTRY_AUTH_TOKEN=sntrys_eyJpYXQiOjE3NTk5NjEyMjQuNjk5NzM4LCJ1cmwiOiJodHRwczovL3N
 
 ## Render Setup
 
-1. Go to your Render dashboard: https://dashboard.render.com
-2. Select your `superpets-backend` service
-3. Click on **Environment** tab
-4. Add new environment variable:
+1. Go to your Render dashboard: https://dashboard.render.com/web/srv-d3gqch9r0fns73brgue0
+2. Click on **Environment** tab
+3. Add new environment variable:
    - **Key:** `SENTRY_DSN`
    - **Value:** `https://fecdb6efce57b3b12addc0b24bbbd569@o4510156131008512.ingest.de.sentry.io/4510156138348624`
-5. (Optional) Add:
+4. (Optional) Add:
    - **Key:** `SENTRY_ENVIRONMENT`
    - **Value:** `production`
-6. (Optional) Add for build-time source uploads:
+5. (Optional) Add for build-time source uploads:
    - **Key:** `SENTRY_AUTH_TOKEN`
    - **Value:** `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`
-7. Click **Save Changes**
-8. Render will automatically redeploy with Sentry enabled
+6. Click **Save Changes**
+7. Render will automatically redeploy with Sentry enabled
 
 ## Local Development
 

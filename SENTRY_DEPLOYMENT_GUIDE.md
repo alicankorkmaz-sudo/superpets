@@ -24,7 +24,8 @@
 ### Step 1: Configure Backend on Render (REQUIRED)
 
 1. **Go to Render Dashboard:**
-   - https://dashboard.render.com/web/srv-ctdhqcdsvqrc73et16q0
+   - Go to https://dashboard.render.com
+   - Select your `superpets-backend` service
 
 2. **Click on "Environment" tab**
 

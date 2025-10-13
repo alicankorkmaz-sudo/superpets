@@ -15,25 +15,42 @@ object DatabaseFactory {
 
         application.log.info("Connecting to Supabase database...")
 
-        val database = Database.connect(createHikariDataSource(databaseUrl))
+        try {
+            val dataSource = createHikariDataSource(databaseUrl, application)
+            application.log.info("HikariCP DataSource created successfully")
 
-        // Create tables if they don't exist (optional - tables should already exist from migration SQL)
-        transaction(database) {
-            SchemaUtils.create(UsersTable, CreditTransactionsTable, EditHistoryTable)
+            val database = Database.connect(dataSource)
+            application.log.info("Exposed Database instance created")
+
+            // Create tables if they don't exist (optional - tables should already exist from migration SQL)
+            application.log.info("Running schema creation/validation...")
+            transaction(database) {
+                SchemaUtils.create(UsersTable, CreditTransactionsTable, EditHistoryTable)
+            }
+            application.log.info("Schema validation completed")
+
+            application.log.info("Successfully connected to Supabase database")
+        } catch (e: Exception) {
+            application.log.error("Failed to initialize database connection", e)
+            throw e
         }
-
-        application.log.info("Successfully connected to Supabase database")
     }
 
-    private fun createHikariDataSource(url: String): HikariDataSource {
+    private fun createHikariDataSource(url: String, application: Application): HikariDataSource {
         // Parse postgresql://user:password@host:port/database format
         val regex = Regex("postgresql://([^:]+):([^@]+)@([^:]+):(\\d+)/(.+)")
         val matchResult = regex.matchEntire(url)
             ?: throw IllegalArgumentException("Invalid database URL format: $url")
 
         val (username, password, host, port, database) = matchResult.destructured
-        // Add SSL and connection parameters for Supabase
-        val jdbcUrl = "jdbc:postgresql://$host:$port/$database?sslmode=require"
+
+        // Add SSL and connection parameters for Supabase Transaction Pooler
+        // prepareThreshold=0 disables prepared statements (required for PgBouncer/transaction pooler)
+        // See: https://github.com/pgbouncer/pgbouncer/issues/374
+        val jdbcUrl = "jdbc:postgresql://$host:$port/$database?sslmode=require&prepareThreshold=0&connectTimeout=60"
+
+        application.log.info("Database connection details: host=$host, port=$port, database=$database, username=$username")
+        application.log.info("JDBC URL: $jdbcUrl")
 
         val config = HikariConfig().apply {
             this.jdbcUrl = jdbcUrl
@@ -43,11 +60,18 @@ object DatabaseFactory {
             maximumPoolSize = 10
             minimumIdle = 2
             idleTimeout = 600000
-            connectionTimeout = 30000
+            connectionTimeout = 60000 // Increased to 60 seconds
             maxLifetime = 1800000
-            isAutoCommit = false
-            transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+
+            // IMPORTANT: Transaction poolers (PgBouncer) require autocommit and don't support isolation level changes
+            isAutoCommit = true
+            // Do NOT set transactionIsolation - not supported by transaction poolers
+
+            // Add validation query for connection testing
+            connectionTestQuery = "SELECT 1"
         }
+
+        application.log.info("Creating HikariCP connection pool...")
         return HikariDataSource(config)
     }
 }

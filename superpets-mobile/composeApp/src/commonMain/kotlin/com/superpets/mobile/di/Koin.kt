@@ -8,6 +8,7 @@ import com.superpets.mobile.data.auth.AuthManager
 import com.superpets.mobile.data.auth.AuthTokenProvider
 import com.superpets.mobile.data.network.HttpClientFactory
 import com.superpets.mobile.data.network.SuperpetsApiService
+import com.superpets.mobile.data.repository.SuperpetsRepository
 import com.superpets.mobile.core.dispatchers.DefaultDispatcherProvider
 import com.superpets.mobile.core.dispatchers.DispatcherProvider
 import com.superpets.mobile.screens.splash.SplashViewModel
@@ -68,6 +69,11 @@ val superpetsModule = module {
         SuperpetsApiService(
             httpClient = get(qualifier = org.koin.core.qualifier.named("superpets"))
         )
+    }
+
+    // Repository Layer
+    single<SuperpetsRepository> {
+        SuperpetsRepository(apiService = get())
     }
 }
 

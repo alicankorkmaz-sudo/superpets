@@ -21,7 +21,7 @@ object HttpClientFactory {
     /**
      * Backend API base URL
      */
-    const val BASE_URL = "https://superpets-backend-pipp.onrender.com"
+    const val BASE_URL = "https://api.superpets.fun"
 
     /**
      * Create a configured HttpClient for Superpets API

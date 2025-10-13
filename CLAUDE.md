@@ -14,7 +14,8 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 ## Current Deployment Status
 
 **Backend:** Deployed to Render ✅
-- Production URL: https://superpets-backend-pipp.onrender.com
+- Production URL: https://api.superpets.fun (custom subdomain)
+- Backend URL: https://superpets-backend-pipp.onrender.com (Render)
 - Database: Supabase PostgreSQL (migrated from Firebase Firestore)
 - Authentication: Supabase Auth (migrated from Firebase Auth)
 - Deployment: Automatic from `main` branch on GitHub
@@ -166,7 +167,7 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 
 **API Configuration:**
 - Development: `http://localhost:8080`
-- Production: `https://superpets-backend-pipp.onrender.com` (configured in `.env.production`)
+- Production: `https://api.superpets.fun` (custom subdomain, configured in `.env.production`)
 - Base URL managed via `VITE_API_BASE_URL` environment variable
 - Authentication: Bearer tokens from Supabase Auth
 - Image generation limit: 1-10 images per request
@@ -226,7 +227,7 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - **Error handling**: Show user-friendly messages for oversized or invalid files
 
 **API Integration:**
-- Same REST API as web app: `https://superpets-backend-pipp.onrender.com`
+- Same REST API as web app: `https://api.superpets.fun`
 - Supabase Auth for authentication (Supabase Kotlin client)
 - Same credit system and rate limiting applies
 - Ktor Client configured with kotlinx.serialization for JSON parsing
@@ -359,7 +360,7 @@ cd superpets-mobile
 **Environment Variables:**
 - Configure API URL in shared code (point to production or local backend)
 - Supabase credentials for authentication
-- Same backend URL as web app: `https://superpets-backend-pipp.onrender.com`
+- Same backend URL as web app: `https://api.superpets.fun`
 
 ## Important Implementation Details
 

@@ -60,7 +60,7 @@ class HttpClientFactoryTest {
     @Test
     fun testBaseUrlConfiguration() {
         assertEquals(
-            "https://superpets-backend-pipp.onrender.com",
+            "https://api.superpets.fun",
             HttpClientFactory.BASE_URL
         )
     }

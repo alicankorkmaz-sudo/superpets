@@ -4,7 +4,7 @@ import ComposeApp
 @main
 struct iOSApp: App {
     init() {
-        AppInitializerKt.initialize()
+        IOSAppInitializerKt.initializeApp()
     }
 
     var body: some Scene {

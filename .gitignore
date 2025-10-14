@@ -28,3 +28,4 @@ secrets/
 # Temporary/Build (each subproject has its own .gitignore for specifics)
 *.log
 *.tmp
+/RAILWAY_MONOREPO_SETUP.md

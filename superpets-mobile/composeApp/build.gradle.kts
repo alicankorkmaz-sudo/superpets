@@ -66,10 +66,8 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
 
             // Supabase
-            implementation(platform("io.github.jan-tennert.supabase:bom:3.2.4"))
+            implementation(platform("io.github.jan-tennert.supabase:bom:3.0.2"))
             implementation(libs.supabase.auth)
-            implementation(libs.supabase.compose.auth)
-            implementation(libs.supabase.compose.auth.ui)
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)

@@ -34,6 +34,7 @@ As of October 14, 2025, the Superpets mobile app requires email confirmation for
 1. **Supabase Client Configuration**
    - Added `scheme = "superpets"` and `host = "auth"` to Auth plugin
    - This tells Supabase to generate deep links with `superpets://auth` scheme
+   - Exposed `supabaseClient` as `internal` for platform-specific deep link handling
 
 2. **SignUpResult Sealed Class**
    ```kotlin
@@ -49,13 +50,12 @@ As of October 14, 2025, the Superpets mobile app requires email confirmation for
    - Detects if email confirmation is required by checking if session exists
    - Updates auth state accordingly
 
-4. **New handleDeepLink() Method**
+4. **New onDeepLinkSuccess() Method**
    ```kotlin
-   suspend fun handleDeepLink(url: String): Result<Unit>
+   fun onDeepLinkSuccess()
    ```
-   - Parses deep link URL and extracts authentication tokens
-   - Calls `supabaseClient.auth.handleDeeplinks(url)`
-   - Updates auth state to authenticated if successful
+   - Callback method to update auth state after deep link is handled
+   - Called from platform-specific code after Supabase's `handleDeeplinks` succeeds
 
 ### AuthViewModel Changes
 
@@ -118,9 +118,24 @@ As of October 14, 2025, the Superpets mobile app requires email confirmation for
 **File:** `composeApp/src/androidMain/kotlin/com/superpets/mobile/MainActivity.kt`
 
 - Handles deep links in `onCreate()` and `onNewIntent()`
-- Extracts URL from intent data
-- Passes to AuthManager via `LaunchedEffect`
+- Uses Supabase's built-in `handleDeeplinks(intent)` method
+- Passes the Intent directly (not extracted URL string)
+- `handleDeeplinks` handles both implicit and PKCE flow automatically
+- Calls `authManager.onDeepLinkSuccess()` in the `onSessionSuccess` callback
 - Uses Koin to inject AuthManager
+
+```kotlin
+private fun handleDeepLink(intent: Intent?) {
+    intent?.data?.let { data ->
+        if (data.scheme == "superpets" && data.host == "auth") {
+            authManager.supabaseClient.handleDeeplinks(intent) { session ->
+                Napier.d("Session imported: ${session.user?.email}")
+                authManager.onDeepLinkSuccess()
+            }
+        }
+    }
+}
+```
 
 ### iOS Deep Link Configuration
 
@@ -149,13 +164,27 @@ As of October 14, 2025, the Superpets mobile app requires email confirmation for
 
 - Uses `.onOpenURL {}` modifier to handle deep links
 - Checks for `superpets://auth` scheme and host
-- Calls `DIHelperKt.getAuthManager()` to access Kotlin AuthManager
-- Handles deep link via `authManager.handleDeepLink(url:)`
+- Uses Supabase's built-in `handleDeeplinks(url:)` method with NSURL
+- Calls `DIHelperKt.getSupabaseClient()` to access Supabase client
+- Calls `authManager.onDeepLinkSuccess()` in the `onSessionSuccess` callback
 
-**File:** `composeApp/src/iosMain/kotlin/com/superpets/mobile/DIHelper.kt` (NEW)
+```swift
+private func handleDeepLink(url: URL) {
+    let supabaseClient = DIHelperKt.getSupabaseClient()
+    let authManager = DIHelperKt.getAuthManager()
+
+    supabaseClient.handleDeeplinks(url: url as NSURL) { session in
+        print("Session imported: \(session.user?.email ?? "unknown")")
+        authManager.onDeepLinkSuccess()
+    }
+}
+```
+
+**File:** `composeApp/src/iosMain/kotlin/com/superpets/mobile/DIHelper.kt`
 
 - Kotlin object implementing `KoinComponent`
 - Exposes `getAuthManager()` function for Swift code
+- Exposes `getSupabaseClient()` function for iOS deep link handling
 - Bridges Swift and Kotlin for dependency injection
 
 ## Supabase Configuration

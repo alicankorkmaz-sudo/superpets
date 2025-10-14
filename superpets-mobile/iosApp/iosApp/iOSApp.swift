@@ -14,23 +14,23 @@ struct iOSApp: App {
                     // Handle deep link for email confirmation
                     if url.scheme == "superpets" && url.host == "auth" {
                         print("Deep link received: \(url.absoluteString)")
-                        // Pass the URL to the AuthManager via Kotlin/Native
-                        handleDeepLink(url: url.absoluteString)
+                        handleDeepLink(url: url)
                     }
                 }
         }
     }
 
-    private func handleDeepLink(url: String) {
-        // Get AuthManager from Koin and handle the deep link
-        // This will be handled on the Kotlin side through the AuthManager
-        Task {
-            do {
-                let authManager = DIHelperKt.getAuthManager()
-                try await authManager.handleDeepLink(url: url)
-            } catch {
-                print("Error handling deep link: \(error)")
-            }
+    private func handleDeepLink(url: URL) {
+        // Use Supabase's built-in handleDeeplinks method
+        // This handles both implicit and PKCE flow
+        let supabaseClient = DIHelperKt.getSupabaseClient()
+        let authManager = DIHelperKt.getAuthManager()
+
+        // Call handleDeeplinks with NSURL
+        // The onSessionSuccess callback is executed when session is imported
+        supabaseClient.handleDeeplinks(url: url as NSURL) { session in
+            print("Session imported successfully from deep link: \(session.user?.email ?? "unknown")")
+            authManager.onDeepLinkSuccess()
         }
     }
 }

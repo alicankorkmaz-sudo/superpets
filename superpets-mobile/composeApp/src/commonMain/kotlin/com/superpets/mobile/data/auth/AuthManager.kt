@@ -32,7 +32,7 @@ class AuthManager(
     private val httpClientEngine: HttpClientEngine? = null
 ) : AuthTokenProvider {
 
-    private val supabaseClient: SupabaseClient = createSupabaseClient(
+    internal val supabaseClient: SupabaseClient = createSupabaseClient(
         supabaseUrl = SupabaseConfig.SUPABASE_URL,
         supabaseKey = SupabaseConfig.SUPABASE_ANON_KEY
     ) {
@@ -194,114 +194,11 @@ class AuthManager(
     }
 
     /**
-     * Handle deep link from email confirmation
-     * @param url Deep link URL containing access_token and refresh_token in fragment
-     * Example: superpets://auth#access_token=...&refresh_token=...&type=signup
+     * Update authentication state after successful deep link handling
+     * This should be called from platform-specific code after handleDeeplinks succeeds
      */
-    suspend fun handleDeepLink(url: String): Result<Unit> {
-        return try {
-            Napier.d("Handling deep link: $url")
-
-            // Extract tokens from URL fragment (after #)
-            val fragment = url.substringAfter("#", "")
-            if (fragment.isEmpty()) {
-                Napier.e("No fragment found in deep link URL")
-                return Result.failure(Exception("Invalid deep link format"))
-            }
-
-            // Parse fragment parameters
-            val params = fragment.split("&").associate {
-                val (key, value) = it.split("=")
-                key to value
-            }
-
-            val accessToken = params["access_token"]
-            val refreshToken = params["refresh_token"]
-            val expiresIn = params["expires_in"]?.toLongOrNull() ?: 3600L
-            val type = params["type"]
-
-            Napier.d("Deep link type: $type, has access token: ${accessToken != null}, has refresh token: ${refreshToken != null}")
-
-            if (accessToken == null || refreshToken == null) {
-                Napier.e("Missing required tokens in deep link")
-                return Result.failure(Exception("Missing authentication tokens"))
-            }
-
-            // Calculate expiration instant
-            val expiresAt = Clock.System.now().plus(expiresIn.seconds)
-
-            // Manually create and save the session
-            // First, we need to fetch user info using the access token
-            try {
-                // Set the access token temporarily to fetch user info
-                val tempSession = UserSession(
-                    accessToken = accessToken,
-                    refreshToken = refreshToken,
-                    expiresIn = expiresIn,
-                    expiresAt = expiresAt,
-                    tokenType = "bearer",
-                    user = null // Will be populated when we fetch user
-                )
-
-                // Save the session - this will make the auth client use this token
-                supabaseClient.auth.sessionManager.saveSession(tempSession)
-                Napier.d("Session saved, waiting for auth client to load it...")
-
-                // Give the auth client time to reload the session from storage
-                // and fetch user info automatically
-                delay(1000)
-
-                // Force the auth client to reload the session by getting current user
-                // This will trigger the session loading mechanism
-                var session = supabaseClient.auth.currentSessionOrNull()
-
-                // If still no user info, try refreshing using the refresh token
-                if (session?.user == null && refreshToken.isNotEmpty()) {
-                    Napier.d("User info not loaded yet, attempting manual refresh with token...")
-                    try {
-                        // Use the refresh token to get a fresh session with user info
-                        supabaseClient.auth.refreshSession(refreshToken)
-                        Napier.d("Session refreshed successfully, waiting for it to load...")
-
-                        // Wait for the refreshed session to be fully loaded
-                        delay(1500)
-
-                        // Reload session from storage
-                        val loadedSession = supabaseClient.auth.sessionManager.loadSession()
-                        Napier.d("Loaded session from storage: user=${loadedSession?.user?.email}")
-
-                        // Get the updated session from auth client
-                        session = supabaseClient.auth.currentSessionOrNull()
-                        Napier.d("Current session after refresh: user=${session?.user?.email}")
-                    } catch (refreshError: Exception) {
-                        Napier.e("Error manually refreshing with token", refreshError)
-                    }
-                }
-
-                // Check final session state
-                if (session?.user != null) {
-                    val email = session.user?.email ?: ""
-                    _authState.value = AuthState.Authenticated(email)
-                    Napier.d("Deep link handled successfully - user authenticated: $email")
-                    Result.success(Unit)
-                } else {
-                    Napier.w("Session created but user info not available, will retry on next auth check")
-                    // The session is still valid even without immediate user details
-                    // Schedule a check after a delay
-                    MainScope().launch {
-                        delay(2000)
-                        checkAuthStatus()
-                    }
-                    Result.success(Unit)
-                }
-            } catch (sessionError: Exception) {
-                Napier.e("Error creating session from tokens", sessionError)
-                Result.failure(sessionError)
-            }
-        } catch (e: Exception) {
-            Napier.e("Failed to handle deep link", e)
-            Result.failure(e)
-        }
+    fun onDeepLinkSuccess() {
+        checkAuthStatus()
     }
 }
 

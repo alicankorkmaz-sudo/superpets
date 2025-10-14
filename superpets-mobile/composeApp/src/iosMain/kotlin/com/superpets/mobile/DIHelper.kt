@@ -1,6 +1,7 @@
 package com.superpets.mobile
 
 import com.superpets.mobile.data.auth.AuthManager
+import io.github.jan.supabase.SupabaseClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -17,5 +18,14 @@ object DIHelper : KoinComponent {
     fun getAuthManager(): AuthManager {
         val authManager: AuthManager by inject()
         return authManager
+    }
+
+    /**
+     * Get SupabaseClient for iOS deep link handling
+     * iOS code should call supabaseClient.handleDeeplinks(url) with the NSURL
+     */
+    fun getSupabaseClient(): SupabaseClient {
+        val authManager: AuthManager by inject()
+        return authManager.supabaseClient
     }
 }

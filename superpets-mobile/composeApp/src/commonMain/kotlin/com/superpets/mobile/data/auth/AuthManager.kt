@@ -89,6 +89,10 @@ class AuthManager(
     /**
      * Sign up with email and password
      * Returns SignUpResult indicating whether email confirmation is required
+     *
+     * Note: When email confirmation is enabled, Supabase may return success for duplicate
+     * emails without creating a session (to prevent email enumeration). We detect this by
+     * attempting to sign in if no session was created.
      */
     suspend fun signUp(email: String, password: String): Result<SignUpResult> {
         return try {
@@ -98,21 +102,64 @@ class AuthManager(
             }
 
             // Check if email confirmation is required
-            // If user exists but no session, email confirmation is enabled
+            // If user exists but no session, email confirmation is enabled OR duplicate signup
             val requiresConfirmation = response != null && supabaseClient.auth.currentSessionOrNull() == null
 
             if (requiresConfirmation) {
-                Napier.d("Sign up successful - email confirmation required")
-                _authState.value = AuthState.Unauthenticated
-                Result.success(SignUpResult.ConfirmationRequired(email))
+                // Try to sign in to check if this is a duplicate email (user_repeated_signup)
+                // If sign in succeeds or fails with "Email not confirmed", the account exists
+                try {
+                    supabaseClient.auth.signInWith(Email) {
+                        this.email = email
+                        this.password = password
+                    }
+
+                    // Sign in succeeded - account already exists and is confirmed
+                    Napier.d("Sign up detected duplicate - account exists and is confirmed")
+                    _authState.value = AuthState.Authenticated(email)
+                    Result.success(SignUpResult.Authenticated)
+                } catch (signInError: Exception) {
+                    val errorMsg = signInError.message ?: ""
+
+                    when {
+                        // Account exists but email not confirmed yet
+                        errorMsg.contains("Email not confirmed", ignoreCase = true) -> {
+                            Napier.d("Sign up detected duplicate - account exists but not confirmed")
+                            _authState.value = AuthState.Unauthenticated
+                            Result.success(SignUpResult.ConfirmationRequired(email))
+                        }
+                        // Wrong password - account definitely exists
+                        errorMsg.contains("Invalid login credentials", ignoreCase = true) -> {
+                            Napier.d("Sign up detected duplicate - wrong password for existing account")
+                            Result.failure(Exception("An account with this email already exists. Please sign in instead."))
+                        }
+                        // New signup - legitimate confirmation required
+                        else -> {
+                            Napier.d("Sign up successful - email confirmation required for new account")
+                            _authState.value = AuthState.Unauthenticated
+                            Result.success(SignUpResult.ConfirmationRequired(email))
+                        }
+                    }
+                }
             } else {
                 Napier.d("Sign up successful - auto authenticated")
                 _authState.value = AuthState.Authenticated(email)
                 Result.success(SignUpResult.Authenticated)
             }
         } catch (e: Exception) {
-            Napier.e("Sign up failed", e)
-            Result.failure(e)
+            Napier.e("Sign up failed: ${e.message}", e)
+
+            // Check for duplicate user error
+            val errorMessage = e.message ?: ""
+            when {
+                errorMessage.contains("User already registered", ignoreCase = true) ||
+                errorMessage.contains("already exists", ignoreCase = true) ||
+                errorMessage.contains("already registered", ignoreCase = true) ||
+                errorMessage.contains("duplicate", ignoreCase = true) -> {
+                    Result.failure(Exception("An account with this email already exists. Please sign in instead."))
+                }
+                else -> Result.failure(e)
+            }
         }
     }
 

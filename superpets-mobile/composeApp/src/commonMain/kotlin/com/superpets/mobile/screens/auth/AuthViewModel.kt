@@ -211,6 +211,18 @@ class AuthViewModel(
     }
 
     /**
+     * Clear confirmation pending state
+     * Call this when user wants to try a different email or navigates away
+     */
+    fun clearConfirmationPending() {
+        _signupUiState.value = _signupUiState.value.copy(
+            confirmationPending = false,
+            confirmationEmail = null,
+            error = null
+        )
+    }
+
+    /**
      * Validate email format
      */
     private fun isValidEmail(email: String): Boolean {
@@ -228,13 +240,15 @@ class AuthViewModel(
                 "Invalid email or password"
             message.contains("Email not confirmed", ignoreCase = true) ->
                 "Please verify your email address"
-            message.contains("User already registered", ignoreCase = true) ->
-                "An account with this email already exists"
+            message.contains("already exists", ignoreCase = true) ||
+            message.contains("User already registered", ignoreCase = true) ||
+            message.contains("already registered", ignoreCase = true) ->
+                "An account with this email already exists. Please sign in instead."
             message.contains("network", ignoreCase = true) ->
                 "Network error. Please check your connection."
             message.contains("timeout", ignoreCase = true) ->
                 "Request timed out. Please try again."
-            else -> "An error occurred. Please try again."
+            else -> message // Show the actual error message if it's specific
         }
     }
 }

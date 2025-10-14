@@ -16,8 +16,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -38,21 +40,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.superpets.mobile.data.auth.AuthState
 import com.superpets.mobile.ui.components.buttons.PrimaryButton
+import com.superpets.mobile.ui.components.buttons.GoogleSignInButton
+import com.superpets.mobile.ui.components.buttons.AppleSignInButton
 import com.superpets.mobile.ui.components.buttons.TextButton
 import com.superpets.mobile.ui.components.input.EmailTextField
 import com.superpets.mobile.ui.components.input.PasswordTextField
 import com.superpets.mobile.ui.theme.spacing
 
 /**
- * Login screen
+ * Login screen matching Stitch design
  *
- * Allows users to sign in with email and password.
+ * Allows users to sign in with email/password or social login.
  * Includes password reset functionality.
  */
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel,
     onNavigateToSignup: () -> Unit,
+    onNavigateBack: (() -> Unit)? = null,
     onLoginSuccess: () -> Unit
 ) {
     val authState by viewModel.authState.collectAsState()
@@ -90,149 +95,173 @@ fun LoginScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = spacing.screenPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(spacing.space8))
+            // Back button at top left
+            if (onNavigateBack != null) {
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(spacing.space2)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
 
-            // Logo/App Icon (placeholder)
-            Box(
+            // Main content centered
+            Column(
                 modifier = Modifier
-                    .size(120.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(horizontal = spacing.screenPadding)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
+                Spacer(modifier = Modifier.height(spacing.space8))
+
+                // Heading
                 Text(
-                    text = "SP",
-                    style = MaterialTheme.typography.displayLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
+                    text = "Join Superpets",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
                 )
-            }
 
-            Spacer(modifier = Modifier.height(spacing.space6))
+                Spacer(modifier = Modifier.height(spacing.space2))
 
-            // Welcome text
-            Text(
-                text = "Welcome Back!",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+                // Subheading
+                Text(
+                    text = "Sign up or log in to continue",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
 
-            Spacer(modifier = Modifier.height(spacing.space2))
+                Spacer(modifier = Modifier.height(spacing.space8))
 
-            Text(
-                text = "Sign in to continue transforming your pets into superheroes",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(spacing.space8))
-
-            // Email field
-            EmailTextField(
-                value = email,
-                onValueChange = { email = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = "Enter your email",
-                imeAction = ImeAction.Next,
-                enabled = !uiState.isLoading
-            )
-
-            Spacer(modifier = Modifier.height(spacing.space4))
-
-            // Password field
-            PasswordTextField(
-                value = password,
-                onValueChange = { password = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = "Enter your password",
-                imeAction = ImeAction.Done,
-                onImeAction = { viewModel.signIn(email, password) },
-                enabled = !uiState.isLoading
-            )
-
-            Spacer(modifier = Modifier.height(spacing.space2))
-
-            // Forgot password link
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                TextButton(
-                    text = "Forgot Password?",
-                    onClick = { showResetPasswordDialog = true },
+                // Email field
+                EmailTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = "Email",
+                    imeAction = ImeAction.Next,
                     enabled = !uiState.isLoading
                 )
-            }
 
-            Spacer(modifier = Modifier.height(spacing.space6))
+                Spacer(modifier = Modifier.height(spacing.space4))
 
-            // Sign in button
-            PrimaryButton(
-                text = "Sign In",
-                onClick = { viewModel.signIn(email, password) },
-                modifier = Modifier.fillMaxWidth(),
-                isLoading = uiState.isLoading,
-                enabled = !uiState.isLoading
-            )
-
-            Spacer(modifier = Modifier.height(spacing.space6))
-
-            // Sign up link
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Don't have an account?",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.width(spacing.space1))
-                TextButton(
-                    text = "Sign Up",
-                    onClick = onNavigateToSignup,
+                // Password field
+                PasswordTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = "Password",
+                    imeAction = ImeAction.Done,
+                    onImeAction = { viewModel.signIn(email, password) },
                     enabled = !uiState.isLoading
                 )
-            }
 
-            Spacer(modifier = Modifier.height(spacing.space8))
+                Spacer(modifier = Modifier.height(spacing.space2))
 
-            // Free credits badge
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Email,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(20.dp)
+                // Forgot password link
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(
+                        text = "Forgot password?",
+                        onClick = { showResetPasswordDialog = true },
+                        enabled = !uiState.isLoading
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(spacing.space4))
+
+                // Log in button
+                PrimaryButton(
+                    text = "Log In",
+                    onClick = { viewModel.signIn(email, password) },
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = uiState.isLoading,
+                    enabled = !uiState.isLoading
                 )
-                Spacer(modifier = Modifier.width(spacing.space2))
-                Text(
-                    text = "Get 5 free credits when you sign up!",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Medium
-                )
-            }
 
-            Spacer(modifier = Modifier.height(spacing.space8))
+                Spacer(modifier = Modifier.height(spacing.space6))
+
+                // OR divider
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(spacing.space4)
+                ) {
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "OR",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                }
+
+                Spacer(modifier = Modifier.height(spacing.space6))
+
+                // Google sign-in button
+                GoogleSignInButton(
+                    onClick = { /* TODO: Implement Google sign-in */ },
+                    enabled = !uiState.isLoading
+                )
+
+                Spacer(modifier = Modifier.height(spacing.space3))
+
+                // Apple sign-in button
+                AppleSignInButton(
+                    onClick = { /* TODO: Implement Apple sign-in */ },
+                    enabled = !uiState.isLoading
+                )
+
+                Spacer(modifier = Modifier.height(spacing.space6))
+
+                // Sign up link
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Don't have an account?",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(spacing.space1))
+                    TextButton(
+                        text = "Sign up",
+                        onClick = onNavigateToSignup,
+                        enabled = !uiState.isLoading
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(spacing.space8))
+            }
         }
     }
 

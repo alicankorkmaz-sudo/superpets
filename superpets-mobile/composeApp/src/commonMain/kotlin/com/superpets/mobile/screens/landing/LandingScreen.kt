@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,19 +26,28 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.superpets.mobile.data.auth.AuthState
 import com.superpets.mobile.screens.auth.AuthViewModel
 import com.superpets.mobile.ui.components.buttons.LargePrimaryButton
+import com.superpets.mobile.ui.components.buttons.SecondaryButton
+import com.superpets.mobile.ui.components.badges.FreeCreditsGradientBadge
 import com.superpets.mobile.ui.theme.spacing
+import com.superpets.mobile.ui.theme.Primary
 
 /**
- * Landing/Onboarding screen
+ * Landing/Onboarding screen matching Stitch design
  *
- * Shows app value proposition and features.
+ * Shows app value proposition with hero image showcase.
  * After user taps "Get Started", marks onboarding as complete and navigates based on auth status.
  */
 @Composable
@@ -57,199 +66,178 @@ fun LandingScreen(
         // The navigation will be handled by the SplashViewModel's logic
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = spacing.screenPadding)
-            .padding(vertical = spacing.space8),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+            .background(MaterialTheme.colorScheme.background)
+            .padding(spacing.screenPadding)
     ) {
+        // Top bar with logo and free credits badge
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Logo with mascot
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(spacing.space2)
+            ) {
+                // Mascot placeholder (TODO: Replace with actual mascot image)
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = Primary.copy(alpha = 0.2f),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "🦸",
+                        fontSize = 24.sp
+                    )
+                }
+                Text(
+                    text = "Superpets",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            // Free credits badge with gradient
+            FreeCreditsGradientBadge(credits = 5)
+        }
+
+        // Main content centered
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.height(spacing.space8))
 
-            // App logo/icon
+            // Hero image showcase (placeholder cards)
             Box(
                 modifier = Modifier
-                    .size(140.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth(0.9f)
+                    .aspectRatio(4f / 3f)
+                    .padding(vertical = spacing.space6)
             ) {
-                Text(
-                    text = "SP",
-                    style = MaterialTheme.typography.displayLarge,
-                    fontSize = MaterialTheme.typography.displayLarge.fontSize * 1.5,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(spacing.space8))
-
-            // App name
-            Text(
-                text = "Superpets",
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(modifier = Modifier.height(spacing.space3))
-
-            // Tagline
-            Text(
-                text = "Transform Your Pets Into Superheroes",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium
-            )
-
-            Spacer(modifier = Modifier.height(spacing.space8))
-
-            // Features list
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(spacing.space5)
-            ) {
-                FeatureItem(
-                    icon = Icons.Default.CheckCircle,
-                    title = "AI-Powered Magic",
-                    description = "Using Google's Nano Banana model via fal.ai for stunning transformations"
-                )
-
-                FeatureItem(
-                    icon = Icons.Default.Star,
-                    title = "29+ Unique Heroes",
-                    description = "Choose from classic superheroes or unique characters for your pet"
-                )
-
-                FeatureItem(
-                    icon = Icons.Default.CheckCircle,
-                    title = "Lightning Fast",
-                    description = "Get your superhero pet images in seconds, not minutes"
-                )
-            }
-
-            Spacer(modifier = Modifier.height(spacing.space8))
-
-            // Free credits callout
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                    .padding(spacing.space4),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                // Left card (rotated)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .fillMaxHeight()
+                        .rotate(-8f)
+                        .background(
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .align(Alignment.CenterStart)
+                        .padding(start = spacing.space4),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.size(spacing.space2))
+                    // TODO: Replace with actual before image
                     Text(
-                        text = "Start with 5 Free Credits!",
+                        text = "Before",
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontWeight = FontWeight.Bold
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                // Right card (rotated, elevated)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .fillMaxHeight()
+                        .rotate(8f)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .align(Alignment.CenterEnd)
+                        .padding(end = spacing.space4),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // TODO: Replace with actual after image
+                    Text(
+                        text = "After",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White
                     )
                 }
             }
-        }
 
-        // Bottom section with CTA button
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Spacer(modifier = Modifier.height(spacing.space8))
-
-            LargePrimaryButton(
-                text = "Get Started",
-                onClick = {
-                    landingViewModel.completeOnboarding()
-                    onOnboardingComplete()
+            // Headline with colored "Superhero"
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Black
+                        )
+                    ) {
+                        append("Turn Your Pet into\na ")
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            color = Primary,
+                            fontWeight = FontWeight.Black
+                        )
+                    ) {
+                        append("Superhero")
+                    }
                 },
-                modifier = Modifier.fillMaxWidth()
+                style = MaterialTheme.typography.displayMedium,
+                textAlign = TextAlign.Center,
+                lineHeight = 40.sp
             )
 
             Spacer(modifier = Modifier.height(spacing.space4))
 
-            // Terms text
+            // Value proposition
             Text(
-                text = "By continuing, you agree to our Terms of Service and Privacy Policy",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
-}
-
-/**
- * Feature item component
- */
-@Composable
-private fun FeatureItem(
-    icon: ImageVector,
-    title: String,
-    description: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top
-    ) {
-        // Icon container
-        Box(
-            modifier = Modifier
-                .size(56.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.size(16.dp))
-
-        // Text content
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = title,
+                text = "AI-Powered • 29+ Heroes • Lightning Fast",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+
+            Spacer(modifier = Modifier.height(spacing.space8))
+
+            // CTA Buttons
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.space4),
+                verticalArrangement = Arrangement.spacedBy(spacing.space4)
+            ) {
+                LargePrimaryButton(
+                    text = "Get Started",
+                    onClick = {
+                        landingViewModel.completeOnboarding()
+                        onOnboardingComplete()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                SecondaryButton(
+                    text = "Sign In",
+                    onClick = {
+                        landingViewModel.completeOnboarding()
+                        onOnboardingComplete()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(spacing.space8))
         }
     }
 }

@@ -312,3 +312,93 @@ fun TextButton(
         )
     }
 }
+
+/**
+ * Google sign-in button matching Stitch design.
+ * White background with Google logo and text.
+ */
+@Composable
+fun GoogleSignInButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    val spacing = MaterialTheme.spacing
+
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        enabled = enabled,
+        shape = CustomShapes.large,
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        border = androidx.compose.foundation.BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+        ),
+        contentPadding = PaddingValues(
+            horizontal = spacing.buttonPaddingHorizontal,
+            vertical = spacing.buttonPaddingVertical
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Google icon placeholder (you'll need to add the actual Google logo asset)
+            Text(text = "G", fontSize = 20.sp, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(spacing.space2))
+            Text(
+                text = "Continue with Google",
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
+    }
+}
+
+/**
+ * Apple sign-in button matching Stitch design.
+ * Black background with Apple logo and white text.
+ */
+@Composable
+fun AppleSignInButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    val spacing = MaterialTheme.spacing
+
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        enabled = enabled,
+        shape = CustomShapes.large,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Black,
+            contentColor = Color.White
+        ),
+        contentPadding = PaddingValues(
+            horizontal = spacing.buttonPaddingHorizontal,
+            vertical = spacing.buttonPaddingVertical
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Apple icon placeholder (you'll need to add the actual Apple logo asset)
+            Text(text = "", fontSize = 20.sp, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.width(spacing.space2))
+            Text(
+                text = "Continue with Apple",
+                style = MaterialTheme.typography.labelLarge
+            )
+        }
+    }
+}

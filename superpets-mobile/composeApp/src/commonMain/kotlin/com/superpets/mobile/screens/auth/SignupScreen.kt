@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -82,15 +83,22 @@ fun SignupScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = spacing.screenPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        // Show confirmation pending screen if email confirmation is required
+        if (uiState.confirmationPending) {
+            EmailConfirmationPendingScreen(
+                email = uiState.confirmationEmail ?: "",
+                onBackToLogin = onNavigateToLogin
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = spacing.screenPadding)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
             Spacer(modifier = Modifier.height(spacing.space8))
 
             // Logo/App Icon (placeholder)
@@ -256,7 +264,128 @@ fun SignupScreen(
             }
 
             Spacer(modifier = Modifier.height(spacing.space8))
+            }
         }
+    }
+}
+
+/**
+ * Email confirmation pending screen
+ */
+@Composable
+private fun EmailConfirmationPendingScreen(
+    email: String,
+    onBackToLogin: () -> Unit
+) {
+    val spacing = MaterialTheme.spacing
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = spacing.screenPadding)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Spacer(modifier = Modifier.height(spacing.space8))
+
+        // Email icon
+        Box(
+            modifier = Modifier
+                .size(120.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Email,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(64.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(spacing.space6))
+
+        // Title
+        Text(
+            text = "Check Your Email",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(spacing.space4))
+
+        // Email address
+        Text(
+            text = "We've sent a confirmation link to",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(spacing.space2))
+
+        Text(
+            text = email,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(spacing.space6))
+
+        // Instructions
+        Text(
+            text = "Please click the link in the email to verify your account and complete the signup process.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(spacing.space6))
+
+        // Important notice
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = MaterialTheme.shapes.medium
+                )
+                .padding(spacing.space4)
+        ) {
+            Column {
+                Text(
+                    text = "Important",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Spacer(modifier = Modifier.height(spacing.space2))
+                Text(
+                    text = "The confirmation link will open this app automatically. Make sure to click it on this device.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(spacing.space8))
+
+        // Back to login button
+        PrimaryButton(
+            text = "Back to Login",
+            onClick = onBackToLogin,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(spacing.space8))
     }
 }
 

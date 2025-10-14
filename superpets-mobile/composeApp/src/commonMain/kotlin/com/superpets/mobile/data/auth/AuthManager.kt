@@ -37,6 +37,10 @@ class AuthManager(
             // Enable automatic session restoration and token refresh
             alwaysAutoRefresh = true
             autoLoadFromStorage = true
+
+            // Configure for email confirmation flow
+            scheme = "superpets"
+            host = "auth"
         }
 
         // Configure with platform-specific Ktor engine if provided
@@ -78,15 +82,28 @@ class AuthManager(
 
     /**
      * Sign up with email and password
+     * Returns SignUpResult indicating whether email confirmation is required
      */
-    suspend fun signUp(email: String, password: String): Result<Unit> {
+    suspend fun signUp(email: String, password: String): Result<SignUpResult> {
         return try {
-            supabaseClient.auth.signUpWith(Email) {
+            val response = supabaseClient.auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
             }
-            _authState.value = AuthState.Authenticated(email)
-            Result.success(Unit)
+
+            // Check if email confirmation is required
+            // If user exists but no session, email confirmation is enabled
+            val requiresConfirmation = response != null && supabaseClient.auth.currentSessionOrNull() == null
+
+            if (requiresConfirmation) {
+                Napier.d("Sign up successful - email confirmation required")
+                _authState.value = AuthState.Unauthenticated
+                Result.success(SignUpResult.ConfirmationRequired(email))
+            } else {
+                Napier.d("Sign up successful - auto authenticated")
+                _authState.value = AuthState.Authenticated(email)
+                Result.success(SignUpResult.Authenticated)
+            }
         } catch (e: Exception) {
             Napier.e("Sign up failed", e)
             Result.failure(e)
@@ -169,6 +186,40 @@ class AuthManager(
             Result.failure(e)
         }
     }
+
+    /**
+     * Handle deep link from email confirmation
+     * @param url Deep link URL (e.g., superpets://auth?token=...&type=signup)
+     */
+    suspend fun handleDeepLink(url: String): Result<Unit> {
+        return try {
+            Napier.d("Handling deep link: $url")
+
+            // The Supabase Kotlin client will automatically handle the deep link
+            // when the app is opened with the confirmation URL. The session should
+            // be automatically restored. We just need to check the auth status.
+
+            // Give Supabase a moment to process the deep link
+            delay(500)
+
+            // Check if we now have a valid session
+            val session = supabaseClient.auth.currentSessionOrNull()
+            if (session != null) {
+                val email = session.user?.email ?: ""
+                _authState.value = AuthState.Authenticated(email)
+                Napier.d("Deep link handled successfully - user authenticated")
+                Result.success(Unit)
+            } else {
+                Napier.e("Deep link handled but no session created")
+                // Session might not be created yet, so we don't fail here
+                // The user can try logging in manually
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("Failed to handle deep link", e)
+            Result.failure(e)
+        }
+    }
 }
 
 /**
@@ -178,4 +229,12 @@ sealed class AuthState {
     data object Loading : AuthState()
     data object Unauthenticated : AuthState()
     data class Authenticated(val email: String) : AuthState()
+}
+
+/**
+ * Sign up result
+ */
+sealed class SignUpResult {
+    data object Authenticated : SignUpResult()
+    data class ConfirmationRequired(val email: String) : SignUpResult()
 }

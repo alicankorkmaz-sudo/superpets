@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.superpets.mobile.data.auth.AuthManager
 import com.superpets.mobile.data.auth.AuthState
+import com.superpets.mobile.data.auth.SignUpResult
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -112,23 +113,39 @@ class AuthViewModel(
         viewModelScope.launch {
             _signupUiState.value = _signupUiState.value.copy(
                 isLoading = true,
-                error = null
+                error = null,
+                confirmationPending = false
             )
 
             val result = authManager.signUp(email, password)
 
             result.fold(
-                onSuccess = {
-                    _signupUiState.value = _signupUiState.value.copy(
-                        isLoading = false,
-                        error = null
-                    )
-                    Napier.d("Sign up successful")
+                onSuccess = { signUpResult ->
+                    when (signUpResult) {
+                        is SignUpResult.Authenticated -> {
+                            _signupUiState.value = _signupUiState.value.copy(
+                                isLoading = false,
+                                error = null,
+                                confirmationPending = false
+                            )
+                            Napier.d("Sign up successful - auto authenticated")
+                        }
+                        is SignUpResult.ConfirmationRequired -> {
+                            _signupUiState.value = _signupUiState.value.copy(
+                                isLoading = false,
+                                error = null,
+                                confirmationPending = true,
+                                confirmationEmail = signUpResult.email
+                            )
+                            Napier.d("Sign up successful - confirmation required for ${signUpResult.email}")
+                        }
+                    }
                 },
                 onFailure = { exception ->
                     _signupUiState.value = _signupUiState.value.copy(
                         isLoading = false,
-                        error = getErrorMessage(exception)
+                        error = getErrorMessage(exception),
+                        confirmationPending = false
                     )
                     Napier.e("Sign up failed: ${exception.message}", exception)
                 }
@@ -236,5 +253,7 @@ data class LoginUiState(
  */
 data class SignupUiState(
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val confirmationPending: Boolean = false,
+    val confirmationEmail: String? = null
 )

@@ -245,39 +245,46 @@ class AuthManager(
 
                 // Save the session - this will make the auth client use this token
                 supabaseClient.auth.sessionManager.saveSession(tempSession)
+                Napier.d("Session saved, waiting for auth client to load it...")
 
-                // Manually trigger session refresh to populate user info
-                // This will fetch user details from Supabase using the access token
-                try {
-                    supabaseClient.auth.refreshCurrentSession()
-                    Napier.d("Session refreshed to populate user info")
-                } catch (refreshError: Exception) {
-                    Napier.e("Error refreshing session", refreshError)
+                // Give the auth client time to reload the session from storage
+                // and fetch user info automatically
+                delay(1000)
+
+                // Force the auth client to reload the session by getting current user
+                // This will trigger the session loading mechanism
+                var session = supabaseClient.auth.currentSessionOrNull()
+
+                // If still no user info, try refreshing using the refresh token
+                if (session?.user == null && refreshToken.isNotEmpty()) {
+                    Napier.d("User info not loaded yet, attempting manual refresh with token...")
+                    try {
+                        // Use the refresh token to get a fresh session with user info
+                        supabaseClient.auth.refreshSession(refreshToken)
+                        Napier.d("Session refreshed successfully")
+
+                        // Get the updated session
+                        session = supabaseClient.auth.currentSessionOrNull()
+                    } catch (refreshError: Exception) {
+                        Napier.e("Error manually refreshing with token", refreshError)
+                    }
                 }
 
-                // Now get the updated session with user info
-                val session = supabaseClient.auth.currentSessionOrNull()
+                // Check final session state
                 if (session?.user != null) {
                     val email = session.user?.email ?: ""
                     _authState.value = AuthState.Authenticated(email)
                     Napier.d("Deep link handled successfully - user authenticated: $email")
                     Result.success(Unit)
                 } else {
-                    Napier.e("Session created but user info not available")
-                    // Try one more time after a short delay
-                    delay(1000)
-                    val retrySession = supabaseClient.auth.currentSessionOrNull()
-                    if (retrySession?.user != null) {
-                        val email = retrySession.user?.email ?: ""
-                        _authState.value = AuthState.Authenticated(email)
-                        Napier.d("Deep link handled successfully after retry - user authenticated: $email")
-                        Result.success(Unit)
-                    } else {
-                        // Even without user details, the session is valid
-                        // Re-checking auth status should populate it
+                    Napier.w("Session created but user info not available, will retry on next auth check")
+                    // The session is still valid even without immediate user details
+                    // Schedule a check after a delay
+                    MainScope().launch {
+                        delay(2000)
                         checkAuthStatus()
-                        Result.success(Unit)
                     }
+                    Result.success(Unit)
                 }
             } catch (sessionError: Exception) {
                 Napier.e("Error creating session from tokens", sessionError)

@@ -17,7 +17,12 @@ export function LoginForm({ onSwitchToSignup, onBack }: { onSwitchToSignup: () =
     try {
       await signIn(email, password);
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
+      // Check if error is due to unconfirmed email
+      if (err.message?.includes('Email not confirmed')) {
+        setError('Please confirm your email address before signing in. Check your inbox for the confirmation link.');
+      } else {
+        setError(err.message || 'Failed to sign in');
+      }
     } finally {
       setLoading(false);
     }

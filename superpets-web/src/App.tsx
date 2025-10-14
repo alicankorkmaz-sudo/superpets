@@ -9,6 +9,7 @@ import { PricingPage } from './pages/PricingPage';
 import { TermsOfServicePage } from './pages/TermsOfServicePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
+import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import { CreditsProvider } from './contexts/CreditsContext';
 import { useState, useEffect } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
@@ -87,6 +88,11 @@ function App() {
       setTimeout(() => setNotification(null), 5000);
     }
   }, []);
+
+  // Handle email confirmation callback
+  if (window.location.pathname === '/auth/callback') {
+    return <AuthCallbackPage />;
+  }
 
   if (loading) {
     return (

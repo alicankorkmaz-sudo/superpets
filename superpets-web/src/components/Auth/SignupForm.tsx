@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Mail } from 'lucide-react';
 
 export function SignupForm({ onSwitchToLogin, onBack }: { onSwitchToLogin: () => void; onBack?: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [confirmationPending, setConfirmationPending] = useState(false);
   const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -15,13 +16,52 @@ export function SignupForm({ onSwitchToLogin, onBack }: { onSwitchToLogin: () =>
     setLoading(true);
 
     try {
-      await signUp(email, password);
+      const result = await signUp(email, password);
+
+      // Check if email confirmation is required
+      if (result?.user && !result?.session) {
+        setConfirmationPending(true);
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to sign up');
     } finally {
       setLoading(false);
     }
   };
+
+  // Show confirmation message if email confirmation is pending
+  if (confirmationPending) {
+    return (
+      <div className="card max-w-md mx-auto text-center">
+        <div className="flex justify-center mb-6">
+          <div className="bg-primary-100 p-4 rounded-full">
+            <Mail className="text-primary-600" size={48} />
+          </div>
+        </div>
+        <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+          Check Your Email
+        </h2>
+        <p className="text-gray-600 mb-6">
+          We've sent a confirmation link to <strong>{email}</strong>.
+        </p>
+        <p className="text-gray-600 mb-6">
+          Please click the link in the email to verify your account and complete the signup process.
+        </p>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <p className="text-sm text-blue-800">
+            <strong>Important:</strong> The confirmation link will redirect you back to Superpets.
+            Make sure to click it on the same device and browser.
+          </p>
+        </div>
+        <button
+          onClick={onSwitchToLogin}
+          className="btn-secondary w-full"
+        >
+          Back to Login
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="card max-w-md mx-auto">

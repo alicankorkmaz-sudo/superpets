@@ -46,8 +46,9 @@ class MainActivity : ComponentActivity() {
                 // Use Supabase's built-in handleDeeplinks method
                 // This handles both implicit and PKCE flow
                 authManager.supabaseClient.handleDeeplinks(intent) { session ->
-                    Napier.d("Session imported successfully from deep link: ${session.user?.email}")
-                    authManager.onDeepLinkSuccess()
+                    val email = session.user?.email ?: ""
+                    Napier.d("Session imported successfully from deep link: $email")
+                    authManager.onDeepLinkSuccess(email)
                 }
             }
         }

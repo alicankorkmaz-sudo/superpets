@@ -196,9 +196,11 @@ class AuthManager(
     /**
      * Update authentication state after successful deep link handling
      * This should be called from platform-specific code after handleDeeplinks succeeds
+     * @param email User email from the imported session
      */
-    fun onDeepLinkSuccess() {
-        checkAuthStatus()
+    fun onDeepLinkSuccess(email: String) {
+        Napier.d("Deep link success - updating auth state for: $email")
+        _authState.value = AuthState.Authenticated(email)
     }
 }
 

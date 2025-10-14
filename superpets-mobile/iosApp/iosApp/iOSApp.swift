@@ -29,8 +29,9 @@ struct iOSApp: App {
         // Call handleDeeplinks with NSURL
         // The onSessionSuccess callback is executed when session is imported
         supabaseClient.handleDeeplinks(url: url as NSURL) { session in
-            print("Session imported successfully from deep link: \(session.user?.email ?? "unknown")")
-            authManager.onDeepLinkSuccess()
+            let email = session.user?.email ?? ""
+            print("Session imported successfully from deep link: \(email)")
+            authManager.onDeepLinkSuccess(email: email)
         }
     }
 }

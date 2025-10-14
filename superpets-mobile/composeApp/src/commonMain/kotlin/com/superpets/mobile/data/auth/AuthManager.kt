@@ -261,10 +261,18 @@ class AuthManager(
                     try {
                         // Use the refresh token to get a fresh session with user info
                         supabaseClient.auth.refreshSession(refreshToken)
-                        Napier.d("Session refreshed successfully")
+                        Napier.d("Session refreshed successfully, waiting for it to load...")
 
-                        // Get the updated session
+                        // Wait for the refreshed session to be fully loaded
+                        delay(1500)
+
+                        // Reload session from storage
+                        val loadedSession = supabaseClient.auth.sessionManager.loadSession()
+                        Napier.d("Loaded session from storage: user=${loadedSession?.user?.email}")
+
+                        // Get the updated session from auth client
                         session = supabaseClient.auth.currentSessionOrNull()
+                        Napier.d("Current session after refresh: user=${session?.user?.email}")
                     } catch (refreshError: Exception) {
                         Napier.e("Error manually refreshing with token", refreshError)
                     }

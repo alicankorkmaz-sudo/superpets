@@ -6,7 +6,11 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.user.UserInfo
+import io.github.jan.supabase.auth.user.UserSession
 import io.github.jan.supabase.createSupabaseClient
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -14,6 +18,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Manages authentication state and operations using Supabase Auth
@@ -189,31 +195,76 @@ class AuthManager(
 
     /**
      * Handle deep link from email confirmation
-     * @param url Deep link URL (e.g., superpets://auth?token=...&type=signup)
+     * @param url Deep link URL containing access_token and refresh_token in fragment
+     * Example: superpets://auth#access_token=...&refresh_token=...&type=signup
      */
     suspend fun handleDeepLink(url: String): Result<Unit> {
         return try {
             Napier.d("Handling deep link: $url")
 
-            // The Supabase Kotlin client will automatically handle the deep link
-            // when the app is opened with the confirmation URL. The session should
-            // be automatically restored. We just need to check the auth status.
+            // Extract tokens from URL fragment (after #)
+            val fragment = url.substringAfter("#", "")
+            if (fragment.isEmpty()) {
+                Napier.e("No fragment found in deep link URL")
+                return Result.failure(Exception("Invalid deep link format"))
+            }
 
-            // Give Supabase a moment to process the deep link
-            delay(500)
+            // Parse fragment parameters
+            val params = fragment.split("&").associate {
+                val (key, value) = it.split("=")
+                key to value
+            }
 
-            // Check if we now have a valid session
-            val session = supabaseClient.auth.currentSessionOrNull()
-            if (session != null) {
-                val email = session.user?.email ?: ""
-                _authState.value = AuthState.Authenticated(email)
-                Napier.d("Deep link handled successfully - user authenticated")
-                Result.success(Unit)
-            } else {
-                Napier.e("Deep link handled but no session created")
-                // Session might not be created yet, so we don't fail here
-                // The user can try logging in manually
-                Result.success(Unit)
+            val accessToken = params["access_token"]
+            val refreshToken = params["refresh_token"]
+            val expiresIn = params["expires_in"]?.toLongOrNull() ?: 3600L
+            val type = params["type"]
+
+            Napier.d("Deep link type: $type, has access token: ${accessToken != null}, has refresh token: ${refreshToken != null}")
+
+            if (accessToken == null || refreshToken == null) {
+                Napier.e("Missing required tokens in deep link")
+                return Result.failure(Exception("Missing authentication tokens"))
+            }
+
+            // Calculate expiration instant
+            val expiresAt = Clock.System.now().plus(expiresIn.seconds)
+
+            // Manually create and save the session
+            // First, we need to fetch user info using the access token
+            try {
+                // Set the access token temporarily to fetch user info
+                val tempSession = UserSession(
+                    accessToken = accessToken,
+                    refreshToken = refreshToken,
+                    expiresIn = expiresIn,
+                    expiresAt = expiresAt,
+                    tokenType = "bearer",
+                    user = null // Will be populated when we fetch user
+                )
+
+                // Save the session - this will make the auth client use this token
+                supabaseClient.auth.sessionManager.saveSession(tempSession)
+
+                // Now get the updated session with user info
+                // The auth client should automatically fetch user info
+                delay(500) // Give it time to fetch
+
+                val session = supabaseClient.auth.currentSessionOrNull()
+                if (session?.user != null) {
+                    val email = session.user?.email ?: ""
+                    _authState.value = AuthState.Authenticated(email)
+                    Napier.d("Deep link handled successfully - user authenticated: $email")
+                    Result.success(Unit)
+                } else {
+                    Napier.e("Session created but user info not available")
+                    // Session is still valid even without user details immediately
+                    _authState.value = AuthState.Unauthenticated
+                    Result.success(Unit)
+                }
+            } catch (sessionError: Exception) {
+                Napier.e("Error creating session from tokens", sessionError)
+                Result.failure(sessionError)
             }
         } catch (e: Exception) {
             Napier.e("Failed to handle deep link", e)

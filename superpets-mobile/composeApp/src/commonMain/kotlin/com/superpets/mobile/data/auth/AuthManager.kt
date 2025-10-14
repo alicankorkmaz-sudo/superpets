@@ -1,5 +1,6 @@
 package com.superpets.mobile.data.auth
 
+import com.russhwolf.settings.Settings
 import io.github.aakira.napier.Napier
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
@@ -7,16 +8,21 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.createSupabaseClient
 import io.ktor.client.engine.HttpClientEngine
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 /**
  * Manages authentication state and operations using Supabase Auth
  *
+ * @param settings Settings instance for session persistence
  * @param httpClientEngine Platform-specific Ktor engine (OkHttp for Android, Darwin for iOS)
  */
 class AuthManager(
+    private val settings: Settings,
     private val httpClientEngine: HttpClientEngine? = null
 ) : AuthTokenProvider {
 
@@ -24,7 +30,14 @@ class AuthManager(
         supabaseUrl = SupabaseConfig.SUPABASE_URL,
         supabaseKey = SupabaseConfig.SUPABASE_ANON_KEY
     ) {
-        install(Auth)
+        install(Auth) {
+            // Use custom session manager for persistence across app restarts
+            sessionManager = SupabaseSessionManager(settings)
+
+            // Enable automatic session restoration and token refresh
+            alwaysAutoRefresh = true
+            autoLoadFromStorage = true
+        }
 
         // Configure with platform-specific Ktor engine if provided
         httpClientEngine?.let {
@@ -36,8 +49,12 @@ class AuthManager(
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
     init {
-        // Initialize auth state
-        checkAuthStatus()
+        // Wait for session to load from storage before checking status
+        // Supabase loads the session asynchronously, so we need to wait for it
+        MainScope().launch {
+            delay(500) // Give Supabase time to load from storage
+            checkAuthStatus()
+        }
     }
 
     /**
@@ -47,8 +64,10 @@ class AuthManager(
         try {
             val session = supabaseClient.auth.currentSessionOrNull()
             _authState.value = if (session != null) {
+                Napier.d("Auth check: User authenticated (${session.user?.email})")
                 AuthState.Authenticated(session.user?.email ?: "")
             } else {
+                Napier.d("Auth check: User not authenticated")
                 AuthState.Unauthenticated
             }
         } catch (e: Exception) {

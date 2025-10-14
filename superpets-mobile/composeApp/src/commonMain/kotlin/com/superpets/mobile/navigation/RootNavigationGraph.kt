@@ -9,8 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.superpets.mobile.screens.auth.AuthViewModel
+import com.superpets.mobile.screens.landing.LandingScreen
+import com.superpets.mobile.screens.landing.LandingViewModel
 import com.superpets.mobile.screens.splash.SplashViewModel
 import com.superpets.mobile.screens.splash.SplashScreen
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RootNavigationGraph(navController: NavHostController, splashViewModel: SplashViewModel) {
@@ -25,6 +29,11 @@ fun RootNavigationGraph(navController: NavHostController, splashViewModel: Splas
                         popUpTo(RootRoute.Splash) { inclusive = true }
                     }
                 },
+                navigateToAuth = {
+                    navController.navigate(RootRoute.Auth) {
+                        popUpTo(RootRoute.Splash) { inclusive = true }
+                    }
+                },
                 navigateToHome = {
                     navController.navigate(RootRoute.Main) {
                         popUpTo(RootRoute.Splash) { inclusive = true }
@@ -35,13 +44,30 @@ fun RootNavigationGraph(navController: NavHostController, splashViewModel: Splas
         }
 
         composable<RootRoute.Landing> {
-            // TODO: Implement LandingScreen (Phase 2)
-            PlaceholderScreen(text = "Landing Screen\n\nComing soon...")
+            val landingViewModel: LandingViewModel = koinViewModel()
+            val authViewModel: AuthViewModel = koinViewModel()
+
+            LandingScreen(
+                landingViewModel = landingViewModel,
+                authViewModel = authViewModel,
+                onOnboardingComplete = {
+                    // After onboarding complete, navigate based on auth state
+                    // The splash screen logic will handle this automatically via the settings change
+                    navController.navigate(RootRoute.Auth) {
+                        popUpTo(RootRoute.Landing) { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable<RootRoute.Auth> {
-            // TODO: Implement AuthScreen (Phase 2)
-            PlaceholderScreen(text = "Auth Screen\n\nComing soon...")
+            AuthNavigationGraph(
+                onAuthSuccess = {
+                    navController.navigate(RootRoute.Main) {
+                        popUpTo(RootRoute.Auth) { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable<RootRoute.Main> {

@@ -11,6 +11,8 @@ import com.superpets.mobile.data.network.SuperpetsApiService
 import com.superpets.mobile.data.repository.SuperpetsRepository
 import com.superpets.mobile.core.dispatchers.DefaultDispatcherProvider
 import com.superpets.mobile.core.dispatchers.DispatcherProvider
+import com.superpets.mobile.screens.auth.AuthViewModel
+import com.superpets.mobile.screens.landing.LandingViewModel
 import com.superpets.mobile.screens.splash.SplashViewModel
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
@@ -52,8 +54,8 @@ val dataModule = module {
  * Authentication and API services
  */
 val superpetsModule = module {
-    // Authentication (inject platform-specific Ktor engine)
-    single<AuthManager> { AuthManager(httpClientEngine = get()) }
+    // Authentication (inject Settings and platform-specific Ktor engine)
+    single<AuthManager> { AuthManager(settings = get(), httpClientEngine = get()) }
     single<AuthTokenProvider> { get<AuthManager>() }
 
     // HTTP Client configured with auth
@@ -83,12 +85,16 @@ val superpetsModule = module {
  */
 val viewModelModule = module {
     // Splash screen (singleton since it's used at app start)
-    singleOf(::SplashViewModel)
+    single { SplashViewModel(get(), get()) }
+
+    // Landing/Onboarding
+    factory { LandingViewModel(get()) }
+
+    // Auth ViewModels
+    factory { AuthViewModel(get()) }
 
     // Feature ViewModels will be added here as screens are implemented
     // Examples:
-    // factory { LandingViewModel() }
-    // factory { AuthViewModel(get()) }
     // factory { HomeViewModel(get(), get()) }
     // factory { HeroSelectionViewModel(get()) }
     // etc.

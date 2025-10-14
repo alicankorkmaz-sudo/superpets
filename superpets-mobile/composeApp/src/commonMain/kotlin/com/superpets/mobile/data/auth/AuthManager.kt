@@ -246,10 +246,16 @@ class AuthManager(
                 // Save the session - this will make the auth client use this token
                 supabaseClient.auth.sessionManager.saveSession(tempSession)
 
-                // Now get the updated session with user info
-                // The auth client should automatically fetch user info
-                delay(500) // Give it time to fetch
+                // Manually trigger session refresh to populate user info
+                // This will fetch user details from Supabase using the access token
+                try {
+                    supabaseClient.auth.refreshCurrentSession()
+                    Napier.d("Session refreshed to populate user info")
+                } catch (refreshError: Exception) {
+                    Napier.e("Error refreshing session", refreshError)
+                }
 
+                // Now get the updated session with user info
                 val session = supabaseClient.auth.currentSessionOrNull()
                 if (session?.user != null) {
                     val email = session.user?.email ?: ""
@@ -258,9 +264,20 @@ class AuthManager(
                     Result.success(Unit)
                 } else {
                     Napier.e("Session created but user info not available")
-                    // Session is still valid even without user details immediately
-                    _authState.value = AuthState.Unauthenticated
-                    Result.success(Unit)
+                    // Try one more time after a short delay
+                    delay(1000)
+                    val retrySession = supabaseClient.auth.currentSessionOrNull()
+                    if (retrySession?.user != null) {
+                        val email = retrySession.user?.email ?: ""
+                        _authState.value = AuthState.Authenticated(email)
+                        Napier.d("Deep link handled successfully after retry - user authenticated: $email")
+                        Result.success(Unit)
+                    } else {
+                        // Even without user details, the session is valid
+                        // Re-checking auth status should populate it
+                        checkAuthStatus()
+                        Result.success(Unit)
+                    }
                 }
             } catch (sessionError: Exception) {
                 Napier.e("Error creating session from tokens", sessionError)

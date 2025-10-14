@@ -79,20 +79,42 @@
 
 **See `INFRASTRUCTURE_SETUP.md` for detailed documentation.**
 
-## Phase 2: Authentication & Navigation (Essential)
+## Phase 2: Authentication & Navigation (Essential) ✅ COMPLETE
 
-- [ ] **Implement authentication screens (Login, Signup)**
-  - Login screen UI
-  - Signup screen UI
-  - Form validation
-  - Error handling
-  - Token storage
+- [x] **Implement authentication screens (Login, Signup)**
+  - ✅ Login screen UI (`screens/auth/LoginScreen.kt`)
+  - ✅ Signup screen UI (`screens/auth/SignupScreen.kt`)
+  - ✅ Form validation (email, password, password confirmation)
+  - ✅ Error handling with snackbars
+  - ✅ Token storage via SupabaseSessionManager
 
-- [ ] **Create landing/home screen with app overview**
-  - Onboarding flow
-  - Navigation hub
-  - Quick stats display
-  - Recent generations preview
+- [x] **Create landing/onboarding screen with app overview**
+  - ✅ Onboarding flow (`screens/landing/LandingScreen.kt`)
+  - ✅ Navigation hub (`navigation/RootNavigationGraph.kt`)
+  - ✅ Feature showcase (29+ heroes, AI-powered, lightning-fast)
+  - ✅ "Get Started" CTA button
+
+- [x] **Session persistence implementation**
+  - ✅ Custom `SupabaseSessionManager` implementing `SessionManager` interface
+  - ✅ Multiplatform Settings library for secure storage
+  - ✅ Platform-specific storage: Keychain (iOS), EncryptedSharedPreferences (Android)
+  - ✅ Auto-load session on app restart (`autoLoadFromStorage = true`)
+  - ✅ Auto token refresh (`alwaysAutoRefresh = true`)
+  - ✅ 500ms delay in AuthManager init to allow session loading
+
+- [x] **Navigation logic**
+  - ✅ Splash screen with navigation decision logic
+  - ✅ Flow: Splash → Landing (if not onboarded) → Auth (if not authenticated) → Main
+  - ✅ Auth navigation graph for Login ↔ Signup
+  - ✅ Updated root navigation graph with all routes
+
+**Completion Date:** October 14, 2025
+**Key Files:**
+- `screens/auth/LoginScreen.kt`, `SignupScreen.kt`, `AuthViewModel.kt`
+- `screens/landing/LandingScreen.kt`, `LandingViewModel.kt`
+- `screens/splash/SplashScreen.kt`, `SplashViewModel.kt`
+- `data/auth/SupabaseSessionManager.kt`
+- `navigation/AuthNavigationGraph.kt`, `RootNavigationGraph.kt`
 
 ## Phase 3: Core Features (MVP)
 

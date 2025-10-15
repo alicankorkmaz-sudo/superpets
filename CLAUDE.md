@@ -9,7 +9,7 @@ Superpets is a full-stack monorepo application for AI-powered pet image editing 
 **Monorepo Structure:**
 - **Backend** (`superpets-backend/`): Ktor (Kotlin) REST API server
 - **Frontend** (`superpets-web/`): React + TypeScript + Vite web application
-- **Mobile** (`superpets-mobile/`): Compose Multiplatform (Android & iOS)
+- **Mobile** (`superpets-mobile/`): Compose Multiplatform (Android & iOS) with OAuth support
 
 ## Current Deployment Status
 
@@ -139,7 +139,7 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - `src/contexts/` - React contexts (CreditsContext for global credit state)
 - `src/hooks/` - Custom hooks (`useAuth`, `useImageEdit`)
 - `src/components/` - Feature-organized components (Auth, Dashboard, Editor)
-- `src/pages/` - Page components (LandingPage, EditorPage, PricingPage, Terms, Privacy)
+- `src/pages/` - Page components (LandingPage, EditorPage, PricingPage, TermsOfServicePage, PrivacyPolicyPage, AuthCallbackPage, AdminDashboardPage)
 
 **Landing Page & Navigation:**
 - **LandingPage component** - Welcoming first-time visitors before signup/login
@@ -151,8 +151,22 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
   - `/` - Landing page (non-authenticated users)
   - `/?auth=login` - Login form
   - `/?auth=signup` - Signup form
+  - `/auth/callback` - OAuth callback handler (Google & Apple Sign-In)
+  - `/terms` - Terms of Service
+  - `/privacy` - Privacy Policy
+  - `/pricing` - Pricing page
+  - `/admin` - Admin dashboard
   - Browser back/forward buttons work correctly via History API
 - **Back buttons** - "Back to home" on login/signup forms for easy navigation
+
+**Authentication Features:**
+- ✅ Email/password authentication
+- ✅ Google OAuth Sign-In (with popup flow)
+- ✅ Apple OAuth Sign-In (with popup flow)
+- ✅ Email confirmation for new signups
+- ✅ OAuth callback handling via AuthCallbackPage
+- ✅ Session persistence and auto-login
+- ✅ Error handling for "Email not confirmed" state
 
 **Key Patterns:**
 - Supabase authentication via `useAuth` hook
@@ -190,7 +204,7 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 
 **Project Structure:**
 - Template: [AstroturfStudio/cmp-template](https://github.com/AstroturfStudio/cmp-template)
-- Package: `fun.superpets.mobile`
+- Package: `com.superpets.mobile`
 - Architecture: MVVM with clean architecture
 - `composeApp/src/commonMain/` - Shared business logic and UI
 - `composeApp/src/androidMain/` - Android-specific code
@@ -205,13 +219,27 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - **Image Loading:** Coil
 - **Serialization:** Kotlinx Serialization
 - **Async:** Kotlin Coroutines & Flow
+- **Auth:** Supabase Auth with OAuth (Google & Apple Sign-In)
 
 **Configuration:**
-- Min SDK: 24 (Android 7.0)
-- Target SDK: 35 (Android 15)
+- Min SDK: 26 (Android 8.0)
+- Target SDK: 36 (Android 15)
+- Compile SDK: 36
 - iOS Deployment Target: iOS 15+
 - App Name: "Superpets"
-- Bundle ID: `fun.superpets.mobile`
+- Package/Bundle ID: `com.superpets.mobile`
+
+**Implemented Features:**
+- ✅ Splash screen with auth state checking
+- ✅ Landing page with feature highlights
+- ✅ Login & Signup screens with email/password
+- ✅ Google OAuth Sign-In (web & mobile)
+- ✅ Apple OAuth Sign-In (web & mobile)
+- ✅ Email confirmation support
+- ✅ Deep linking for OAuth callbacks
+- ❌ Editor screen (not yet implemented)
+- ❌ Hero selection (not yet implemented)
+- ❌ Credit management UI (not yet implemented)
 
 **Image Upload Strategy:**
 - **Backend validation**: 10MB maximum file size
@@ -351,9 +379,9 @@ cd superpets-mobile
 ```
 
 **Project Configuration:**
-- Main code: `composeApp/src/commonMain/kotlin/fun/superpets/mobile/`
-- Android specific: `composeApp/src/androidMain/kotlin/fun/superpets/mobile/`
-- iOS specific: `composeApp/src/iosMain/kotlin/fun/superpets/mobile/`
+- Main code: `composeApp/src/commonMain/kotlin/com/superpets/mobile/`
+- Android specific: `composeApp/src/androidMain/kotlin/com/superpets/mobile/`
+- iOS specific: `composeApp/src/iosMain/kotlin/com/superpets/mobile/`
 - Resources: `composeApp/src/commonMain/resources/`
 - Build config: `composeApp/build.gradle.kts`
 
@@ -368,6 +396,9 @@ cd superpets-mobile
 - Backend: Database connection via HikariCP with connection pooling
 - Backend: JWT token verification for authentication
 - Frontend: Supabase JS client SDK in `src/lib/supabase.ts`
+- Mobile: Supabase Kotlin SDK with OAuth support
+- **Email Confirmation:** Enabled for all new signups (see `EMAIL_CONFIRMATION_SETUP.md`)
+- **OAuth Providers:** Google and Apple Sign-In configured (see `GOOGLE_OAUTH_SETUP.md` and `APPLE_OAUTH_SETUP.md`)
 - **Security:** CORS set to `anyHost()` - **MUST restrict for production**
 
 ### Credit System Flow
@@ -384,6 +415,36 @@ cd superpets-mobile
 4. Files uploaded to fal.ai storage via `NanoBananaService.uploadFile()`
 5. Returned URLs and final prompt used in `editImage()` request
 6. Result and history saved to Supabase PostgreSQL
+
+### OAuth Authentication Setup
+**Implemented Providers:**
+- ✅ **Google OAuth** (web and mobile) - See `GOOGLE_OAUTH_SETUP.md`
+  - Web: OAuth 2.0 Client ID configured with redirect URIs
+  - Mobile: Android (SHA-1 fingerprints) and iOS (Bundle ID) configured
+  - Status: Fully functional in development and production
+- ⚠️ **Apple Sign-In** (web and mobile) - See `APPLE_OAUTH_SETUP.md`
+  - Web: Services ID configured with domain verification
+  - Mobile: App ID with Sign in with Apple capability
+  - Status: UI implemented, **requires active Apple Developer Program membership ($99/year)**
+  - Note: Cannot test without Apple Developer account
+
+**Configuration Files:**
+- `GOOGLE_OAUTH_SETUP.md` - Complete Google OAuth setup guide
+- `APPLE_OAUTH_SETUP.md` - Complete Apple Sign-In setup guide
+- `EMAIL_CONFIRMATION_SETUP.md` - Email confirmation configuration
+- `MOBILE_EMAIL_CONFIRMATION_SETUP.md` - Mobile-specific email confirmation
+
+**Web Implementation:**
+- Login/Signup forms in `LoginForm.tsx` and `SignupForm.tsx`
+- OAuth buttons trigger `signInWithGoogle()` or `signInWithApple()` from `useAuth` hook
+- Callback handled by `AuthCallbackPage.tsx` at `/auth/callback`
+- Redirect URIs: `https://superpets.fun/auth/callback` and `http://localhost:5173/auth/callback`
+
+**Mobile Implementation:**
+- Login/Signup screens in `LoginScreen.kt` and `SignupScreen.kt`
+- OAuth via Supabase Kotlin SDK
+- Deep linking configured for OAuth callbacks (`com.superpets.mobile://`)
+- Platform-specific OAuth flows for Android and iOS
 
 ### Stripe Payment Integration
 - See `STRIPE_SETUP.md` for detailed implementation guide
@@ -462,26 +523,33 @@ See `supabase_migration.sql` for complete schema. Key tables:
 
 See `PROJECT_STATE.md` for current progress and next steps.
 
-**Completed (Oct 5-13, 2025):**
-- ✅ Deployed backend to Render with Supabase pooler connection
-- ✅ Migrated frontend to Supabase Auth
-- ✅ Deployed frontend to Firebase Hosting
-- ✅ Configured custom domain: superpets.fun
-- ✅ Implemented CORS restrictions (production and development domains)
-- ✅ Added comprehensive rate limiting (per-user and IP-based)
-- ✅ Added file upload validation (10MB max, type checking)
-- ✅ Created welcoming landing page for new users
-- ✅ Implemented URL-based navigation with browser history support
-- ✅ Removed orphaned Firebase service files from backend
-- ✅ Set up Compose Multiplatform mobile project (Android & iOS)
-- ✅ **Integrated Sentry error tracking** (frontend and backend)
-- ✅ **Migrated backend from Render to Railway** (October 13, 2025)
+**Completed (Oct 5-15, 2025):**
+- ✅ Deployed backend to Railway with Supabase pooler connection (Oct 13)
+- ✅ Migrated from Firebase to Supabase (PostgreSQL + Auth) (Oct 5)
+- ✅ Deployed frontend to Firebase Hosting (Oct 5)
+- ✅ Configured custom domain: superpets.fun (Oct 5)
+- ✅ Implemented CORS restrictions (production and development domains) (Oct 8)
+- ✅ Added comprehensive rate limiting (per-user and IP-based) (Oct 8)
+- ✅ Added file upload validation (10MB max, type checking) (Oct 8)
+- ✅ Created welcoming landing page for new users (Oct 8)
+- ✅ Implemented URL-based navigation with browser history support (Oct 8)
+- ✅ Removed orphaned Firebase service files from backend (Oct 5)
+- ✅ Set up Compose Multiplatform mobile project (Android & iOS) (Oct 10)
+- ✅ **Integrated Sentry error tracking** (frontend and backend) (Oct 13)
+- ✅ **Migrated backend from Render to Railway** (Oct 13)
+- ✅ **Implemented Google OAuth Sign-In** (web and mobile) (Oct 14-15)
+- ✅ **Implemented Apple OAuth Sign-In** (web and mobile - UI ready, awaiting Apple Developer account) (Oct 15)
+- ✅ **Created Terms of Service and Privacy Policy pages** (Oct 8)
+- ✅ **Enabled email confirmation for new signups** (Oct 14)
+- ✅ **Built mobile app authentication screens** (Login, Signup, Landing, Splash) (Oct 14-15)
+- ✅ **Integrated mobile deep linking for OAuth callbacks** (Oct 14)
 
 **Remaining priorities:**
-1. **Build mobile app UI and features** (authentication, image editing, hero selection)
+1. **Complete mobile app core features** (editor screen, hero selection, credit management UI)
 2. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
-3. **Test and refine user onboarding flow**
-4. **Monitor Railway backend performance and costs**
+3. **Test end-to-end user flows** (signup → confirm email → login → edit images → purchase credits)
+4. **Apple Developer account activation** (required for Apple Sign-In to work in production)
+5. **Monitor Railway backend performance and costs**
 
 See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.
 

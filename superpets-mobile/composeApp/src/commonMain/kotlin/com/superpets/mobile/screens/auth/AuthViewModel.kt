@@ -109,6 +109,37 @@ class AuthViewModel(
     }
 
     /**
+     * Sign in with Apple OAuth
+     */
+    fun signInWithApple() {
+        viewModelScope.launch {
+            _loginUiState.value = _loginUiState.value.copy(
+                isLoading = true,
+                error = null
+            )
+
+            val result = authManager.signInWithApple()
+
+            result.fold(
+                onSuccess = {
+                    _loginUiState.value = _loginUiState.value.copy(
+                        isLoading = false,
+                        error = null
+                    )
+                    Napier.d("Apple sign in successful")
+                },
+                onFailure = { exception ->
+                    _loginUiState.value = _loginUiState.value.copy(
+                        isLoading = false,
+                        error = getErrorMessage(exception)
+                    )
+                    Napier.e("Apple sign in failed: ${exception.message}", exception)
+                }
+            )
+        }
+    }
+
+    /**
      * Sign up with email and password
      */
     fun signUp(email: String, password: String, confirmPassword: String) {

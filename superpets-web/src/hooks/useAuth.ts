@@ -64,10 +64,22 @@ export function useAuth() {
     return data;
   };
 
+  const signInWithApple = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'apple',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) throw error;
+    return data;
+  };
+
   const getToken = async (): Promise<string | null> => {
     if (!session) return null;
     return session.access_token;
   };
 
-  return { user, session, loading, signIn, signUp, signOut, signInWithGoogle, getToken };
+  return { user, session, loading, signIn, signUp, signOut, signInWithGoogle, signInWithApple, getToken };
 }

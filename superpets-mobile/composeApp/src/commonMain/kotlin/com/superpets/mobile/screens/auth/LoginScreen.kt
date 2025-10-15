@@ -235,7 +235,7 @@ fun LoginScreen(
 
                 // Apple sign-in button
                 AppleSignInButton(
-                    onClick = { /* TODO: Implement Apple sign-in */ },
+                    onClick = { viewModel.signInWithApple() },
                     enabled = !uiState.isLoading
                 )
 

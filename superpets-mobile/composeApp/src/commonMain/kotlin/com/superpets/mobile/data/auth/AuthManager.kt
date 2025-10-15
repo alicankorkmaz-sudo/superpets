@@ -7,6 +7,7 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.Google
+import io.github.jan.supabase.auth.providers.Apple
 import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
@@ -197,6 +198,25 @@ class AuthManager(
             Result.success(Unit)
         } catch (e: Exception) {
             Napier.e("Google sign in failed", e)
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Sign in with Apple OAuth
+     * Platform-specific implementation required (Android/iOS)
+     * This method initiates the OAuth flow
+     */
+    suspend fun signInWithApple(): Result<Unit> {
+        return try {
+            supabaseClient.auth.signInWith(Apple)
+
+            // Get user email after successful sign-in
+            val email = supabaseClient.auth.currentUserOrNull()?.email ?: "Apple User"
+            _authState.value = AuthState.Authenticated(email)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Napier.e("Apple sign in failed", e)
             Result.failure(e)
         }
     }

@@ -230,7 +230,7 @@ fun SignupScreen(
 
                     // Google sign-in button
                     GoogleSignInButton(
-                        onClick = { /* TODO: Implement Google sign-in */ },
+                        onClick = { viewModel.signInWithGoogle() },
                         enabled = !uiState.isLoading
                     )
 

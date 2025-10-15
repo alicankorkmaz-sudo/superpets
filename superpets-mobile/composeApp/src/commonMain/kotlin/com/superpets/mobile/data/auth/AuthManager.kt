@@ -6,6 +6,8 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.providers.Google
+import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 import io.github.jan.supabase.createSupabaseClient
@@ -176,6 +178,25 @@ class AuthManager(
             Result.success(Unit)
         } catch (e: Exception) {
             Napier.e("Sign in failed", e)
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Sign in with Google OAuth
+     * Platform-specific implementation required (Android/iOS)
+     * This method initiates the OAuth flow
+     */
+    suspend fun signInWithGoogle(): Result<Unit> {
+        return try {
+            supabaseClient.auth.signInWith(Google)
+
+            // Get user email after successful sign-in
+            val email = supabaseClient.auth.currentUserOrNull()?.email ?: "Google User"
+            _authState.value = AuthState.Authenticated(email)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Napier.e("Google sign in failed", e)
             Result.failure(e)
         }
     }

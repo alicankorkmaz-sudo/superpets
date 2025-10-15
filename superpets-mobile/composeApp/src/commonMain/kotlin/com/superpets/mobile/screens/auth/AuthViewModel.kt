@@ -78,6 +78,37 @@ class AuthViewModel(
     }
 
     /**
+     * Sign in with Google OAuth
+     */
+    fun signInWithGoogle() {
+        viewModelScope.launch {
+            _loginUiState.value = _loginUiState.value.copy(
+                isLoading = true,
+                error = null
+            )
+
+            val result = authManager.signInWithGoogle()
+
+            result.fold(
+                onSuccess = {
+                    _loginUiState.value = _loginUiState.value.copy(
+                        isLoading = false,
+                        error = null
+                    )
+                    Napier.d("Google sign in successful")
+                },
+                onFailure = { exception ->
+                    _loginUiState.value = _loginUiState.value.copy(
+                        isLoading = false,
+                        error = getErrorMessage(exception)
+                    )
+                    Napier.e("Google sign in failed: ${exception.message}", exception)
+                }
+            )
+        }
+    }
+
+    /**
      * Sign up with email and password
      */
     fun signUp(email: String, password: String, confirmPassword: String) {

@@ -231,13 +231,14 @@ fun LoginScreen(
                     enabled = !uiState.isLoading
                 )
 
-                Spacer(modifier = Modifier.height(spacing.space3))
-
-                // Apple sign-in button
-                AppleSignInButton(
-                    onClick = { viewModel.signInWithApple() },
-                    enabled = !uiState.isLoading
-                )
+                // TODO: Enable Apple Sign-In once Apple Developer account is active
+                // Spacer(modifier = Modifier.height(spacing.space3))
+                //
+                // // Apple sign-in button
+                // AppleSignInButton(
+                //     onClick = { viewModel.signInWithApple() },
+                //     enabled = !uiState.isLoading
+                // )
 
                 Spacer(modifier = Modifier.height(spacing.space6))
 

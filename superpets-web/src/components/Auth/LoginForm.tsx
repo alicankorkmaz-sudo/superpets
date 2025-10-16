@@ -8,8 +8,8 @@ export function LoginForm({ onSwitchToSignup, onBack }: { onSwitchToSignup: () =
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [appleLoading, setAppleLoading] = useState(false);
-  const { signIn, signInWithGoogle, signInWithApple } = useAuth();
+  // const [appleLoading, setAppleLoading] = useState(false);
+  const { signIn, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,18 +43,19 @@ export function LoginForm({ onSwitchToSignup, onBack }: { onSwitchToSignup: () =
     }
   };
 
-  const handleAppleSignIn = async () => {
-    setError('');
-    setAppleLoading(true);
-
-    try {
-      await signInWithApple();
-      // User will be redirected to Apple OAuth page
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Apple');
-      setAppleLoading(false);
-    }
-  };
+  // TODO: Enable Apple Sign-In once Apple Developer account is active
+  // const handleAppleSignIn = async () => {
+  //   setError('');
+  //   setAppleLoading(true);
+  //
+  //   try {
+  //     await signInWithApple();
+  //     // User will be redirected to Apple OAuth page
+  //   } catch (err: any) {
+  //     setError(err.message || 'Failed to sign in with Apple');
+  //     setAppleLoading(false);
+  //   }
+  // };
 
   return (
     <div className="card max-w-md mx-auto">
@@ -104,7 +105,7 @@ export function LoginForm({ onSwitchToSignup, onBack }: { onSwitchToSignup: () =
           </div>
         )}
 
-        <button type="submit" className="btn-primary w-full" disabled={loading || googleLoading || appleLoading}>
+        <button type="submit" className="btn-primary w-full" disabled={loading || googleLoading}>
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
 
@@ -121,7 +122,7 @@ export function LoginForm({ onSwitchToSignup, onBack }: { onSwitchToSignup: () =
           type="button"
           onClick={handleGoogleSignIn}
           className="w-full flex items-center justify-center gap-3 px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading || googleLoading || appleLoading}
+          disabled={loading || googleLoading}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

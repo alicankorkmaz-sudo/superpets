@@ -194,6 +194,16 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - Lucide React for icons
 - date-fns for date formatting
 
+**Web App Icons & PWA:**
+- ✅ **Favicon**: `favicon.ico` for browser tabs and bookmarks
+- ✅ **Apple Touch Icon**: `apple-touch-icon.png` (180x180) for iOS home screen
+- ✅ **PWA Icons**: 192x192 and 512x512 PNG icons (standard and maskable variants)
+- ✅ **Web App Manifest**: `manifest.json` for Progressive Web App support
+  - Configured for standalone display mode
+  - Theme color and background color set to white
+  - Proper icon references for installation prompts
+- Location: `superpets-web/public/`
+
 ### Mobile (Compose Multiplatform)
 
 **Directory:** `superpets-mobile/`
@@ -228,6 +238,16 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - iOS Deployment Target: iOS 15+
 - App Name: "Superpets"
 - Package/Bundle ID: `com.superpets.mobile`
+
+**App Icons:**
+- ✅ **Android**: Adaptive icons with background, foreground, and monochrome layers
+  - Location: `composeApp/src/androidMain/res/mipmap-*/`
+  - Densities: mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi
+  - Supports Android 13+ themed icons via monochrome layer
+- ✅ **iOS**: Complete AppIcon set for all devices and contexts
+  - Location: `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/`
+  - Includes: iPhone, iPad, CarPlay, and App Store icons (1024x1024)
+  - All icon sizes from 20pt to 1024pt with @2x and @3x variants
 
 **Implemented Features:**
 - ✅ Splash screen with auth state checking
@@ -543,6 +563,7 @@ See `PROJECT_STATE.md` for current progress and next steps.
 - ✅ **Enabled email confirmation for new signups** (Oct 14)
 - ✅ **Built mobile app authentication screens** (Login, Signup, Landing, Splash) (Oct 14-15)
 - ✅ **Integrated mobile deep linking for OAuth callbacks** (Oct 14)
+- ✅ **Integrated professional app icons** (Android, iOS, and web with PWA support) (Oct 16)
 
 **Remaining priorities:**
 1. **Complete mobile app core features** (editor screen, hero selection, credit management UI)

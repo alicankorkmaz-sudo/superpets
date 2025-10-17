@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.superpets.mobile.data.auth.AuthManager
 import io.github.aakira.napier.Napier
 import io.github.jan.supabase.auth.auth
@@ -17,6 +18,9 @@ class MainActivity : ComponentActivity() {
     private val authManager: AuthManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install the splash screen before super.onCreate()
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 

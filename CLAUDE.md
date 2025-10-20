@@ -239,7 +239,7 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - App Name: "Superpets"
 - Package/Bundle ID: `com.superpets.mobile`
 
-**App Icons:**
+**App Icons & Branding:**
 - ✅ **Android**: Adaptive icons with background, foreground, and monochrome layers
   - Location: `composeApp/src/androidMain/res/mipmap-*/`
   - Densities: mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi
@@ -248,14 +248,19 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
   - Location: `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/`
   - Includes: iPhone, iPad, CarPlay, and App Store icons (1024x1024)
   - All icon sizes from 20pt to 1024pt with @2x and @3x variants
+- ✅ **In-App Logo**: Professional app logo integrated throughout authentication screens
+  - Location: `composeApp/src/commonMain/composeResources/drawable/`
+  - Assets: `app_logo.png` (113K), `app_icon.png` (48K)
+  - Used in: LandingScreen header, LoginScreen, SignupScreen, Email confirmation screen
+  - Accessed via Compose Resources: `painterResource(Res.drawable.app_logo)`
 
 **Implemented Features:**
 - ✅ Splash screen with auth state checking
-- ✅ Landing page with feature highlights
-- ✅ Login & Signup screens with email/password
+- ✅ Landing page with feature highlights and professional branding
+- ✅ Login & Signup screens with email/password and app logo
 - ✅ Google OAuth Sign-In (web & mobile)
 - ✅ Apple OAuth Sign-In (web & mobile)
-- ✅ Email confirmation support
+- ✅ Email confirmation support with branded confirmation screen
 - ✅ Deep linking for OAuth callbacks
 - ❌ Editor screen (not yet implemented)
 - ❌ Hero selection (not yet implemented)
@@ -543,7 +548,7 @@ See `supabase_migration.sql` for complete schema. Key tables:
 
 See `PROJECT_STATE.md` for current progress and next steps.
 
-**Completed (Oct 5-15, 2025):**
+**Completed (Oct 5-21, 2025):**
 - ✅ Deployed backend to Railway with Supabase pooler connection (Oct 13)
 - ✅ Migrated from Firebase to Supabase (PostgreSQL + Auth) (Oct 5)
 - ✅ Deployed frontend to Firebase Hosting (Oct 5)
@@ -564,6 +569,7 @@ See `PROJECT_STATE.md` for current progress and next steps.
 - ✅ **Built mobile app authentication screens** (Login, Signup, Landing, Splash) (Oct 14-15)
 - ✅ **Integrated mobile deep linking for OAuth callbacks** (Oct 14)
 - ✅ **Integrated professional app icons** (Android, iOS, and web with PWA support) (Oct 16)
+- ✅ **Integrated app logo in mobile authentication screens** (Landing, Login, Signup, Email confirmation) (Oct 21)
 
 **Remaining priorities:**
 1. **Complete mobile app core features** (editor screen, hero selection, credit management UI)

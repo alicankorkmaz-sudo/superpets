@@ -29,3 +29,6 @@ secrets/
 *.log
 *.tmp
 /RAILWAY_MONOREPO_SETUP.md
+
+# Icon generation artifacts
+IconKitchen Output/

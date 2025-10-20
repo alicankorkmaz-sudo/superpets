@@ -1,5 +1,6 @@
 package com.superpets.mobile.screens.auth
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.ui.layout.ContentScale
+import org.jetbrains.compose.resources.painterResource
+import superpets.composeapp.generated.resources.Res
+import superpets.composeapp.generated.resources.app_logo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -153,6 +158,16 @@ fun SignupScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(spacing.space8))
+
+                    // App logo
+                    Image(
+                        painter = painterResource(Res.drawable.app_logo),
+                        contentDescription = "Superpets Logo",
+                        modifier = Modifier.size(80.dp),
+                        contentScale = ContentScale.Fit
+                    )
+
+                    Spacer(modifier = Modifier.height(spacing.space4))
 
                     // Heading
                     Text(
@@ -292,7 +307,7 @@ private fun EmailConfirmationPendingScreen(
     ) {
         Spacer(modifier = Modifier.height(spacing.space8))
 
-        // Email icon
+        // App logo
         Box(
             modifier = Modifier
                 .size(120.dp)
@@ -302,11 +317,11 @@ private fun EmailConfirmationPendingScreen(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(64.dp)
+            Image(
+                painter = painterResource(Res.drawable.app_logo),
+                contentDescription = "Superpets Logo",
+                modifier = Modifier.size(80.dp),
+                contentScale = ContentScale.Fit
             )
         }
 

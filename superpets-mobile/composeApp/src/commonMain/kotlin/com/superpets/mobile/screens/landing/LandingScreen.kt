@@ -1,5 +1,6 @@
 package com.superpets.mobile.screens.landing
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.layout.ContentScale
+import org.jetbrains.compose.resources.painterResource
+import superpets.composeapp.generated.resources.Res
+import superpets.composeapp.generated.resources.app_logo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -85,21 +90,13 @@ fun LandingScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(spacing.space2)
             ) {
-                // Mascot placeholder (TODO: Replace with actual mascot image)
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(
-                            color = Primary.copy(alpha = 0.2f),
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "🦸",
-                        fontSize = 24.sp
-                    )
-                }
+                // App logo
+                Image(
+                    painter = painterResource(Res.drawable.app_logo),
+                    contentDescription = "Superpets Logo",
+                    modifier = Modifier.size(40.dp),
+                    contentScale = ContentScale.Fit
+                )
                 Text(
                     text = "Superpets",
                     style = MaterialTheme.typography.titleLarge,

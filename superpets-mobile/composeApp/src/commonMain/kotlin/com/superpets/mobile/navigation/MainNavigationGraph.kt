@@ -88,8 +88,11 @@ fun BottomNavGraph(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            // TODO: Implement HomeScreen (Phase 2)
-            PlaceholderScreen(text = "Home Screen\n\nComing soon...")
+            com.superpets.mobile.screens.home.HomeScreen(
+                onNavigateToCreate = {
+                    navController.navigate(MainRoute.Create)
+                }
+            )
         }
 
         composable<MainRoute.Create>(
@@ -112,8 +115,7 @@ fun BottomNavGraph(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            // TODO: Implement ProfileScreen (Phase 4)
-            PlaceholderScreen(text = "Profile Screen\n\nComing soon...")
+            com.superpets.mobile.screens.profile.ProfileScreen()
         }
     }
 }

@@ -93,9 +93,10 @@ val viewModelModule = module {
     // Auth ViewModels
     factory { AuthViewModel(get()) }
 
-    // Feature ViewModels will be added here as screens are implemented
-    // Examples:
-    // factory { HomeViewModel(get(), get()) }
+    // Feature ViewModels
+    factory { com.superpets.mobile.screens.home.HomeViewModel(get()) }
+    factory { com.superpets.mobile.screens.profile.ProfileViewModel(get(), get()) }
+    // TODO: Add other feature ViewModels as they are implemented
     // factory { HeroSelectionViewModel(get()) }
     // etc.
 }

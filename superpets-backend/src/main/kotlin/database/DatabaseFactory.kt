@@ -60,12 +60,14 @@ object DatabaseFactory {
             this.password = password
             driverClassName = "org.postgresql.Driver"
 
-            // Connection pool sizing
-            maximumPoolSize = 10  // Max connections in pool
-            minimumIdle = 5       // Increased from 2 to keep more connections ready
+            // Connection pool sizing - REDUCED to avoid hitting Supabase connection limits
+            // Supabase free tier typically allows 60-100 direct connections
+            // Using transaction pooler (port 6543) which has separate limits
+            maximumPoolSize = 5   // Reduced from 10 to avoid max connections error
+            minimumIdle = 2       // Keep minimal idle connections
 
             // Timeout configuration (reduced for faster failure detection)
-            connectionTimeout = 15000  // 15 seconds max to get connection from pool (reduced from 60s)
+            connectionTimeout = 15000  // 15 seconds max to get connection from pool
             idleTimeout = 300000       // 5 minutes - close idle connections sooner
             maxLifetime = 1800000      // 30 minutes - max connection lifetime
 

@@ -2,6 +2,30 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 📚 Session Initialization
+
+**IMPORTANT:** When starting a new session, Claude Code should:
+
+1. **Read this file first** (CLAUDE.md) - Main project instructions
+2. **Check `.claude/session-init.md`** - Complete documentation index with 35+ AI-generated files
+3. **Review `PROJECT_STATE.md`** - Current progress and priorities
+
+**Documentation Discovery System:**
+This project has an extensive collection of AI-generated documentation files organized across the monorepo. The `.claude/session-init.md` file maintains a comprehensive index of all documentation, organized by category (Setup, Auth, Database, Mobile, etc.). Refer to that file to discover relevant documentation for your current task without needing to be explicitly pointed to specific files.
+
+**Updating Documentation Index:**
+When creating new documentation files during feature implementation, the user may tell you to:
+- **"Update docs"** - Run the discovery script and update `.claude/session-init.md` with any new files
+- **"Update session-init"** - Same as above
+- **"Refresh documentation index"** - Same as above
+
+When you receive any of these commands, you should:
+1. Run `./.claude/update-docs-index.sh` to discover new files
+2. Update `.claude/session-init.md` with any new documentation files found
+3. Organize new files into the appropriate category
+4. Update the total documentation count
+5. Mark critical files with ⭐ if they're important for most sessions
+
 ## Project Overview
 
 Superpets is a full-stack monorepo application for AI-powered pet image editing using Google's Nano Banana model via fal.ai. The project transforms pet photos into superhero versions.

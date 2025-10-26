@@ -46,8 +46,10 @@ object DatabaseFactory {
 
         // Add SSL and connection parameters for Supabase Transaction Pooler
         // prepareThreshold=0 disables prepared statements (required for PgBouncer/transaction pooler)
+        // connectTimeout=10 - 10 seconds to establish connection (reduced from 60s)
+        // socketTimeout=20 - 20 seconds for socket operations
         // See: https://github.com/pgbouncer/pgbouncer/issues/374
-        val jdbcUrl = "jdbc:postgresql://$host:$port/$database?sslmode=require&prepareThreshold=0&connectTimeout=60"
+        val jdbcUrl = "jdbc:postgresql://$host:$port/$database?sslmode=require&prepareThreshold=0&connectTimeout=10&socketTimeout=20"
 
         application.log.info("Database connection details: host=$host, port=$port, database=$database, username=$username")
         application.log.info("JDBC URL: $jdbcUrl")
@@ -57,18 +59,26 @@ object DatabaseFactory {
             this.username = username
             this.password = password
             driverClassName = "org.postgresql.Driver"
-            maximumPoolSize = 10
-            minimumIdle = 2
-            idleTimeout = 600000
-            connectionTimeout = 60000 // Increased to 60 seconds
-            maxLifetime = 1800000
+
+            // Connection pool sizing
+            maximumPoolSize = 10  // Max connections in pool
+            minimumIdle = 5       // Increased from 2 to keep more connections ready
+
+            // Timeout configuration (reduced for faster failure detection)
+            connectionTimeout = 15000  // 15 seconds max to get connection from pool (reduced from 60s)
+            idleTimeout = 300000       // 5 minutes - close idle connections sooner
+            maxLifetime = 1800000      // 30 minutes - max connection lifetime
+
+            // Keep-alive and validation
+            keepaliveTime = 60000      // 1 minute - send keep-alive to prevent stale connections
+            connectionTestQuery = "SELECT 1"  // Validate connections
+
+            // Leak detection for debugging (30 seconds)
+            leakDetectionThreshold = 30000
 
             // IMPORTANT: Transaction poolers (PgBouncer) require autocommit and don't support isolation level changes
             isAutoCommit = true
             // Do NOT set transactionIsolation - not supported by transaction poolers
-
-            // Add validation query for connection testing
-            connectionTestQuery = "SELECT 1"
         }
 
         application.log.info("Creating HikariCP connection pool...")

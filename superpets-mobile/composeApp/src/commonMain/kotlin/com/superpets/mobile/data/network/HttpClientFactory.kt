@@ -84,10 +84,13 @@ object HttpClientFactory {
             }
 
             // Timeout configuration
+            // Default timeouts for regular API calls (profile, credits, etc.)
+            // Set to 45s to account for database connection pool delays under load
+            // Image generation endpoints will override with longer timeouts
             install(HttpTimeout) {
-                requestTimeoutMillis = 60_000 // 60 seconds for image generation
-                connectTimeoutMillis = 30_000
-                socketTimeoutMillis = 60_000
+                requestTimeoutMillis = 45_000 // 45 seconds default
+                connectTimeoutMillis = 15_000 // 15 seconds to establish connection
+                socketTimeoutMillis = 45_000  // 45 seconds for socket operations
             }
 
             // Default request configuration

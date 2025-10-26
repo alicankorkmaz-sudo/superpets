@@ -9,6 +9,7 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.client.network.sockets.SocketTimeoutException
 
 /**
  * API service for Superpets backend
@@ -69,6 +70,11 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
         )
         httpClient.post("/nano-banana/edit") {
             setBody(request)
+            // Image generation takes longer - use extended timeout
+            timeout {
+                requestTimeoutMillis = 120_000 // 2 minutes for image generation
+                socketTimeoutMillis = 120_000
+            }
         }.body()
     }
 
@@ -99,6 +105,11 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
                 }
             }
         ) {
+            // Upload and image generation takes longer - use extended timeout
+            timeout {
+                requestTimeoutMillis = 180_000 // 3 minutes for upload + generation
+                socketTimeoutMillis = 180_000
+            }
             onUpload { bytesSentTotal, contentLength ->
                 contentLength?.let {
                     val progress = (bytesSentTotal.toFloat() / it.toFloat()) * 100
@@ -151,9 +162,17 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
             // 5xx errors (server errors)
             Napier.e("API server error: ${e.response.status}", e)
             Result.failure(ApiException("Server error. Please try again later.", e.response.status.value))
+        } catch (e: HttpRequestTimeoutException) {
+            // HTTP request timeout
+            Napier.e("API request timeout: ${e.message}", e)
+            Result.failure(ApiException("Request timed out. Please check your connection and try again.", 0))
+        } catch (e: SocketTimeoutException) {
+            // Socket timeout
+            Napier.e("API socket timeout: ${e.message}", e)
+            Result.failure(ApiException("Connection timed out. Please check your network and try again.", 0))
         } catch (e: Exception) {
             // Network errors, timeouts, etc.
-            Napier.e("API call failed", e)
+            Napier.e("API call failed: ${e::class.simpleName} - ${e.message}", e)
             Result.failure(ApiException("Network error: ${e.message ?: "Unknown error"}", 0))
         }
     }

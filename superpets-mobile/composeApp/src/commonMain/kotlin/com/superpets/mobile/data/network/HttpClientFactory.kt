@@ -4,8 +4,6 @@ import com.superpets.mobile.data.auth.AuthTokenProvider
 import io.github.aakira.napier.Napier
 import io.ktor.client.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
@@ -34,10 +32,11 @@ object HttpClientFactory {
         authTokenProvider: AuthTokenProvider?,
         enableLogging: Boolean = true
     ): HttpClient {
+        val baseUrl = BASE_URL // Capture in local variable for lambda
         return HttpClient {
             // Base URL configuration
             defaultRequest {
-                url(BASE_URL)
+                url(baseUrl)
                 contentType(ContentType.Application.Json)
             }
 
@@ -48,27 +47,6 @@ object HttpClientFactory {
                     isLenient = true
                     ignoreUnknownKeys = true
                 })
-            }
-
-            // Authentication with Bearer token
-            if (authTokenProvider != null) {
-                install(Auth) {
-                    bearer {
-                        loadTokens {
-                            val token = authTokenProvider.getToken()
-                            token?.let {
-                                BearerTokens(accessToken = it, refreshToken = "")
-                            }
-                        }
-
-                        refreshTokens {
-                            val token = authTokenProvider.getToken()
-                            token?.let {
-                                BearerTokens(accessToken = it, refreshToken = "")
-                            }
-                        }
-                    }
-                }
             }
 
             // Logging
@@ -96,6 +74,19 @@ object HttpClientFactory {
             // Default request configuration
             install(DefaultRequest) {
                 header(HttpHeaders.Accept, ContentType.Application.Json)
+            }
+        }.also { client ->
+            // Add request pipeline interceptor to inject fresh token before every request
+            // Important: This runs for EVERY request, ensuring we always use
+            // the current token after logout/login with different accounts
+            if (authTokenProvider != null) {
+                client.requestPipeline.intercept(HttpRequestPipeline.State) {
+                    val token = authTokenProvider.getToken()
+                    if (token != null) {
+                        context.headers[HttpHeaders.Authorization] = "Bearer $token"
+                        Napier.d(tag = "HttpClient", message = "Added Authorization header with fresh token")
+                    }
+                }
             }
         }
     }

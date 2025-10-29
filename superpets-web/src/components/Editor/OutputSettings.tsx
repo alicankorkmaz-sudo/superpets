@@ -32,12 +32,21 @@ export function OutputSettings({
           onChange={(e) => onNumImagesChange(parseInt(e.target.value))}
           className="w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
         />
-        <div className="flex justify-between text-xs text-gray-500 mt-2 px-1">
-          <span className={numImages === 1 ? 'font-bold text-primary-600' : ''}>1</span>
-          <span className={numImages === 3 ? 'font-bold text-primary-600' : ''}>3</span>
-          <span className={numImages === 5 ? 'font-bold text-primary-600' : ''}>5</span>
-          <span className={numImages === 7 ? 'font-bold text-primary-600' : ''}>7</span>
-          <span className={numImages === 10 ? 'font-bold text-primary-600' : ''}>10</span>
+        <div className="relative w-full mt-2 pb-6">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+            const position = ((num - 1) / (10 - 1)) * 100;
+            return (
+              <span
+                key={num}
+                className={`absolute text-xs -translate-x-1/2 ${
+                  numImages === num ? 'font-bold text-primary-600' : 'text-gray-400'
+                }`}
+                style={{ left: `${position}%` }}
+              >
+                {num}
+              </span>
+            );
+          })}
         </div>
       </div>
 

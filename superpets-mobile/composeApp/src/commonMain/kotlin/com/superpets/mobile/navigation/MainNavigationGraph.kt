@@ -12,6 +12,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,12 +24,26 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.superpets.mobile.data.auth.AuthManager
+import com.superpets.mobile.data.auth.AuthState
+import org.koin.compose.koinInject
 
 @Composable
 fun MainScreen(
     rootNavController: NavController
 ) {
     val mainNavController = rememberNavController()
+    val authManager: AuthManager = koinInject()
+    val authState by authManager.authState.collectAsState()
+
+    // Observe auth state and navigate to auth flow when user logs out
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Unauthenticated) {
+            rootNavController.navigate(RootRoute.Auth) {
+                popUpTo(RootRoute.Main) { inclusive = true }
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = { BottomBar(navController = mainNavController) }

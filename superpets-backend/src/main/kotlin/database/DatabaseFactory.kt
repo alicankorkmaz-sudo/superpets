@@ -63,8 +63,8 @@ object DatabaseFactory {
             // Connection pool sizing - REDUCED to avoid hitting Supabase connection limits
             // Supabase free tier typically allows 60-100 direct connections
             // Using transaction pooler (port 6543) which has separate limits
-            maximumPoolSize = 5   // Reduced from 10 to avoid max connections error
-            minimumIdle = 2       // Keep minimal idle connections
+            maximumPoolSize = 3   // Reduced to 3 to avoid max connections error during deployments
+            minimumIdle = 1       // Keep minimal idle connections
 
             // Timeout configuration (reduced for faster failure detection)
             connectionTimeout = 15000  // 15 seconds max to get connection from pool

@@ -33,7 +33,7 @@ object EditHistoryTable : Table("edit_history") {
     // Store arrays as JSON text in PostgreSQL
     val inputImages = text("input_images")
     val outputImages = text("output_images")
-    val creditsCost = long("credits_cost")
+    val creditsCost = long("credits_cost").default(1)
     val timestamp = long("timestamp")
 
     override val primaryKey = PrimaryKey(id)

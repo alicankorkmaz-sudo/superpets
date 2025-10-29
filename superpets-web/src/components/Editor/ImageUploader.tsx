@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Upload, X, Image } from 'lucide-react';
 
 interface ImageUploaderProps {
@@ -8,10 +8,48 @@ interface ImageUploaderProps {
 
 export function ImageUploader({ file, onFileChange }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const dropZoneRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounterRef = useRef(0);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
     onFileChange(selectedFile);
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current++;
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current--;
+    if (dragCounterRef.current === 0) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    dragCounterRef.current = 0;
+
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile && (droppedFile.type === 'image/jpeg' || droppedFile.type === 'image/png')) {
+      onFileChange(droppedFile);
+    }
   };
 
   const removeFile = () => {
@@ -36,16 +74,23 @@ export function ImageUploader({ file, onFileChange }: ImageUploaderProps) {
       </div>
 
       <div
+        ref={dropZoneRef}
         onClick={() => inputRef.current?.click()}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
         className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
-          file
+          isDragging
+            ? 'border-primary-500 bg-primary-100 scale-105'
+            : file
             ? 'border-green-300 bg-green-50 hover:bg-green-100'
             : 'border-gray-300 bg-gray-50 hover:border-primary-500 hover:bg-primary-50'
         }`}
       >
-        <Upload className={`mx-auto h-12 w-12 mb-3 ${file ? 'text-green-500' : 'text-gray-400'}`} />
-        <p className={`font-medium mb-1 ${file ? 'text-green-700' : 'text-gray-600'}`}>
-          {file ? 'Change image' : 'Click to upload or drag and drop'}
+        <Upload className={`mx-auto h-12 w-12 mb-3 ${isDragging ? 'text-primary-500' : file ? 'text-green-500' : 'text-gray-400'}`} />
+        <p className={`font-medium mb-1 ${isDragging ? 'text-primary-700' : file ? 'text-green-700' : 'text-gray-600'}`}>
+          {isDragging ? 'Drop image here' : file ? 'Change image' : 'Click to upload or drag and drop'}
         </p>
         <p className="text-sm text-gray-500">JPEG or PNG format</p>
 
@@ -63,7 +108,7 @@ export function ImageUploader({ file, onFileChange }: ImageUploaderProps) {
           <img
             src={URL.createObjectURL(file)}
             alt="Upload preview"
-            className="w-full h-72 object-cover"
+            className="w-full max-h-96 object-contain bg-gray-100"
           />
           <button
             onClick={(e) => {

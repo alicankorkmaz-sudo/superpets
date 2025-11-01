@@ -54,13 +54,13 @@ export function EditorPage() {
   const canGenerate = file !== null && selectedHeroId !== null && !loading && credits >= numImages;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 md:py-8 space-y-6 sm:space-y-8">
       {/* Hero Section */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-3">
+      <div className="text-center mb-4 sm:mb-6 md:mb-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-2 sm:mb-3">
           Transform Your Pet into a Superhero
         </h1>
-        <p className="text-gray-600 text-lg">
+        <p className="text-gray-600 text-sm sm:text-base md:text-lg px-2">
           Upload a photo, choose a hero, and watch the magic happen ✨
         </p>
       </div>
@@ -95,17 +95,17 @@ export function EditorPage() {
           <button
             onClick={handleGenerate}
             disabled={!canGenerate}
-            className="btn-primary w-full flex items-center justify-center gap-2 text-lg py-4 shadow-lg hover:shadow-xl transition-all"
+            className="btn-primary w-full flex items-center justify-center gap-2 text-base sm:text-lg py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all"
           >
             {loading ? (
               <>
-                <Loader2 className="animate-spin" size={24} />
-                <span>Generating Your Superhero...</span>
+                <Loader2 className="animate-spin" size={20} />
+                <span className="text-sm sm:text-base">Generating Your Superhero...</span>
               </>
             ) : (
               <>
-                <Sparkles size={24} />
-                <span>Generate Images ({numImages} {numImages === 1 ? 'credit' : 'credits'})</span>
+                <Sparkles size={20} />
+                <span className="text-sm sm:text-base">Generate Images ({numImages} {numImages === 1 ? 'credit' : 'credits'})</span>
               </>
             )}
           </button>

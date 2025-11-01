@@ -18,15 +18,15 @@ export function ResultsGallery({ images, description }: ResultsGalleryProps) {
 
   return (
     <div className="card shadow-lg animate-fade-in">
-      <div className="flex items-start gap-3 mb-6">
-        <Sparkles className="text-primary-600 mt-1" size={28} />
+      <div className="flex items-start gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <Sparkles className="text-primary-600 mt-1 flex-shrink-0" size={24} />
         <div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">Your Superhero Pets!</h3>
-          <p className="text-gray-600">{description}</p>
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">Your Superhero Pets!</h3>
+          <p className="text-sm sm:text-base text-gray-600">{description}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {images.map((image, index) => (
           <div
             key={index}

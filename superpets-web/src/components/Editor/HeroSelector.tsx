@@ -101,7 +101,7 @@ export function HeroSelector({ selectedHeroId, onHeroSelect }: HeroSelectorProps
         </div>
 
         {/* Hero Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 max-h-[450px] overflow-y-auto p-3 bg-gradient-to-b from-gray-50 to-white border border-gray-200 rounded-xl shadow-inner">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 max-h-[400px] sm:max-h-[450px] overflow-y-auto p-2 sm:p-3 bg-gradient-to-b from-gray-50 to-white border border-gray-200 rounded-xl shadow-inner">
           {currentHeroes.map((hero) => (
             <HeroCard
               key={hero.id}
@@ -139,32 +139,32 @@ function HeroCard({ hero, isSelected, onSelect, category }: HeroCardProps) {
   return (
     <button
       onClick={onSelect}
-      className={`group p-4 rounded-xl border-2 transition-all text-left relative overflow-hidden ${
+      className={`group p-2 sm:p-4 rounded-lg sm:rounded-xl border-2 transition-all text-left relative overflow-hidden ${
         isSelected
           ? `border-${accentColor}-600 bg-gradient-to-br from-${accentColor}-50 to-white shadow-md scale-105`
           : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5'
       }`}
     >
       {/* Icon indicator */}
-      <div className={`absolute top-2 right-2 ${isSelected ? 'opacity-100' : 'opacity-0'} transition-opacity`}>
-        <Star size={16} className={`fill-${accentColor}-600 text-${accentColor}-600`} />
+      <div className={`absolute top-1.5 sm:top-2 right-1.5 sm:right-2 ${isSelected ? 'opacity-100' : 'opacity-0'} transition-opacity`}>
+        <Star size={14} className={`sm:w-4 sm:h-4 fill-${accentColor}-600 text-${accentColor}-600`} />
       </div>
 
       {/* Hero icon */}
-      <div className={`mb-2 ${isSelected ? `text-${accentColor}-600` : 'text-gray-400 group-hover:text-gray-600'} transition-colors`}>
-        <Zap size={20} />
+      <div className={`mb-1.5 sm:mb-2 ${isSelected ? `text-${accentColor}-600` : 'text-gray-400 group-hover:text-gray-600'} transition-colors`}>
+        <Zap size={18} className="sm:w-5 sm:h-5" />
       </div>
 
-      <div className="font-semibold text-sm text-gray-900 mb-1.5 line-clamp-1">{hero.hero}</div>
-      <div className="text-xs text-gray-600 line-clamp-2 mb-2">{hero.identity}</div>
+      <div className="font-semibold text-xs sm:text-sm text-gray-900 mb-1 sm:mb-1.5 line-clamp-1">{hero.hero}</div>
+      <div className="text-[10px] sm:text-xs text-gray-600 line-clamp-2 mb-1.5 sm:mb-2">{hero.identity}</div>
 
       {/* Scene count badge */}
-      <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+      <div className={`inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${
         isSelected
           ? `bg-${accentColor}-100 text-${accentColor}-700`
           : 'bg-gray-100 text-gray-600'
       }`}>
-        <Sparkles size={10} />
+        <Sparkles size={8} className="sm:w-2.5 sm:h-2.5" />
         {hero.scene_options.length} scenes
       </div>
     </button>

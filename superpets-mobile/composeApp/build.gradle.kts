@@ -37,6 +37,7 @@ kotlin {
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
+            implementation(libs.androidx.exifinterface)
             implementation(libs.ktor.client.okhttp)
         }
         iosMain.dependencies {
@@ -72,6 +73,9 @@ kotlin {
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            // TODO: Add Peekaboo when stable version is available
+            // implementation(libs.peekaboo.ui)
+            // implementation(libs.peekaboo.image.picker)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.napier)

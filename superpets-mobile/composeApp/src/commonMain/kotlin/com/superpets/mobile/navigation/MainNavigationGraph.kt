@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -26,7 +27,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.superpets.mobile.data.auth.AuthManager
 import com.superpets.mobile.data.auth.AuthState
+import com.superpets.mobile.screens.editor.EditorScreen
+import com.superpets.mobile.screens.editor.EditorViewModel
+import com.superpets.mobile.screens.editor.HeroSelectionScreen
+import com.superpets.mobile.screens.editor.GenerationProgressScreen
+import com.superpets.mobile.screens.editor.ResultGalleryScreen
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainScreen(
@@ -114,9 +121,76 @@ fun BottomNavGraph(
         composable<MainRoute.Create>(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
+        ) { backStackEntry ->
+            // Get ViewModel scoped to this nav entry so it's shared with child screens
+            val editorViewModel: EditorViewModel = koinViewModel()
+
+            EditorScreen(
+                viewModel = editorViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToHeroSelection = {
+                    navController.navigate(FeatureRoute.HeroSelection)
+                },
+                onNavigateToGeneration = { heroId, numOutputs, images ->
+                    navController.navigate(FeatureRoute.GenerationProgress)
+                }
+            )
+        }
+
+        // Hero Selection Screen
+        composable<FeatureRoute.HeroSelection>(
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
+        ) { backStackEntry ->
+            // Get the same ViewModel instance from the parent (Create screen)
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.Create)
+            }
+            val editorViewModel: EditorViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
+
+            HeroSelectionScreen(
+                viewModel = editorViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onHeroSelected = { hero ->
+                    // Hero is already updated in the shared ViewModel
+                }
+            )
+        }
+
+        // Generation Progress Screen
+        composable<FeatureRoute.GenerationProgress>(
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
         ) {
-            // TODO: Implement CreateScreen (Phase 3)
-            PlaceholderScreen(text = "Create Screen\n\nComing soon...")
+            GenerationProgressScreen(
+                progress = 0.5f, // TODO: Get actual progress from ViewModel
+                estimatedTimeRemaining = 120,
+                onCancel = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Result Gallery Screen
+        composable<FeatureRoute.ResultGallery>(
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
+        ) {
+            // TODO: Get output images from ViewModel or navigation arguments
+            ResultGalleryScreen(
+                outputImages = emptyList(),
+                creditsCost = 5,
+                onClose = {
+                    navController.popBackStack(MainRoute.Create, inclusive = false)
+                },
+                onGenerateMore = {
+                    navController.popBackStack(MainRoute.Create, inclusive = false)
+                }
+            )
         }
 
         composable<MainRoute.History>(

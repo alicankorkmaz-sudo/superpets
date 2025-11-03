@@ -11,7 +11,9 @@ import com.superpets.mobile.data.network.SuperpetsApiService
 import com.superpets.mobile.data.repository.SuperpetsRepository
 import com.superpets.mobile.core.dispatchers.DefaultDispatcherProvider
 import com.superpets.mobile.core.dispatchers.DispatcherProvider
+import com.superpets.mobile.core.image.ImageCompressor
 import com.superpets.mobile.screens.auth.AuthViewModel
+import com.superpets.mobile.screens.editor.EditorViewModel
 import com.superpets.mobile.screens.landing.LandingViewModel
 import com.superpets.mobile.screens.splash.SplashViewModel
 import com.russhwolf.settings.ObservableSettings
@@ -47,6 +49,7 @@ val dataModule = module {
     single { Settings() }
     single { (get<Settings>() as ObservableSettings).toFlowSettings(get<DispatcherProvider>().io) }
     single { SettingsRepository(get()) }
+    single { ImageCompressor() }
 }
 
 /**
@@ -96,9 +99,7 @@ val viewModelModule = module {
     // Feature ViewModels
     factory { com.superpets.mobile.screens.home.HomeViewModel(get(), get()) }
     factory { com.superpets.mobile.screens.profile.ProfileViewModel(get(), get()) }
-    // TODO: Add other feature ViewModels as they are implemented
-    // factory { HeroSelectionViewModel(get()) }
-    // etc.
+    factory { EditorViewModel(get(), get()) }
 }
 
 /**

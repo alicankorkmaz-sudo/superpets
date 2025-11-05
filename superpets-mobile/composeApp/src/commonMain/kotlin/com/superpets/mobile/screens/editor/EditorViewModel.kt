@@ -248,7 +248,22 @@ class EditorViewModel(
     }
 
     /**
-     * Reset editor state
+     * Clear generation results (keeps images and hero selection)
+     */
+    fun clearGenerationResults() {
+        _uiState.update {
+            it.copy(
+                generatedImageUrls = null,
+                generationComplete = false,
+                generationProgress = 0f,
+                isGenerating = false,
+                error = null
+            )
+        }
+    }
+
+    /**
+     * Reset editor state (clears everything except user profile and heroes)
      */
     fun reset() {
         _uiState.update {

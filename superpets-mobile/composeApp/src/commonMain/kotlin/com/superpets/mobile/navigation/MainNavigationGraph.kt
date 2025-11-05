@@ -178,9 +178,8 @@ fun BottomNavGraph(
                     navController.popBackStack()
                 },
                 onGenerationComplete = { imageUrls ->
-                    // TODO: Navigate to ResultGallery with imageUrls
-                    // For now, just go back to editor
-                    navController.popBackStack()
+                    // Navigate to ResultGallery to show generated images
+                    navController.navigate(FeatureRoute.ResultGallery)
                 }
             )
         }
@@ -189,15 +188,30 @@ fun BottomNavGraph(
         composable<FeatureRoute.ResultGallery>(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
-        ) {
-            // TODO: Get output images from ViewModel or navigation arguments
+        ) { backStackEntry ->
+            // Get the same ViewModel instance from the parent (Create screen)
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.Create)
+            }
+            val editorViewModel: EditorViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
+            val uiState by editorViewModel.uiState.collectAsState()
+
             ResultGalleryScreen(
-                outputImages = emptyList(),
-                creditsCost = 5,
+                outputImages = uiState.generatedImageUrls ?: emptyList(),
+                creditsCost = uiState.numOutputs,
                 onClose = {
+                    // Go back to editor and reset everything
+                    editorViewModel.reset()
                     navController.popBackStack(MainRoute.Create, inclusive = false)
                 },
                 onGenerateMore = {
+                    // Go back to editor and keep current settings (clear only results)
+                    editorViewModel.clearGenerationResults()
+                    navController.popBackStack(MainRoute.Create, inclusive = false)
+                },
+                onRegenerate = {
+                    // Go back to editor, clear results, and user can regenerate
+                    editorViewModel.clearGenerationResults()
                     navController.popBackStack(MainRoute.Create, inclusive = false)
                 }
             )

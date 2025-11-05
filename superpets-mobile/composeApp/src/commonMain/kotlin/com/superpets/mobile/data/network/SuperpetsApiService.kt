@@ -68,14 +68,23 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
             heroId = heroId,
             numImages = numImages
         )
-        httpClient.post("/nano-banana/edit") {
+        val response = httpClient.post("/nano-banana/edit") {
             setBody(request)
             // Image generation takes longer - use extended timeout
             timeout {
                 requestTimeoutMillis = 120_000 // 2 minutes for image generation
                 socketTimeoutMillis = 120_000
             }
-        }.body()
+        }
+
+        // Check response status before trying to parse as JSON
+        if (!response.status.isSuccess()) {
+            val errorText = response.bodyAsText()
+            Napier.e("Edit failed with ${response.status}: $errorText")
+            throw io.ktor.client.plugins.ClientRequestException(response, errorText)
+        }
+
+        response.body()
     }
 
     /**
@@ -93,7 +102,7 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
         val imageBytes = imageData.firstOrNull()
             ?: throw IllegalArgumentException("At least one image is required")
 
-        httpClient.submitFormWithBinaryData(
+        val response = httpClient.submitFormWithBinaryData(
             url = "/nano-banana/upload-and-edit",
             formData = formData {
                 // Add hero_id and num_images
@@ -118,7 +127,16 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
                     Napier.d("Upload progress: $progress%")
                 }
             }
-        }.body()
+        }
+
+        // Check response status before trying to parse as JSON
+        if (!response.status.isSuccess()) {
+            val errorText = response.bodyAsText()
+            Napier.e("Upload failed with ${response.status}: $errorText")
+            throw io.ktor.client.plugins.ClientRequestException(response, errorText)
+        }
+
+        response.body()
     }
 
     /**

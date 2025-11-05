@@ -102,7 +102,7 @@ class SuperpetsRepository(
 
         return apiService.uploadAndEditImages(imageData, heroId, numImages)
             .onSuccess { response ->
-                Napier.d("Generated ${response.outputs.size} images")
+                Napier.d("Generated ${response.images.size} images")
             }
             .onFailure { error ->
                 Napier.e("Image upload/edit failed", error)
@@ -127,7 +127,7 @@ class SuperpetsRepository(
         require(numImages in 1..10) { "numImages must be between 1 and 10" }
 
         return apiService.editImage(inputImages, heroId, numImages)
-            .onSuccess { Napier.d("Generated ${it.outputs.size} images") }
+            .onSuccess { Napier.d("Generated ${it.images.size} images") }
             .onFailure { Napier.e("Image edit failed", it) }
     }
 

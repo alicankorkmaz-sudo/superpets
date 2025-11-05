@@ -14,12 +14,21 @@ data class EditImageRequest(
 )
 
 /**
+ * Image file model from backend
+ */
+@Serializable
+data class ImageFile(
+    @SerialName("url") val url: String
+)
+
+/**
  * Response model for image editing results
+ * Matches backend NanoBananaEditResponse model
  */
 @Serializable
 data class EditImageResponse(
-    @SerialName("outputs") val outputs: List<String>,
-    @SerialName("prompt") val prompt: String? = null
+    @SerialName("images") val images: List<ImageFile>,
+    @SerialName("description") val description: String
 )
 
 /**

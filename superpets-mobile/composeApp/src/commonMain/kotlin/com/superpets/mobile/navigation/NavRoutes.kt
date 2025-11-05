@@ -86,7 +86,7 @@ sealed interface FeatureRoute {
     data object GenerationProgress : FeatureRoute
 
     @Serializable
-    data class ResultGallery(val editId: String) : FeatureRoute
+    data object ResultGallery : FeatureRoute
 
     @Serializable
     data object Pricing : FeatureRoute

@@ -4,7 +4,7 @@ This file is automatically referenced at the start of each Claude Code session t
 
 ## Documentation Discovery System
 
-**Last Updated:** 2025-10-23
+**Last Updated:** 2025-11-05
 
 ### Quick Reference: Key Documentation Files
 
@@ -14,6 +14,7 @@ When starting a new session, Claude Code should be aware of these critical docum
 - **CLAUDE.md** - Main project instructions and guidelines (ALWAYS READ FIRST)
 - **PROJECT_STATE.md** - Current status, completed items, and priorities
 - **DEPLOYMENT_SUMMARY.md** - Production deployment status and live URLs
+- **DOCUMENTATION_SYSTEM.md** - Documentation organization and guidelines
 - **LAUNCH_CHECKLIST.md** - Pre-launch checklist
 
 #### 🔐 Authentication & Security (Root Level)
@@ -54,12 +55,13 @@ When starting a new session, Claude Code should be aware of these critical docum
 
 ## Complete Documentation Registry
 
-### Root Directory (13 files)
+### Root Directory (14 files)
 ```
 /Users/alican.korkmaz/Code/superpets/
 ├── APPLE_OAUTH_SETUP.md
 ├── CLAUDE.md ⭐ (Main project instructions)
 ├── DEPLOYMENT_SUMMARY.md
+├── DOCUMENTATION_SYSTEM.md
 ├── EMAIL_CONFIRMATION_SETUP.md
 ├── GITHUB_ACTIONS_SETUP.md
 ├── GOOGLE_OAUTH_SETUP.md
@@ -167,5 +169,5 @@ find /Users/alican.korkmaz/Code/superpets \
 ---
 
 ## Total Documentation Count
-**35 AI-generated documentation files** across the monorepo (as of 2025-10-23)
+**36 AI-generated documentation files** across the monorepo (as of 2025-11-05)
 

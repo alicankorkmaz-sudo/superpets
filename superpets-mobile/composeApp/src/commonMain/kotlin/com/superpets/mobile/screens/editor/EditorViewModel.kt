@@ -89,6 +89,23 @@ class EditorViewModel(
     }
 
     /**
+     * Add a single image (for camera capture)
+     */
+    fun addImage(image: ByteArray) {
+        addImages(listOf(image))
+    }
+
+    /**
+     * Set images (replaces existing images, for gallery selection)
+     */
+    fun setImages(images: List<ByteArray>) {
+        _uiState.update { state ->
+            val newImages = images.take(10) // Max 10 images
+            state.copy(selectedImages = newImages)
+        }
+    }
+
+    /**
      * Add selected images
      */
     fun addImages(images: List<ByteArray>) {

@@ -20,9 +20,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
 import coil3.compose.AsyncImage
+import com.superpets.mobile.core.image.ImagePicker
+import com.superpets.mobile.core.image.toImageBitmap
 import com.superpets.mobile.data.models.Hero
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -41,19 +45,25 @@ fun EditorScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // TODO: Integrate actual image picker when library is stable
+    // Inject ImagePicker
+    val imagePicker: ImagePicker = koinInject()
+
+    // Camera launcher
+    val cameraLauncher = imagePicker.rememberCameraLauncher { imageData ->
+        viewModel.addImage(imageData)
+    }
+
+    // Gallery launcher (max 10 images)
+    val galleryLauncher = imagePicker.rememberGalleryLauncher(maxImages = 10) { imageDataList ->
+        viewModel.setImages(imageDataList)
+    }
+
     val onCameraClick: () -> Unit = {
-        scope.launch {
-            snackbarHostState.showSnackbar("Camera feature coming soon!")
-        }
-        Unit
+        cameraLauncher()
     }
 
     val onGalleryClick: () -> Unit = {
-        scope.launch {
-            snackbarHostState.showSnackbar("Gallery feature coming soon!")
-        }
-        Unit
+        galleryLauncher()
     }
 
     Scaffold(
@@ -116,8 +126,40 @@ fun EditorScreen(
                         color = Color.White,
                         fontSize = 16.sp
                     )
+                } else {
+                    // Display the first selected image
+                    val firstImage = remember(uiState.selectedImages) {
+                        uiState.selectedImages.firstOrNull()?.toImageBitmap()
+                    }
+
+                    if (firstImage != null) {
+                        Image(
+                            bitmap = firstImage,
+                            contentDescription = "Selected image",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    // Show image count badge if more than 1 image
+                    if (uiState.selectedImages.size > 1) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(12.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color(0xFFFFC629))
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = "${uiState.selectedImages.size} images",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
+                            )
+                        }
+                    }
                 }
-                // TODO: Display selected image when Peekaboo is integrated
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -171,7 +213,11 @@ fun EditorScreen(
 
             // Image count hint
             Text(
-                text = "1-10 images allowed",
+                text = if (uiState.selectedImages.isEmpty()) {
+                    "1-10 images allowed"
+                } else {
+                    "${uiState.selectedImages.size} of 10 images selected"
+                },
                 fontSize = 14.sp,
                 color = Color.Gray,
                 modifier = Modifier.fillMaxWidth(),

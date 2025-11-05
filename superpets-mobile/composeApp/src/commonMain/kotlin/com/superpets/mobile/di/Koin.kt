@@ -49,7 +49,7 @@ val dataModule = module {
     single { Settings() }
     single { (get<Settings>() as ObservableSettings).toFlowSettings(get<DispatcherProvider>().io) }
     single { SettingsRepository(get()) }
-    single { ImageCompressor() }
+    single<ImageCompressor> { ImageCompressor() }
 }
 
 /**

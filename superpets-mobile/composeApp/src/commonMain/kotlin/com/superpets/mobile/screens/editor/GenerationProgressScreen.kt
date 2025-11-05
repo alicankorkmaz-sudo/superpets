@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.PI
 
 /**
  * Generation Progress Screen
@@ -229,8 +230,8 @@ private fun FloatingBubbles() {
             )
 
             // Medium bubble (animated)
-            val bubble1X = centerX + cos(Math.toRadians(bubble1Offset.toDouble())).toFloat() * 80.dp.toPx()
-            val bubble1Y = centerY + sin(Math.toRadians(bubble1Offset.toDouble())).toFloat() * 50.dp.toPx()
+            val bubble1X = centerX + cos(bubble1Offset * PI / 180.0).toFloat() * 80.dp.toPx()
+            val bubble1Y = centerY + sin(bubble1Offset * PI / 180.0).toFloat() * 50.dp.toPx()
             drawCircle(
                 color = purpleColor.copy(alpha = 0.4f),
                 radius = 40.dp.toPx(),
@@ -238,8 +239,8 @@ private fun FloatingBubbles() {
             )
 
             // Small bubble 1 (animated)
-            val bubble2X = centerX + cos(Math.toRadians(bubble2Offset.toDouble() + 90)).toFloat() * 60.dp.toPx()
-            val bubble2Y = centerY + sin(Math.toRadians(bubble2Offset.toDouble() + 90)).toFloat() * 40.dp.toPx()
+            val bubble2X = centerX + cos((bubble2Offset + 90) * PI / 180.0).toFloat() * 60.dp.toPx()
+            val bubble2Y = centerY + sin((bubble2Offset + 90) * PI / 180.0).toFloat() * 40.dp.toPx()
             drawCircle(
                 color = purpleColor.copy(alpha = 0.5f),
                 radius = 25.dp.toPx(),
@@ -247,8 +248,8 @@ private fun FloatingBubbles() {
             )
 
             // Small bubble 2 (animated)
-            val bubble3X = centerX + cos(Math.toRadians(bubble3Offset.toDouble() + 180)).toFloat() * 70.dp.toPx()
-            val bubble3Y = centerY + sin(Math.toRadians(bubble3Offset.toDouble() + 180)).toFloat() * 45.dp.toPx()
+            val bubble3X = centerX + cos((bubble3Offset + 180) * PI / 180.0).toFloat() * 70.dp.toPx()
+            val bubble3Y = centerY + sin((bubble3Offset + 180) * PI / 180.0).toFloat() * 45.dp.toPx()
             drawCircle(
                 color = purpleColor.copy(alpha = 0.6f),
                 radius = 30.dp.toPx(),
@@ -256,7 +257,7 @@ private fun FloatingBubbles() {
             )
 
             // Tiny bubble (animated)
-            val bubble4X = centerX + cos(Math.toRadians(bubble1Offset.toDouble() + 270)).toFloat() * 90.dp.toPx()
+            val bubble4X = centerX + cos((bubble1Offset + 270) * PI / 180.0).toFloat() * 90.dp.toPx()
             val bubble4Y = centerY - 80.dp.toPx()
             drawCircle(
                 color = purpleColor.copy(alpha = 0.7f),

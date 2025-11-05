@@ -37,12 +37,9 @@ actual class ImageCompressor {
         val originalImage = UIImage.imageWithData(nsData)
             ?: throw IllegalArgumentException("Invalid image data")
 
-        val cgImage = originalImage.CGImage
-            ?: throw IllegalArgumentException("Failed to get CGImage")
-
-        // Get original dimensions
-        val width = CGImageGetWidth(cgImage).toDouble()
-        val height = CGImageGetHeight(cgImage).toDouble()
+        // Get original dimensions (UIImage.size already accounts for orientation)
+        val width = originalImage.size.useContents { this.width }
+        val height = originalImage.size.useContents { this.height }
 
         // Calculate new dimensions
         val maxDim = maxDimension.toDouble()
@@ -60,9 +57,14 @@ actual class ImageCompressor {
             CGSizeMake(width, height)
         }
 
-        // Resize image
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-        originalImage.drawInRect(CGRectMake(0.0, 0.0, newSize.width, newSize.height))
+        // Resize image (drawInRect automatically handles orientation)
+        val newWidth = if (width > maxDim || height > maxDim) width * scale else width
+        val newHeight = if (width > maxDim || height > maxDim) height * scale else height
+
+        // Use UIGraphicsBeginImageContextWithOptions which respects orientation
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), false, 1.0)
+        // Draw the image - this automatically applies the correct orientation
+        originalImage.drawInRect(CGRectMake(0.0, 0.0, newWidth, newHeight))
         val resizedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
@@ -70,9 +72,12 @@ actual class ImageCompressor {
             throw IllegalStateException("Failed to resize image")
         }
 
+        // Note: The resized image now has orientation = .up (normal) because
+        // drawInRect baked the orientation into the pixel data
+
         // Compress to JPEG
         val compressionQuality = (quality / 100.0)
-        val compressedData = resizedImage.JPEGRepresentationWithCompressionQuality(compressionQuality)
+        val compressedData = platform.UIKit.UIImageJPEGRepresentation(resizedImage, compressionQuality)
             ?: throw IllegalStateException("Failed to compress image")
 
         // Convert NSData back to ByteArray

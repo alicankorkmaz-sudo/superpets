@@ -327,12 +327,15 @@ fun EditorScreen(
             // Generate Button
             Button(
                 onClick = {
+                    // Navigate to progress screen first, then start generation
+                    onNavigateToGeneration(
+                        uiState.selectedHero?.id ?: "",
+                        uiState.numOutputs,
+                        uiState.selectedImages
+                    )
+                    // Start generation (progress screen will observe ViewModel state)
                     viewModel.generateImages { response ->
-                        onNavigateToGeneration(
-                            uiState.selectedHero?.id ?: "",
-                            uiState.numOutputs,
-                            uiState.selectedImages
-                        )
+                        // Generation complete - navigation handled by progress screen
                     }
                 },
                 modifier = Modifier

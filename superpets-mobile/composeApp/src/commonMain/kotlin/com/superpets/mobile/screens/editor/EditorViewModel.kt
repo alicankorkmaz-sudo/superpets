@@ -190,10 +190,15 @@ class EditorViewModel(
                     numImages = state.numOutputs
                 ).fold(
                     onSuccess = { response ->
+                        // Extract image URLs from response
+                        val imageUrls = response.images.map { it.url }
+
                         _uiState.update {
                             it.copy(
                                 isGenerating = false,
-                                generationProgress = 1f
+                                generationProgress = 1f,
+                                generatedImageUrls = imageUrls,
+                                generationComplete = true
                             )
                         }
                         // Refresh user profile to update credits
@@ -268,5 +273,7 @@ data class EditorUiState(
     val isLoadingHeroes: Boolean = false,
     val isGenerating: Boolean = false,
     val generationProgress: Float = 0f,
+    val generatedImageUrls: List<String>? = null,
+    val generationComplete: Boolean = false,
     val error: String? = null
 )

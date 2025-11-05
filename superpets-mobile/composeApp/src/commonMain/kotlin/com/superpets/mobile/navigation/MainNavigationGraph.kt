@@ -165,11 +165,21 @@ fun BottomNavGraph(
         composable<FeatureRoute.GenerationProgress>(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
-        ) {
+        ) { backStackEntry ->
+            // Get the same ViewModel instance from the parent (Create screen)
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.Create)
+            }
+            val editorViewModel: EditorViewModel = koinViewModel(viewModelStoreOwner = parentEntry)
+
             GenerationProgressScreen(
-                progress = 0.5f, // TODO: Get actual progress from ViewModel
-                estimatedTimeRemaining = 120,
+                viewModel = editorViewModel,
                 onCancel = {
+                    navController.popBackStack()
+                },
+                onGenerationComplete = { imageUrls ->
+                    // TODO: Navigate to ResultGallery with imageUrls
+                    // For now, just go back to editor
                     navController.popBackStack()
                 }
             )

@@ -29,11 +29,25 @@ import kotlin.math.PI
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenerationProgressScreen(
-    progress: Float = 0.5f,
-    estimatedTimeRemaining: Int = 120, // in seconds
-    onCancel: () -> Unit
+    viewModel: EditorViewModel,
+    onCancel: () -> Unit,
+    onGenerationComplete: (imageUrls: List<String>) -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    // Auto-navigate when generation completes
+    LaunchedEffect(uiState.generationComplete) {
+        if (uiState.generationComplete && uiState.generatedImageUrls != null) {
+            onGenerationComplete(uiState.generatedImageUrls!!)
+        }
+    }
+
+    val progress = uiState.generationProgress
     val displayProgress = (progress * 100).toInt()
+
+    // Estimate time remaining based on progress (rough estimate: 2-3 minutes total)
+    val totalEstimatedSeconds = 180
+    val estimatedTimeRemaining = ((1 - progress) * totalEstimatedSeconds).toInt().coerceAtLeast(0)
     val minutes = estimatedTimeRemaining / 60
     val seconds = estimatedTimeRemaining % 60
 

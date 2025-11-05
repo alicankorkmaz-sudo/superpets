@@ -36,6 +36,11 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val spacing = MaterialTheme.spacing
 
+    // Refresh data when screen becomes visible (to show new generations)
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

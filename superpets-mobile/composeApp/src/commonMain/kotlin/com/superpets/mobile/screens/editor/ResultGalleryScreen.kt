@@ -34,8 +34,6 @@ import coil3.compose.AsyncImage
 fun ResultGalleryScreen(
     outputImages: List<String>,
     creditsCost: Int = 5,
-    saveToHistory: Boolean = true,
-    onSaveToHistoryChanged: (Boolean) -> Unit = {},
     onDownload: (String) -> Unit = {},
     onShare: (String) -> Unit = {},
     onRegenerate: () -> Unit = {},
@@ -158,36 +156,7 @@ fun ResultGalleryScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Save to history toggle
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Save to History",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
-
-                Switch(
-                    checked = saveToHistory,
-                    onCheckedChange = onSaveToHistoryChanged,
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        checkedTrackColor = Color(0xFFFFC629),
-                        uncheckedThumbColor = Color.White,
-                        uncheckedTrackColor = Color.Gray
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Credits used
             Text(

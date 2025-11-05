@@ -199,6 +199,14 @@ fun BottomNavGraph(
             ResultGalleryScreen(
                 outputImages = uiState.generatedImageUrls ?: emptyList(),
                 creditsCost = uiState.numOutputs,
+                onDownload = { imageUrl ->
+                    // TODO: Implement platform-specific download
+                    // For now, this is a placeholder
+                },
+                onShare = { imageUrl ->
+                    // TODO: Implement platform-specific share
+                    // For now, this is a placeholder
+                },
                 onClose = {
                     // Go back to editor and reset everything
                     editorViewModel.reset()
@@ -210,9 +218,10 @@ fun BottomNavGraph(
                     navController.popBackStack(MainRoute.Create, inclusive = false)
                 },
                 onRegenerate = {
-                    // Go back to editor, clear results, and user can regenerate
+                    // Go back to editor, clear results, and regenerate with same settings
                     editorViewModel.clearGenerationResults()
                     navController.popBackStack(MainRoute.Create, inclusive = false)
+                    // The user can then press Generate again with the same settings
                 }
             )
         }

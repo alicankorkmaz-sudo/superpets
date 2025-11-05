@@ -89,6 +89,10 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
         heroId: String,
         numImages: Int = 1
     ): Result<EditImageResponse> = safeApiCall {
+        // Backend only accepts single file, so we take the first image
+        val imageBytes = imageData.firstOrNull()
+            ?: throw IllegalArgumentException("At least one image is required")
+
         httpClient.submitFormWithBinaryData(
             url = "/nano-banana/upload-and-edit",
             formData = formData {
@@ -96,13 +100,11 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
                 append("hero_id", heroId)
                 append("num_images", numImages.toString())
 
-                // Add image files
-                imageData.forEachIndexed { index, bytes ->
-                    append("images", bytes, Headers.build {
-                        append(HttpHeaders.ContentType, "image/jpeg")
-                        append(HttpHeaders.ContentDisposition, "filename=\"image_$index.jpg\"")
-                    })
-                }
+                // Add single image file (backend expects "file" field)
+                append("file", imageBytes, Headers.build {
+                    append(HttpHeaders.ContentType, "image/jpeg")
+                    append(HttpHeaders.ContentDisposition, "filename=\"image.jpg\"")
+                })
             }
         ) {
             // Upload and image generation takes longer - use extended timeout

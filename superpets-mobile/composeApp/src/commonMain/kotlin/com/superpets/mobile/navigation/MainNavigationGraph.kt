@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -76,12 +78,16 @@ fun BottomBar(navController: NavHostController) {
 
     BottomAppBar {
         allRoutes.forEach { route ->
+            // For type-safe navigation, the route string contains the full qualified name
+            // e.g., "com.superpets.mobile.navigation.MainRoute.Home"
+            val isSelected = currentRoute?.contains(route::class.simpleName ?: "") == true
+
             NavigationBarItem(
                 label = { Text(text = route.title) },
                 icon = { Icon(imageVector = route.icon, contentDescription = route.title) },
-                selected = currentRoute == route.toString(),
+                selected = isSelected,
                 onClick = {
-                    if (currentRoute != route.toString()) {
+                    if (!isSelected) {
                         navController.navigate(route) {
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
@@ -90,7 +96,14 @@ fun BottomBar(navController: NavHostController) {
                             restoreState = true
                         }
                     }
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                )
             )
         }
     }

@@ -17,6 +17,8 @@
 - Multipart form-data upload to backend API
 - Real-time generation progress tracking
 - Result gallery with swipeable images (HorizontalPager)
+- **Download functionality (Android & iOS)** - Saves to device gallery/Photos
+- **Share functionality (Android & iOS)** - Native share sheet integration
 - Edit history with date and hero filters
 - Credit validation and deduction
 - Error handling (401, 402, 429 status codes)
@@ -101,14 +103,7 @@ Splash Screen (checks auth state)
    - Logout button
    - Account settings
 
-2. **Download & Share Actions** (High Priority) ⏳
-   - TODO placeholders exist in navigation
-   - Platform-specific implementations:
-     - **Android**: MediaStore API for saving, Intent.ACTION_SEND for sharing
-     - **iOS**: UIImageWriteToSavedPhotosAlbum for saving, UIActivityViewController for sharing
-   - Handle storage/photo library permissions
-
-3. **Credit Purchase UI** (Medium Priority) ⏳
+2. **Credit Purchase UI** (Medium Priority) ⏳
    - Stripe checkout integration for mobile
    - Display credit packages
    - Payment flow (can use Stripe mobile SDKs or web checkout)
@@ -237,28 +232,23 @@ open iosApp/iosApp.xcodeproj
    - Add logout functionality
    - Account settings UI
 
-2. **Download & Share Functionality** (High Priority - Week 1-2)
-   - Implement platform-specific download (Android/iOS)
-   - Implement platform-specific share (Android/iOS)
-   - Handle storage and photo library permissions
-   - Test on both platforms
-
-3. **Camera Functionality** (Medium Priority - Week 2)
+2. **Camera Functionality** (Medium Priority - Week 1-2)
    - Implement camera capture in EditorScreen
    - Platform-specific camera APIs (Android/iOS)
    - Handle camera permissions
    - Integrate with existing compression flow
 
-4. **Credit Purchase UI** (Medium Priority - Week 3)
+3. **Credit Purchase UI** (Medium Priority - Week 2)
    - Create pricing screen
    - Integrate Stripe checkout
    - Handle payment success/failure
    - Update credit balance after purchase
 
 **Testing & Validation:**
-- Test complete end-to-end flow on physical devices
+- Test complete end-to-end flow on physical devices (including download/share)
 - Test on various Android and iOS versions
 - Performance testing for image compression and upload
+- Verify photo library permissions work correctly
 - UI/UX refinements based on testing
 
 ---

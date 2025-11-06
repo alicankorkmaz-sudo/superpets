@@ -111,15 +111,23 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 - ✅ **Complete navigation flow** (Gallery → Hero → Generation → Results → History)
 - ✅ **Credit system** (validation, deduction, profile refresh after generation)
 - ✅ **Error handling** (401 Unauthorized, 402 Insufficient Credits, 429 Rate Limit)
+- ✅ **Download functionality** (Android: MediaStore API, iOS: PHPhotoLibrary with permissions)
+- ✅ **Share functionality** (Android: FileProvider + Intent, iOS: UIActivityViewController)
 - ❌ Camera functionality (placeholder callback exists, not implemented)
-- ❌ Download functionality (TODO placeholder in navigation - needs platform-specific code)
-- ❌ Share functionality (TODO placeholder in navigation - needs platform-specific code)
 - ❌ Credit purchase UI (Stripe checkout not integrated)
 - ❌ Profile screen (route exists, screen not implemented)
 
 ## Recent Changes (This Session)
 
-**Date:** November 6, 2025 - **MOBILE HISTORY SCREEN + FILTERS IMPLEMENTED** 🎉
+**Date:** November 6, 2025 - **MOBILE HISTORY SCREEN + DOWNLOAD/SHARE COMPLETE** 🎉
+
+### Documentation Correction
+- **Discovered Download & Share functionality was ALREADY FULLY IMPLEMENTED!**
+  - Android: MediaStore API for downloads, FileProvider + Intent for sharing
+  - iOS: PHPhotoLibrary for downloads, UIActivityViewController for sharing
+  - Platform-specific implementations with proper permissions handling
+  - Integrated into ResultGalleryScreen with EditorViewModel
+  - Incorrectly marked as "TODO" in earlier session - now corrected
 
 ### History Screen Development
 1. **Created HistoryViewModel.kt**

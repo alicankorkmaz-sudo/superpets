@@ -151,7 +151,8 @@
 - [x] **Build result gallery screen to display generated images** ✅
   - ✅ Image carousel (HorizontalPager)
   - ✅ Swipe navigation with page indicators
-  - ⏳ Download/Share actions (placeholders exist, needs implementation)
+  - ✅ Download functionality (Android: MediaStore API, iOS: PHPhotoLibrary)
+  - ✅ Share functionality (Android: FileProvider + Intent, iOS: UIActivityViewController)
   - ✅ Navigation to history
 
 ## Phase 4: User Experience (Important) - 🚧 IN PROGRESS
@@ -177,17 +178,18 @@
   - Payment confirmation
   - Credit balance update
 
+- [x] **Add image download/share functionality** ✅ (Nov 6, 2025)
+  - ✅ Save to device storage (Android: MediaStore API, iOS: PHPhotoLibrary)
+  - ✅ Share to social media (Android: FileProvider + Intent, iOS: UIActivityViewController)
+  - ✅ Platform-specific permissions (Android: MediaStore, iOS: Photos)
+  - ✅ Integrated into ResultGalleryScreen with EditorViewModel
+
 - [ ] **Implement error handling and loading states** ⏳
   - ✅ Network error handling (401, 402, 429 implemented)
   - ✅ Insufficient credits error
   - ✅ Loading indicators
   - ⏳ Enhanced retry mechanisms
   - ⏳ Offline mode graceful degradation
-
-- [ ] **Add image download/share functionality** ⏳ (HIGH PRIORITY)
-  - ⏳ Save to device storage (TODO placeholder in navigation)
-  - ⏳ Share to social media (TODO placeholder in navigation)
-  - ⏳ Platform-specific permissions (Android: MediaStore, iOS: Photos)
 
 ## Phase 5: Platform Testing & Polish
 

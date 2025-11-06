@@ -43,13 +43,37 @@ fun GenerationProgressScreen(
     }
 
     val progress = uiState.generationProgress
+    val phase = uiState.generationPhase
     val displayProgress = (progress * 100).toInt()
 
-    // Estimate time remaining based on progress (rough estimate: 2-3 minutes total)
-    val totalEstimatedSeconds = 180
-    val estimatedTimeRemaining = ((1 - progress) * totalEstimatedSeconds).toInt().coerceAtLeast(0)
-    val minutes = estimatedTimeRemaining / 60
-    val seconds = estimatedTimeRemaining % 60
+    // Determine title and subtitle based on phase
+    val phaseTitle = when (phase) {
+        GenerationPhase.COMPRESSING -> "Preparing images"
+        GenerationPhase.UPLOADING -> "Uploading to server"
+        GenerationPhase.GENERATING -> "Generating your Superpet"
+        GenerationPhase.IDLE -> "Generating your Superpet"
+    }
+
+    val phaseSubtitle = when (phase) {
+        GenerationPhase.COMPRESSING -> "Optimizing image quality..."
+        GenerationPhase.UPLOADING -> "Sending your pet photo..."
+        GenerationPhase.GENERATING -> "AI is creating magic..."
+        GenerationPhase.IDLE -> ""
+    }
+
+    // Estimate time remaining based on phase
+    val estimatedTimeText = when (phase) {
+        GenerationPhase.COMPRESSING -> "A few seconds"
+        GenerationPhase.UPLOADING -> {
+            if (progress < 0.5f) {
+                "Uploading... ${displayProgress}%"
+            } else {
+                "Upload complete"
+            }
+        }
+        GenerationPhase.GENERATING -> "1-2 minutes"
+        GenerationPhase.IDLE -> ""
+    }
 
     Scaffold(
         topBar = {
@@ -91,7 +115,7 @@ fun GenerationProgressScreen(
 
             // Title
             Text(
-                text = "Generating your Superpet",
+                text = phaseTitle,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
@@ -99,34 +123,65 @@ fun GenerationProgressScreen(
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Subtitle
+            Text(
+                text = phaseSubtitle,
+                fontSize = 16.sp,
+                color = Color.Gray,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Progress percentage
-            Text(
-                text = "$displayProgress%",
-                fontSize = 64.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFFFC629) // Yellow
-            )
+            // Progress percentage (only show for upload phase)
+            if (phase == GenerationPhase.UPLOADING || phase == GenerationPhase.COMPRESSING) {
+                Text(
+                    text = "$displayProgress%",
+                    fontSize = 64.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFFFC629) // Yellow
+                )
+            } else {
+                // Show spinner or "Generating..." for generation phase
+                Text(
+                    text = "✨",
+                    fontSize = 64.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Progress bar
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 48.dp)
-                    .height(8.dp),
-                color = Color(0xFFFFC629),
-                trackColor = Color(0xFFFFE6A3),
-            )
+            // Progress bar (determinate for upload, indeterminate for generation)
+            if (phase == GenerationPhase.GENERATING) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 48.dp)
+                        .height(8.dp),
+                    color = Color(0xFFFFC629),
+                    trackColor = Color(0xFFFFE6A3),
+                )
+            } else {
+                LinearProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 48.dp)
+                        .height(8.dp),
+                    color = Color(0xFFFFC629),
+                    trackColor = Color(0xFFFFE6A3),
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Estimated time
             Text(
-                text = "Estimated time remaining: $minutes minutes",
+                text = estimatedTimeText,
                 fontSize = 14.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center

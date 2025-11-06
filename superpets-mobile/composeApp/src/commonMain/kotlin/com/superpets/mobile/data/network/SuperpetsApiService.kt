@@ -81,7 +81,7 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
         if (!response.status.isSuccess()) {
             val errorText = response.bodyAsText()
             Napier.e("Edit failed with ${response.status}: $errorText")
-            throw io.ktor.client.plugins.ClientRequestException(response, errorText)
+            throw ClientRequestException(response, errorText)
         }
 
         response.body()
@@ -92,11 +92,13 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
      * @param imageData List of image byte arrays
      * @param heroId ID of the hero to transform pet into
      * @param numImages Number of output images to generate (1-10)
+     * @param onUploadProgress Callback for upload progress (0.0 to 1.0)
      */
     suspend fun uploadAndEditImages(
         imageData: List<ByteArray>,
         heroId: String,
-        numImages: Int = 1
+        numImages: Int = 1,
+        onUploadProgress: ((Float) -> Unit)? = null
     ): Result<EditImageResponse> = safeApiCall {
         // Backend only accepts single file, so we take the first image
         val imageBytes = imageData.firstOrNull()
@@ -123,8 +125,9 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
             }
             onUpload { bytesSentTotal, contentLength ->
                 contentLength?.let {
-                    val progress = (bytesSentTotal.toFloat() / it.toFloat()) * 100
-                    Napier.d("Upload progress: $progress%")
+                    val progress = bytesSentTotal.toFloat() / it.toFloat()
+                    Napier.d("Upload progress: ${(progress * 100).toInt()}%")
+                    onUploadProgress?.invoke(progress)
                 }
             }
         }
@@ -133,7 +136,7 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
         if (!response.status.isSuccess()) {
             val errorText = response.bodyAsText()
             Napier.e("Upload failed with ${response.status}: $errorText")
-            throw io.ktor.client.plugins.ClientRequestException(response, errorText)
+            throw ClientRequestException(response, errorText)
         }
 
         response.body()
@@ -174,7 +177,7 @@ class SuperpetsApiService(private val httpClient: HttpClient) {
                     HttpStatusCode.TooManyRequests -> "Rate limit exceeded. Please try again later."
                     else -> "Request failed: ${e.response.status.description}"
                 }
-            } catch (ex: Exception) {
+            } catch (_: Exception) {
                 "Request failed: ${e.response.status.description}"
             }
             Result.failure(ApiException(errorMessage, e.response.status.value))

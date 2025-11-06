@@ -174,33 +174,74 @@ class EditorViewModel(
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isGenerating = true, error = null, generationProgress = 0f) }
+            _uiState.update {
+                it.copy(
+                    isGenerating = true,
+                    error = null,
+                    generationProgress = 0f,
+                    generationPhase = GenerationPhase.COMPRESSING
+                )
+            }
 
             try {
-                // Compress images before upload
+                // Phase 1: Compress images (0-10%)
                 val compressedImages = state.selectedImages.mapIndexed { index, imageData ->
-                    _uiState.update { it.copy(generationProgress = (index.toFloat() / state.selectedImages.size) * 0.3f) }
+                    val compressionProgress = (index.toFloat() / state.selectedImages.size) * 0.1f
+                    _uiState.update {
+                        it.copy(
+                            generationProgress = compressionProgress,
+                            generationPhase = GenerationPhase.COMPRESSING
+                        )
+                    }
                     imageCompressor.compress(imageData)
                 }
 
                 Napier.d("Compressed ${compressedImages.size} images. Sizes: ${compressedImages.map { "${it.size / 1024}KB" }}")
 
-                // Upload and generate
-                _uiState.update { it.copy(generationProgress = 0.4f) }
+                // Phase 2: Upload (10-50% based on real upload progress)
+                _uiState.update {
+                    it.copy(
+                        generationProgress = 0.1f,
+                        generationPhase = GenerationPhase.UPLOADING
+                    )
+                }
 
-                apiService.uploadAndEditImages(
+                val result = apiService.uploadAndEditImages(
                     imageData = compressedImages,
                     heroId = state.selectedHero.id,
-                    numImages = state.numOutputs
-                ).fold(
+                    numImages = state.numOutputs,
+                    onUploadProgress = { uploadProgress ->
+                        // Map upload progress to 10-50% range
+                        val totalProgress = 0.1f + (uploadProgress * 0.4f)
+                        _uiState.update {
+                            it.copy(
+                                generationProgress = totalProgress,
+                                generationPhase = GenerationPhase.UPLOADING
+                            )
+                        }
+                    }
+                )
+
+                // Phase 3: After upload, switch to generation phase
+                if (result.isSuccess) {
+                    _uiState.update {
+                        it.copy(
+                            generationProgress = 0.5f,
+                            generationPhase = GenerationPhase.GENERATING
+                        )
+                    }
+                }
+
+                result.fold(
                     onSuccess = { response ->
-                        // Extract image URLs from response
+                        // Generation complete (100%)
                         val imageUrls = response.images.map { it.url }
 
                         _uiState.update {
                             it.copy(
                                 isGenerating = false,
                                 generationProgress = 1f,
+                                generationPhase = GenerationPhase.IDLE,
                                 generatedImageUrls = imageUrls,
                                 generationComplete = true
                             )
@@ -226,7 +267,8 @@ class EditorViewModel(
                             it.copy(
                                 isGenerating = false,
                                 error = errorMessage,
-                                generationProgress = 0f
+                                generationProgress = 0f,
+                                generationPhase = GenerationPhase.IDLE
                             )
                         }
                     }
@@ -237,7 +279,8 @@ class EditorViewModel(
                     it.copy(
                         isGenerating = false,
                         error = "Unexpected error: ${e.message}",
-                        generationProgress = 0f
+                        generationProgress = 0f,
+                        generationPhase = GenerationPhase.IDLE
                     )
                 }
             }
@@ -280,6 +323,7 @@ class EditorViewModel(
                 generatedImageUrls = null,
                 generationComplete = false,
                 generationProgress = 0f,
+                generationPhase = GenerationPhase.IDLE,
                 isGenerating = false,
                 error = null
             )
@@ -312,7 +356,18 @@ data class EditorUiState(
     val isLoadingHeroes: Boolean = false,
     val isGenerating: Boolean = false,
     val generationProgress: Float = 0f,
+    val generationPhase: GenerationPhase = GenerationPhase.IDLE,
     val generatedImageUrls: List<String>? = null,
     val generationComplete: Boolean = false,
     val error: String? = null
 )
+
+/**
+ * Generation phases
+ */
+enum class GenerationPhase {
+    IDLE,           // Not generating
+    COMPRESSING,    // Compressing images
+    UPLOADING,      // Uploading to server
+    GENERATING      // Waiting for AI generation
+}

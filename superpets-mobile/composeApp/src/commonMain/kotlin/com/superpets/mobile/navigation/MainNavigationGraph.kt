@@ -230,8 +230,11 @@ fun BottomNavGraph(
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
         ) {
-            // TODO: Implement HistoryScreen (Phase 4)
-            PlaceholderScreen(text = "History Screen\n\nComing soon...")
+            com.superpets.mobile.screens.history.HistoryScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable<MainRoute.Profile>(

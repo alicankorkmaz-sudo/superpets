@@ -98,6 +98,7 @@ val viewModelModule = module {
 
     // Feature ViewModels
     factory { com.superpets.mobile.screens.home.HomeViewModel(get(), get()) }
+    factory { com.superpets.mobile.screens.history.HistoryViewModel(get()) }
     factory { com.superpets.mobile.screens.profile.ProfileViewModel(get(), get()) }
     factory { EditorViewModel(get(), get()) }
 }

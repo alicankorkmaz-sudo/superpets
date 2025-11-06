@@ -286,9 +286,23 @@ All authenticated routes require `Authorization: Bearer <supabase-jwt-token>` he
 - ✅ Apple OAuth Sign-In (web & mobile)
 - ✅ Email confirmation support with branded confirmation screen
 - ✅ Deep linking for OAuth callbacks
-- ❌ Editor screen (not yet implemented)
-- ❌ Hero selection (not yet implemented)
-- ❌ Credit management UI (not yet implemented)
+- ✅ Home screen with credit display and recent creations
+- ✅ Editor screen with image upload UI and hero selection
+- ✅ Gallery picker (multi-select up to 10 images)
+- ✅ Hero selection screen (29 heroes with search and category tabs)
+- ✅ **Image generation (FULLY WORKING)** - Compress → Upload → API call → Results
+- ✅ Generation progress screen (real-time progress tracking with animated bubbles)
+- ✅ Result gallery screen (swipeable HorizontalPager for generated images)
+- ✅ **Edit history screen** (2-column grid, date/hero filters, API integration)
+- ✅ Image compression utilities (Android & iOS, max 2048x2048)
+- ✅ Complete end-to-end flow (Gallery → Hero → Generation → Results)
+- ✅ Credit system (validation, deduction, balance refresh)
+- ✅ Error handling (401, 402, 429 status codes)
+- ❌ Camera functionality (placeholder exists, not implemented)
+- ❌ Download action (TODO placeholder - needs platform-specific code)
+- ❌ Share action (TODO placeholder - needs platform-specific code)
+- ❌ Profile screen (route exists, screen not implemented)
+- ❌ Credit purchase UI (Stripe not integrated)
 
 **Image Upload Strategy:**
 - **Backend validation**: 10MB maximum file size
@@ -594,13 +608,24 @@ See `PROJECT_STATE.md` for current progress and next steps.
 - ✅ **Integrated mobile deep linking for OAuth callbacks** (Oct 14)
 - ✅ **Integrated professional app icons** (Android, iOS, and web with PWA support) (Oct 16)
 - ✅ **Integrated app logo in mobile authentication screens** (Landing, Login, Signup, Email confirmation) (Oct 21)
+- ✅ **Implemented mobile editor screens** (Home, Editor, Hero Selection, Generation Progress, Result Gallery) (Nov 3)
+- ✅ **Gallery picker integration** (multi-select up to 10 images) (Nov 3)
+- ✅ **Image compression utilities** (Android & iOS, max 2048x2048) (Nov 3)
+- ✅ **Complete navigation flow** (Create → Hero → Generation → Results) (Nov 3)
+- ✅ **Image generation API fully working** (compress, upload, multipart form-data, error handling) (Nov 3)
+- ✅ **Real-time progress tracking** (GenerationProgressScreen updates from ViewModel state) (Nov 3)
+- ✅ **Edit history screen** (2-column grid, API integration, date/hero filters, Stitch design) (Nov 6)
 
 **Remaining priorities:**
-1. **Complete mobile app core features** (editor screen, hero selection, credit management UI)
-2. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
-3. **Test end-to-end user flows** (signup → confirm email → login → edit images → purchase credits)
-4. **Apple Developer account activation** (required for Apple Sign-In to work in production)
-5. **Monitor Railway backend performance and costs**
+1. **Test mobile end-to-end flow** (gallery → hero → generation → results → history is FULLY working)
+2. **Build profile screen** (route exists, screen not implemented)
+3. **Implement Download/Share actions** (TODO placeholders exist in navigation - needs platform-specific Android/iOS code)
+4. **Add camera functionality** (placeholder callback exists in EditorScreen)
+5. **Add credit purchase UI** (Stripe checkout integration for mobile)
+6. **Complete Stripe payment integration** (checkout sessions configured, needs webhook testing)
+7. **Apple Developer account activation** (required for Apple Sign-In to work in production)
+8. **Test end-to-end user flows on web** (signup → confirm email → login → edit images → purchase credits)
+9. **Monitor Railway backend performance and costs**
 
 See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.
 

@@ -1,8 +1,8 @@
 # Superpets Mobile - Current Status
 
-**Last Updated:** October 14, 2025
-**Current Phase:** Phase 3 (Core Features)
-**Overall Progress:** 45% (3 of 6 phases complete)
+**Last Updated:** November 6, 2025
+**Current Phase:** Phase 3 (Core Features) - NEARLY COMPLETE ✅
+**Overall Progress:** 75% (Phase 0-3 mostly complete, 4 phases remaining)
 
 ---
 
@@ -10,104 +10,124 @@
 
 ### ✅ Complete Features
 
-**Authentication & Onboarding (Phase 2)**
-- Users can sign up with email/password
-- Users can log in with email/password
-- Password reset email functionality
-- Session persists across app restarts
-- First-time users see onboarding/landing screen
-- Returning users skip directly to appropriate screen based on auth state
+**Core Image Generation Flow (Phase 3)** - **FULLY WORKING** ✅
+- Gallery picker with multi-select (1-10 images)
+- Hero selection with search and category tabs (29 heroes)
+- Image compression to 2048x2048 before upload
+- Multipart form-data upload to backend API
+- Real-time generation progress tracking
+- Result gallery with swipeable images (HorizontalPager)
+- Edit history with date and hero filters
+- Credit validation and deduction
+- Error handling (401, 402, 429 status codes)
 
-**Infrastructure (Phase 1)**
+**Authentication & Onboarding (Phase 2)** ✅
+- Email/password signup and login
+- Google OAuth Sign-In (web and mobile)
+- Apple OAuth Sign-In UI (requires Apple Developer account)
+- Email confirmation support
+- Deep linking for OAuth callbacks
+- Session persistence across app restarts
+- First-time users see onboarding/landing screen
+- Returning users skip directly to appropriate screen
+
+**Infrastructure (Phase 1)** ✅
 - Ktor HTTP client configured for backend API
 - Supabase Auth SDK integrated
 - All data models defined
-- Repository layer ready for API calls
+- Repository layer with API integration
 - Koin dependency injection configured
+- SharedViewModel scoped across navigation
 
-**Design System (Phase 0)**
+**Design System (Phase 0)** ✅
 - Material 3 theme with light/dark mode
 - Complete component library (buttons, cards, inputs, loading states, etc.)
 - Consistent design tokens (colors, typography, spacing)
+- App icons (Android adaptive icons, iOS AppIcon set, PWA icons)
+- Professional app logo integrated in authentication screens
 
-### 📱 User Flow Currently Available
+### 📱 Complete User Flow Available
 
 ```
 App Launch
   ↓
 Splash Screen (checks auth state)
   ↓
-  ├─ First Time User → Landing Screen → Login/Signup → Main (placeholder)
+  ├─ First Time User → Landing Screen → Login/Signup → Home Screen
   └─ Returning User
-      ├─ Authenticated → Main (placeholder)
-      └─ Not Authenticated → Login/Signup → Main (placeholder)
+      ├─ Authenticated → Home Screen
+      └─ Not Authenticated → Login/Signup → Home Screen
+        ↓
+      Home Screen (credit display, recent creations)
+        ↓
+      Create New → Editor Screen
+        ↓
+      Select Images (Gallery Picker - up to 10 images)
+        ↓
+      Select Hero (29 heroes with search & tabs)
+        ↓
+      Adjust Output Count (1-10 images slider)
+        ↓
+      Generate (with credit validation)
+        ↓
+      Generation Progress (animated bubbles, real-time updates)
+        ↓
+      Result Gallery (swipeable images, action buttons)
+        ↓
+      Edit History (2-column grid, filters working)
 ```
 
 ---
 
-## 🚧 What's Next - Phase 3: Core Features
+## 🚧 What's Remaining - High-Priority Tasks
 
-**Goal:** Build the actual image editing functionality - the heart of Superpets!
+**Goal:** Complete remaining Phase 3 & Phase 4 features for production readiness
 
-### Priority Tasks (Next 6-7 weeks)
+### Remaining Phase 3 Tasks
 
-1. **Home/Dashboard Screen** (1 week)
-   - Show credit balance, recent edits, quick stats
-   - Primary CTA: "Create New Superhero"
-   - Bottom navigation
+1. **Camera Functionality** ⏳
+   - Camera capture option in EditorScreen (placeholder callback exists)
+   - Platform-specific: Camera APIs (Android/iOS)
+   - Handle camera permissions
+   - Image capture and compression
 
-2. **Hero Selection Screen** (1 week)
-   - Display all 29 heroes in grid
-   - Tabs: "Classic Heroes" (10) and "Unique Heroes" (19)
-   - Search/filter functionality
-   - Pass selected hero to Editor
+### Phase 4: User Experience & Polish
 
-3. **Image Picker** (1 week)
-   - Pick from gallery (1-10 images)
-   - Capture with camera
-   - Platform-specific: ActivityResultContracts (Android), PHPickerViewController (iOS)
-   - Handle permissions
+**Goal:** Essential features for production release
 
-4. **Image Compression** (3 days)
-   - Resize to 2048x2048 max
-   - JPEG quality 80-90%
-   - Target: 1-3MB per image
-   - Backend validates: 10MB max
+1. **Profile Screen** (High Priority) ⏳
+   - Route exists, screen not implemented
+   - Display: user email, credit balance, transaction history
+   - Logout button
+   - Account settings
 
-5. **Editor Screen** (1.5 weeks)
-   - Display selected hero
-   - Image picker integration
-   - Output count slider (1-10 images)
-   - Credit cost calculator (1 credit per image)
-   - Validation: images selected, sufficient credits
-   - Upload and generate
-   - Loading indicator during processing
+2. **Download & Share Actions** (High Priority) ⏳
+   - TODO placeholders exist in navigation
+   - Platform-specific implementations:
+     - **Android**: MediaStore API for saving, Intent.ACTION_SEND for sharing
+     - **iOS**: UIImageWriteToSavedPhotosAlbum for saving, UIActivityViewController for sharing
+   - Handle storage/photo library permissions
 
-6. **Result Gallery Screen** (1 week)
-   - Fullscreen image carousel
-   - Swipe between generated images
-   - Download to device storage
-   - Share to social media
-   - Regenerate option
+3. **Credit Purchase UI** (Medium Priority) ⏳
+   - Stripe checkout integration for mobile
+   - Display credit packages
+   - Payment flow (can use Stripe mobile SDKs or web checkout)
+   - Backend `/stripe/create-checkout-session` already exists
 
-### After Phase 3
-- **MVP is complete!** Users can do the full flow:
-  - Sign up → Select hero → Upload pet photo → Generate superhero images → View/share results
-- Ready for internal testing
+4. **Enhanced Error Handling** (Medium Priority) ⏳
+   - User-friendly error messages
+   - Retry mechanisms for network failures
+   - Graceful degradation for offline mode
 
----
+5. **Apple Sign-In Activation** (Blocked) ⏳
+   - UI fully implemented
+   - **Requires Apple Developer Program membership ($99/year)**
+   - Cannot test without active account
 
-## 📋 Phase 4: User Experience (After Phase 3)
-
-**Goal:** Polish the app and add essential features for production
-
-1. **Edit History Screen** - View past generations
-2. **Profile Screen** - User stats, sign out
-3. **Pricing/Credits Screen** - Stripe integration for purchasing credits
-4. **Error Handling** - User-friendly errors, retry logic
-5. **Download/Share** - Full implementation with permissions
-
-**After Phase 4:** Ready for external beta testing (TestFlight/Play Store Beta)
+### After Phase 4
+- **Ready for beta testing** (TestFlight/Play Store Beta)
+- Core user flow is production-ready
+- Essential features complete
 
 ---
 
@@ -118,14 +138,14 @@ Splash Screen (checks auth state)
 | **Phase 0:** Design System | ✅ Complete | - | Done |
 | **Phase 1:** Infrastructure | ✅ Complete | - | Done |
 | **Phase 2:** Auth & Onboarding | ✅ Complete | - | Done Oct 14 |
-| **Phase 3:** Core Features (MVP) | 🚧 Current | 6-7 weeks | Late Nov 2025 |
-| **Phase 4:** User Experience | ⏳ Pending | 3-4 weeks | Mid Dec 2025 |
-| **Phase 5:** Testing & Polish | ⏳ Pending | 2-3 weeks | Early Jan 2026 |
-| **Phase 6:** Optimization | ⏳ Pending | 2-3 weeks | Late Jan 2026 |
+| **Phase 3:** Core Features (MVP) | ✅ 95% Complete | - | Done Nov 6 |
+| **Phase 4:** User Experience | 🚧 Current | 2-3 weeks | Late Nov 2025 |
+| **Phase 5:** Testing & Polish | ⏳ Pending | 2-3 weeks | Mid Dec 2025 |
+| **Phase 6:** Optimization | ⏳ Pending | 2-3 weeks | Early Jan 2026 |
 
-**MVP Target (Phase 3+4):** Mid-December 2025
-**Beta Release Target (Phase 5):** Early January 2026
-**Production Release Target (Phase 6):** Late January 2026
+**Current Status:** Phase 3 nearly complete - core image generation flow fully working!
+**Beta Release Target (Phase 5):** Mid-December 2025
+**Production Release Target (Phase 6):** Early January 2026
 
 ---
 
@@ -209,26 +229,37 @@ open iosApp/iosApp.xcodeproj
 
 ## 🎯 Next Immediate Steps
 
-**Start Phase 3 Development:**
+**Finish Phase 3 & Start Phase 4:**
 
-1. **Home/Dashboard Screen** (Week 1)
-   - Create HomeScreen and HomeViewModel
-   - Fetch and display user profile, credits, recent edits
-   - Implement bottom navigation
-   - Add "Create New Superhero" CTA
+1. **Profile Screen** (High Priority - Week 1)
+   - Create ProfileScreen and ProfileViewModel
+   - Display user email, credit balance, transaction history
+   - Add logout functionality
+   - Account settings UI
 
-2. **Hero Selection Screen** (Week 2)
-   - Create HeroSelectionScreen and HeroSelectionViewModel
-   - Fetch heroes from `/heroes` API
-   - Implement grid with tabs (classics/uniques)
-   - Add search/filter functionality
+2. **Download & Share Functionality** (High Priority - Week 1-2)
+   - Implement platform-specific download (Android/iOS)
+   - Implement platform-specific share (Android/iOS)
+   - Handle storage and photo library permissions
+   - Test on both platforms
 
-3. **Image Picker** (Week 3)
-   - Implement platform-specific image picker (Android/iOS)
-   - Add camera capture option
-   - Handle permissions properly
+3. **Camera Functionality** (Medium Priority - Week 2)
+   - Implement camera capture in EditorScreen
+   - Platform-specific camera APIs (Android/iOS)
+   - Handle camera permissions
+   - Integrate with existing compression flow
 
-**Then continue with Image Compression → Editor Screen → Result Gallery**
+4. **Credit Purchase UI** (Medium Priority - Week 3)
+   - Create pricing screen
+   - Integrate Stripe checkout
+   - Handle payment success/failure
+   - Update credit balance after purchase
+
+**Testing & Validation:**
+- Test complete end-to-end flow on physical devices
+- Test on various Android and iOS versions
+- Performance testing for image compression and upload
+- UI/UX refinements based on testing
 
 ---
 

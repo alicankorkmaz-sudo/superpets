@@ -16,7 +16,7 @@ COPY src ./src
 RUN gradle shadowJar --no-daemon
 
 # Runtime stage
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
 # Copy the built JAR from build stage

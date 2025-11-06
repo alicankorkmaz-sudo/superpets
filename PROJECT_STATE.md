@@ -104,7 +104,7 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 - ✅ **Image generation** (FULLY WORKING - compress, upload, API call, error handling)
 - ✅ **Generation progress screen** (real-time progress tracking, animated bubbles, auto-navigation)
 - ✅ **Result gallery screen** (swipeable HorizontalPager, page indicators, action buttons)
-- ✅ **Edit history screen** (2-column grid, date/hero filters, loading/error/empty states)
+- ✅ **Edit history screen** (2-column grid, date/hero filters fully working, clear filters)
 - ✅ **Shared ViewModel** (EditorViewModel scoped across navigation with state management)
 - ✅ **Image compression utilities** (expect/actual for Android/iOS, max 2048x2048)
 - ✅ **Full API integration** (upload-and-edit endpoint with multipart form-data)
@@ -119,13 +119,13 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
 
 ## Recent Changes (This Session)
 
-**Date:** November 6, 2025 - **MOBILE HISTORY SCREEN IMPLEMENTED** 🎉
+**Date:** November 6, 2025 - **MOBILE HISTORY SCREEN + FILTERS IMPLEMENTED** 🎉
 
 ### History Screen Development
 1. **Created HistoryViewModel.kt**
    - Fetches edit history from `/user/edits` API endpoint
    - Manages loading, error, and success states
-   - Includes filter functions for Date and Hero
+   - Full filter implementation (date sorting + hero filtering)
    - Refresh functionality
 
 2. **Created HistoryScreen.kt**
@@ -135,11 +135,19 @@ Superpets is a full-stack monorepo for AI-powered pet superhero transformations.
    - Loading, error, and empty states handled
    - Light beige background with yellow accents
 
-3. **Fixed Gradle Memory Issue**
+3. **Implemented Date & Hero Filters**
+   - **Date Filter**: "Newest First" (default) and "Oldest First" sorting
+   - **Hero Filter**: Filter by specific hero with unique hero extraction
+   - Filter dialogs with radio button selection
+   - Active filter buttons show yellow background + current value
+   - "Clear" button appears when filters are active
+   - Filters work together (AND logic)
+
+4. **Fixed Gradle Memory Issue**
    - Increased MaxMetaspaceSize to 1024m
    - Resolved OutOfMemoryError during dex merging
 
-4. **Navigation & DI**
+5. **Navigation & DI**
    - Updated MainNavigationGraph.kt to use HistoryScreen
    - Registered HistoryViewModel in Koin DI
 

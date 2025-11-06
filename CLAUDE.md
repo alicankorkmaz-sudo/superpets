@@ -614,7 +614,7 @@ See `PROJECT_STATE.md` for current progress and next steps.
 - ✅ **Complete navigation flow** (Create → Hero → Generation → Results) (Nov 3)
 - ✅ **Image generation API fully working** (compress, upload, multipart form-data, error handling) (Nov 3)
 - ✅ **Real-time progress tracking** (GenerationProgressScreen updates from ViewModel state) (Nov 3)
-- ✅ **Edit history screen** (2-column grid, API integration, date/hero filters, Stitch design) (Nov 6)
+- ✅ **Edit history screen** (2-column grid, date/hero filters fully working, clear filters button) (Nov 6)
 
 **Remaining priorities:**
 1. **Test mobile end-to-end flow** (gallery → hero → generation → results → history is FULLY working)

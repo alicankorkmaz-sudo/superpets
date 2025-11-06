@@ -68,5 +68,9 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Superpets needs access to your photo library to save your generated superhero pet images.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Superpets needs access to your photo library to let you select and share your superhero pet images.</string>
 </dict>
 </plist>

@@ -3,6 +3,8 @@ package com.superpets.mobile.di
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.superpets.mobile.core.image.ImagePicker
+import com.superpets.mobile.core.image.ImageSaver
+import com.superpets.mobile.core.image.ImageSharer
 import com.superpets.mobile.data.AppDatabase
 import com.superpets.mobile.data.DB_FILE_NAME
 import io.ktor.client.engine.HttpClientEngine
@@ -30,6 +32,12 @@ internal actual val platformModule: Module = module {
 
     // ImagePicker for iOS
     single<ImagePicker> { ImagePicker() }
+
+    // ImageSaver for iOS
+    single<ImageSaver> { ImageSaver() }
+
+    // ImageSharer for iOS
+    single<ImageSharer> { ImageSharer() }
 }
 
 @OptIn(ExperimentalForeignApi::class)

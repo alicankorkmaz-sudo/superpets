@@ -3,6 +3,8 @@ package com.superpets.mobile.screens.editor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.superpets.mobile.core.image.ImageCompressor
+import com.superpets.mobile.core.image.ImageSaver
+import com.superpets.mobile.core.image.ImageSharer
 import com.superpets.mobile.data.models.EditImageResponse
 import com.superpets.mobile.data.models.Hero
 import com.superpets.mobile.data.models.User
@@ -21,7 +23,9 @@ import kotlinx.coroutines.launch
  */
 class EditorViewModel(
     private val apiService: SuperpetsApiService,
-    private val imageCompressor: ImageCompressor
+    private val imageCompressor: ImageCompressor,
+    private val imageSaver: ImageSaver,
+    private val imageSharer: ImageSharer
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EditorUiState())
@@ -245,6 +249,26 @@ class EditorViewModel(
      */
     fun clearError() {
         _uiState.update { it.copy(error = null) }
+    }
+
+    /**
+     * Download an image to the device gallery
+     */
+    fun downloadImage(imageUrl: String, onComplete: (Result<Unit>) -> Unit) {
+        viewModelScope.launch {
+            val result = imageSaver.saveImage(imageUrl)
+            onComplete(result)
+        }
+    }
+
+    /**
+     * Share an image using the native share sheet
+     */
+    fun shareImage(imageUrl: String, onComplete: (Result<Unit>) -> Unit) {
+        viewModelScope.launch {
+            val result = imageSharer.shareImage(imageUrl)
+            onComplete(result)
+        }
     }
 
     /**

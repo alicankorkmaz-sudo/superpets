@@ -220,12 +220,25 @@ fun BottomNavGraph(
                 outputImages = uiState.generatedImageUrls ?: emptyList(),
                 creditsCost = uiState.numOutputs,
                 onDownload = { imageUrl ->
-                    // TODO: Implement platform-specific download
-                    // For now, this is a placeholder
+                    editorViewModel.downloadImage(imageUrl) { result ->
+                        result.onSuccess {
+                            // Image saved successfully
+                            // Could show a snackbar notification here
+                        }.onFailure { error ->
+                            // Handle download error
+                            // Could show an error snackbar here
+                        }
+                    }
                 },
                 onShare = { imageUrl ->
-                    // TODO: Implement platform-specific share
-                    // For now, this is a placeholder
+                    editorViewModel.shareImage(imageUrl) { result ->
+                        result.onSuccess {
+                            // Share sheet opened successfully
+                        }.onFailure { error ->
+                            // Handle share error
+                            // Could show an error snackbar here
+                        }
+                    }
                 },
                 onClose = {
                     // Go back to editor and reset everything

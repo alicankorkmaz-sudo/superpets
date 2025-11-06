@@ -113,7 +113,14 @@ fun BottomNavGraph(
         ) {
             com.superpets.mobile.screens.home.HomeScreen(
                 onNavigateToCreate = {
-                    navController.navigate(MainRoute.Create)
+                    // Switch to Create tab (same behavior as clicking bottom nav)
+                    navController.navigate(MainRoute.Create) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             )
         }

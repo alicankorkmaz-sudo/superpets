@@ -11,9 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +35,36 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showDateFilterDialog by remember { mutableStateOf(false) }
+    var showHeroFilterDialog by remember { mutableStateOf(false) }
+
+    // Filter dialogs
+    if (showDateFilterDialog) {
+        DateFilterDialog(
+            currentFilter = uiState.dateFilter,
+            onDismiss = { showDateFilterDialog = false },
+            onFilterSelected = { filter ->
+                viewModel.setDateFilter(filter)
+                showDateFilterDialog = false
+            }
+        )
+    }
+
+    if (showHeroFilterDialog) {
+        HeroFilterDialog(
+            heroes = viewModel.getUniqueHeroNames(),
+            selectedHero = uiState.selectedHeroFilter,
+            onDismiss = { showHeroFilterDialog = false },
+            onHeroSelected = { hero ->
+                viewModel.setHeroFilter(hero)
+                showHeroFilterDialog = false
+            },
+            onClearFilter = {
+                viewModel.setHeroFilter(null)
+                showHeroFilterDialog = false
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -82,15 +110,34 @@ fun HistoryScreen(
                 ) {
                     // Date filter
                     FilterButton(
-                        text = "Date",
-                        onClick = { viewModel.filterByDate() }
+                        text = uiState.dateFilter.label,
+                        isActive = uiState.dateFilter != DateFilter.NEWEST_FIRST,
+                        onClick = { showDateFilterDialog = true }
                     )
 
                     // Hero filter
                     FilterButton(
-                        text = "Hero",
-                        onClick = { viewModel.filterByHero() }
+                        text = uiState.selectedHeroFilter ?: "Hero",
+                        isActive = uiState.selectedHeroFilter != null,
+                        onClick = { showHeroFilterDialog = true }
                     )
+
+                    // Clear filters (only show if any filter is active)
+                    if (uiState.dateFilter != DateFilter.NEWEST_FIRST || uiState.selectedHeroFilter != null) {
+                        TextButton(
+                            onClick = { viewModel.clearFilters() },
+                            modifier = Modifier.height(40.dp),
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = Color(0xFFFFC629)
+                            )
+                        ) {
+                            Text(
+                                text = "Clear",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -185,6 +232,7 @@ fun HistoryScreen(
 @Composable
 private fun FilterButton(
     text: String,
+    isActive: Boolean = false,
     onClick: () -> Unit
 ) {
     Button(
@@ -192,15 +240,15 @@ private fun FilterButton(
         modifier = Modifier.height(40.dp),
         shape = RoundedCornerShape(999.dp), // Fully rounded
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFFC629).copy(alpha = 0.1f),
-            contentColor = Color(0xFFFFC629)
+            containerColor = if (isActive) Color(0xFFFFC629) else Color(0xFFFFC629).copy(alpha = 0.1f),
+            contentColor = if (isActive) Color.Black else Color(0xFFFFC629)
         ),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
             text = text,
             fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
+            fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium
         )
         Spacer(modifier = Modifier.width(4.dp))
         Icon(
@@ -287,4 +335,153 @@ private fun formatTimestamp(timestamp: String): String {
     } catch (e: Exception) {
         timestamp
     }
+}
+
+/**
+ * Date filter dialog
+ */
+@Composable
+private fun DateFilterDialog(
+    currentFilter: DateFilter,
+    onDismiss: () -> Unit,
+    onFilterSelected: (DateFilter) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Sort by Date",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                DateFilter.entries.forEach { filter ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onFilterSelected(filter) }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = filter == currentFilter,
+                            onClick = { onFilterSelected(filter) },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Color(0xFFFFC629)
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = filter.label,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = Color(0xFFFFC629))
+            }
+        },
+        containerColor = Color.White
+    )
+}
+
+/**
+ * Hero filter dialog
+ */
+@Composable
+private fun HeroFilterDialog(
+    heroes: List<String>,
+    selectedHero: String?,
+    onDismiss: () -> Unit,
+    onHeroSelected: (String) -> Unit,
+    onClearFilter: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Filter by Hero",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp)
+            ) {
+                // Clear filter option
+                if (selectedHero != null) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onClearFilter() }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = false,
+                            onClick = { onClearFilter() },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Color(0xFFFFC629)
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = "All Heroes",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    HorizontalDivider()
+                }
+
+                // Hero list
+                heroes.forEach { hero ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onHeroSelected(hero) }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = hero == selectedHero,
+                            onClick = { onHeroSelected(hero) },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Color(0xFFFFC629)
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = hero,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+
+                if (heroes.isEmpty()) {
+                    Text(
+                        text = "No heroes found in your history",
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel", color = Color(0xFFFFC629))
+            }
+        },
+        containerColor = Color.White
+    )
 }

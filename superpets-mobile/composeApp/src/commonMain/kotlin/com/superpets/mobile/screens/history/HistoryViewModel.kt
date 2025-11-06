@@ -42,6 +42,7 @@ class HistoryViewModel(
                             isLoading = false
                         )
                     }
+                    applyFilters()
                 },
                 onFailure = { error ->
                     Napier.e("Failed to load edit history: ${error.message}", error)
@@ -64,25 +65,74 @@ class HistoryViewModel(
     }
 
     /**
-     * Filter by date (placeholder - implement sorting logic)
+     * Set date filter
      */
-    fun filterByDate() {
-        val state = _uiState.value
-        val sortedEdits = state.edits.sortedByDescending { it.timestamp }
-        _uiState.update {
-            it.copy(filteredEdits = sortedEdits)
-        }
+    fun setDateFilter(filter: DateFilter) {
+        _uiState.update { it.copy(dateFilter = filter) }
+        applyFilters()
     }
 
     /**
-     * Filter by hero (placeholder - implement hero filtering logic)
+     * Set hero filter
      */
-    fun filterByHero() {
-        // TODO: Implement hero filtering
-        // For now, just refresh the list
+    fun setHeroFilter(heroName: String?) {
+        _uiState.update { it.copy(selectedHeroFilter = heroName) }
+        applyFilters()
+    }
+
+    /**
+     * Clear all filters
+     */
+    fun clearFilters() {
         _uiState.update {
-            it.copy(filteredEdits = it.edits)
+            it.copy(
+                dateFilter = DateFilter.NEWEST_FIRST,
+                selectedHeroFilter = null
+            )
         }
+        applyFilters()
+    }
+
+    /**
+     * Apply current filters to edit list
+     */
+    private fun applyFilters() {
+        val state = _uiState.value
+        var filtered = state.edits
+
+        // Apply hero filter
+        state.selectedHeroFilter?.let { heroName ->
+            filtered = filtered.filter { edit ->
+                extractHeroName(edit.prompt).equals(heroName, ignoreCase = true)
+            }
+        }
+
+        // Apply date sorting
+        filtered = when (state.dateFilter) {
+            DateFilter.NEWEST_FIRST -> filtered.sortedByDescending { it.timestamp }
+            DateFilter.OLDEST_FIRST -> filtered.sortedBy { it.timestamp }
+        }
+
+        _uiState.update { it.copy(filteredEdits = filtered) }
+    }
+
+    /**
+     * Extract hero name from prompt
+     */
+    private fun extractHeroName(prompt: String): String {
+        val regex = """Transform the pet into ([\w\s]+)\.""".toRegex()
+        val match = regex.find(prompt)
+        return match?.groupValues?.getOrNull(1)?.trim() ?: "Superpet"
+    }
+
+    /**
+     * Get unique hero names from all edits
+     */
+    fun getUniqueHeroNames(): List<String> {
+        return _uiState.value.edits
+            .map { extractHeroName(it.prompt) }
+            .distinct()
+            .sorted()
     }
 
     /**
@@ -94,11 +144,21 @@ class HistoryViewModel(
 }
 
 /**
+ * Date filter options
+ */
+enum class DateFilter(val label: String) {
+    NEWEST_FIRST("Newest First"),
+    OLDEST_FIRST("Oldest First")
+}
+
+/**
  * UI state for the History screen
  */
 data class HistoryUiState(
     val edits: List<EditHistory> = emptyList(),
     val filteredEdits: List<EditHistory> = emptyList(),
+    val dateFilter: DateFilter = DateFilter.NEWEST_FIRST,
+    val selectedHeroFilter: String? = null,
     val isLoading: Boolean = false,
     val error: String? = null
 )

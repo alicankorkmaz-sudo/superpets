@@ -29,8 +29,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.ui.layout.ContentScale
 import org.jetbrains.compose.resources.painterResource
-import superpets.composeapp.generated.resources.Res
-import superpets.composeapp.generated.resources.app_logo
+import superpets_mobile.composeapp.generated.resources.Res
+import superpets_mobile.composeapp.generated.resources.app_logo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState

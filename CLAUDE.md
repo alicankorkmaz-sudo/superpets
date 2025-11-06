@@ -638,3 +638,7 @@ See `LAUNCH_CHECKLIST.md` for comprehensive pre-launch checklist.
 - **Migrated from Firebase to Supabase** (October 5, 2025)
 - **Deployed to Railway** (backend, October 13, 2025)
 - memorize
+- Whenever I command you to 'syncw' you should always:
+- Save our work
+- Sync related files including AI docs
+- Git push

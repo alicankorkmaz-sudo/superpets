@@ -25,6 +25,15 @@ firebase-service-account.json
 *.p12
 secrets/
 
+# Gradle (monorepo root)
+.gradle/
+build/
+.kotlin/
+gradlew
+gradlew.bat
+gradle/
+local.properties
+
 # Temporary/Build (each subproject has its own .gitignore for specifics)
 *.log
 *.tmp

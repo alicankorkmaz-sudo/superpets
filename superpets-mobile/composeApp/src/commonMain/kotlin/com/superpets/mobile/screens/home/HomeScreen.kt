@@ -61,7 +61,7 @@ fun HomeScreen(
         // Quick Stats
         item {
             QuickStatsSection(
-                totalCreations = uiState.recentEdits.size,
+                totalCreations = uiState.totalEditCount,
                 lastActivityTimestamp = uiState.recentEdits.firstOrNull()?.timestamp
             )
         }

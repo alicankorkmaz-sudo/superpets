@@ -37,29 +37,26 @@ actual class ImageCompressor {
         val originalImage = UIImage.imageWithData(nsData)
             ?: throw IllegalArgumentException("Invalid image data")
 
-        // Get original dimensions (UIImage.size already accounts for orientation)
-        val width = originalImage.size.useContents { this.width }
-        val height = originalImage.size.useContents { this.height }
+        // Get original dimensions from CGImage
+        val cgImage = originalImage.CGImage
+            ?: throw IllegalArgumentException("Could not get CGImage from UIImage")
+
+        val originalWidth = CGImageGetWidth(cgImage).toDouble()
+        val originalHeight = CGImageGetHeight(cgImage).toDouble()
+        val maxDim = maxDimension.toDouble()
 
         // Calculate new dimensions
-        val maxDim = maxDimension.toDouble()
-        val scale = if (width > height) {
-            maxDim / width
+        val scale = if (originalWidth > originalHeight) {
+            maxDim / originalWidth
         } else {
-            maxDim / height
+            maxDim / originalHeight
         }
 
-        val newSize = if (width > maxDim || height > maxDim) {
-            val newWidth = width * scale
-            val newHeight = height * scale
-            CGSizeMake(newWidth, newHeight)
+        val (newWidth, newHeight) = if (originalWidth > maxDim || originalHeight > maxDim) {
+            Pair(originalWidth * scale, originalHeight * scale)
         } else {
-            CGSizeMake(width, height)
+            Pair(originalWidth, originalHeight)
         }
-
-        // Resize image (drawInRect automatically handles orientation)
-        val newWidth = if (width > maxDim || height > maxDim) width * scale else width
-        val newHeight = if (width > maxDim || height > maxDim) height * scale else height
 
         // Use UIGraphicsBeginImageContextWithOptions which respects orientation
         UIGraphicsBeginImageContextWithOptions(CGSizeMake(newWidth, newHeight), false, 1.0)

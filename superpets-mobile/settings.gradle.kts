@@ -1,4 +1,4 @@
-rootProject.name = "Superpets"
+rootProject.name = "superpets-mobile"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

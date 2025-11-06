@@ -97,7 +97,7 @@ class HomeViewModel(
             // Load credits
             val creditsResult = repository.getUserCredits()
 
-            // Load recent edits (last 3)
+            // Load recent edits (last 4)
             val editsResult = repository.getEditHistory()
 
             creditsResult.fold(
@@ -117,7 +117,8 @@ class HomeViewModel(
             editsResult.fold(
                 onSuccess = { edits ->
                     _uiState.value = _uiState.value.copy(
-                        recentEdits = edits.take(3), // Show only 3 most recent
+                        recentEdits = edits.take(4), // Show only 4 most recent
+                        totalEditCount = edits.count(),
                         isLoading = false
                     )
                     Napier.d("Loaded ${edits.size} edits")
@@ -156,5 +157,6 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val credits: Int = 0,
     val recentEdits: List<EditHistory> = emptyList(),
+    val totalEditCount: Int = 0,
     val error: String? = null
 )

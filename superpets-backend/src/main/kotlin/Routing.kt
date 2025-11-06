@@ -97,8 +97,8 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
 
-                    // Per-user rate limiting: 30 requests per minute
-                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 30, windowSeconds = 60)
+                    // Per-user rate limiting: 30 requests per minute (profile endpoints)
+                    val rateLimitResult = rateLimitingService.checkRateLimit("user:$userId:profile", maxRequests = 30, windowSeconds = 60)
                     if (!rateLimitResult.allowed) {
                         call.response.headers.append("X-RateLimit-Limit", "30")
                         call.response.headers.append("X-RateLimit-Remaining", "0")
@@ -139,8 +139,8 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
 
-                    // Per-user rate limiting: 30 requests per minute
-                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 30, windowSeconds = 60)
+                    // Per-user rate limiting: 30 requests per minute (profile endpoints)
+                    val rateLimitResult = rateLimitingService.checkRateLimit("user:$userId:profile", maxRequests = 30, windowSeconds = 60)
                     if (!rateLimitResult.allowed) {
                         call.response.headers.append("X-RateLimit-Limit", "30")
                         call.response.headers.append("X-RateLimit-Remaining", "0")
@@ -175,8 +175,8 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, com.alicankorkmaz.models.ErrorResponse("Unauthorized"))
 
-                    // Per-user rate limiting: 30 requests per minute
-                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 30, windowSeconds = 60)
+                    // Per-user rate limiting: 30 requests per minute (profile endpoints)
+                    val rateLimitResult = rateLimitingService.checkRateLimit("user:$userId:profile", maxRequests = 30, windowSeconds = 60)
                     if (!rateLimitResult.allowed) {
                         call.response.headers.append("X-RateLimit-Limit", "30")
                         call.response.headers.append("X-RateLimit-Remaining", "0")
@@ -204,8 +204,8 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@get call.respond(HttpStatusCode.Unauthorized, EditHistoryResponse(emptyList()))
 
-                    // Per-user rate limiting: 30 requests per minute
-                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 30, windowSeconds = 60)
+                    // Per-user rate limiting: 30 requests per minute (profile endpoints)
+                    val rateLimitResult = rateLimitingService.checkRateLimit("user:$userId:profile", maxRequests = 30, windowSeconds = 60)
                     if (!rateLimitResult.allowed) {
                         call.response.headers.append("X-RateLimit-Limit", "30")
                         call.response.headers.append("X-RateLimit-Remaining", "0")
@@ -234,7 +234,7 @@ fun Application.configureRouting() {
                         ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
                     // Per-user rate limiting: 10 requests per minute (admin/webhook operations)
-                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 10, windowSeconds = 60)
+                    val rateLimitResult = rateLimitingService.checkRateLimit("user:$userId:admin", maxRequests = 10, windowSeconds = 60)
                     if (!rateLimitResult.allowed) {
                         call.response.headers.append("X-RateLimit-Limit", "10")
                         call.response.headers.append("X-RateLimit-Remaining", "0")
@@ -281,8 +281,8 @@ fun Application.configureRouting() {
                             status = HttpStatusCode.Unauthorized
                         )
 
-                    // Per-user rate limiting: 5 requests per minute (expensive operation)
-                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 5, windowSeconds = 60)
+                    // Per-user rate limiting: 5 requests per minute (image generation)
+                    val rateLimitResult = rateLimitingService.checkRateLimit("user:$userId:generation", maxRequests = 5, windowSeconds = 60)
                     if (!rateLimitResult.allowed) {
                         call.response.headers.append("X-RateLimit-Limit", "5")
                         call.response.headers.append("X-RateLimit-Remaining", "0")
@@ -404,8 +404,8 @@ fun Application.configureRouting() {
                             status = HttpStatusCode.Unauthorized
                         )
 
-                    // Per-user rate limiting: 5 requests per minute (expensive operation)
-                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 5, windowSeconds = 60)
+                    // Per-user rate limiting: 5 requests per minute (image generation)
+                    val rateLimitResult = rateLimitingService.checkRateLimit("user:$userId:generation", maxRequests = 5, windowSeconds = 60)
                     if (!rateLimitResult.allowed) {
                         call.response.headers.append("X-RateLimit-Limit", "5")
                         call.response.headers.append("X-RateLimit-Remaining", "0")
@@ -706,8 +706,8 @@ fun Application.configureRouting() {
                     val userId = call.principal<UserIdPrincipal>()?.name
                         ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
-                    // Per-user rate limiting: 10 requests per minute
-                    val rateLimitResult = rateLimitingService.checkUserRateLimit(userId, maxRequests = 10, windowSeconds = 60)
+                    // Per-user rate limiting: 10 requests per minute (checkout operations)
+                    val rateLimitResult = rateLimitingService.checkRateLimit("user:$userId:checkout", maxRequests = 10, windowSeconds = 60)
                     if (!rateLimitResult.allowed) {
                         call.response.headers.append("X-RateLimit-Limit", "10")
                         call.response.headers.append("X-RateLimit-Remaining", "0")

@@ -41,3 +41,6 @@ local.properties
 
 # Icon generation artifacts
 IconKitchen Output/
+
+# Playwright test artifacts
+.playwright-mcp/

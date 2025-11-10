@@ -94,6 +94,14 @@ function App() {
     return <AuthCallbackPage />;
   }
 
+  // Handle legal pages (accessible to all users)
+  if (window.location.pathname === '/terms') {
+    return <TermsOfServicePage />;
+  }
+  if (window.location.pathname === '/privacy') {
+    return <PrivacyPolicyPage />;
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">

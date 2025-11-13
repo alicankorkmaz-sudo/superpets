@@ -291,7 +291,19 @@ class EditorViewModel(
      * Clear any error message
      */
     fun clearError() {
-        _uiState.update { it.copy(error = null) }
+        _uiState.update { it.copy(error = null, cameraPermissionDenied = false) }
+    }
+
+    /**
+     * Handle camera permission denied
+     */
+    fun onCameraPermissionDenied() {
+        _uiState.update {
+            it.copy(
+                cameraPermissionDenied = true,
+                error = "Camera permission is required to take photos. Please enable it in Settings."
+            )
+        }
     }
 
     /**
@@ -359,7 +371,8 @@ data class EditorUiState(
     val generationPhase: GenerationPhase = GenerationPhase.IDLE,
     val generatedImageUrls: List<String>? = null,
     val generationComplete: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val cameraPermissionDenied: Boolean = false
 )
 
 /**

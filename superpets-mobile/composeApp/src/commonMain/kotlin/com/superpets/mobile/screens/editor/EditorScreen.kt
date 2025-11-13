@@ -24,6 +24,7 @@ import androidx.compose.foundation.Image
 import coil3.compose.AsyncImage
 import com.superpets.mobile.core.image.ImagePicker
 import com.superpets.mobile.core.image.toImageBitmap
+import com.superpets.mobile.core.utils.PermissionUtils
 import com.superpets.mobile.data.models.Hero
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -49,9 +50,14 @@ fun EditorScreen(
     val imagePicker: ImagePicker = koinInject()
 
     // Camera launcher
-    val cameraLauncher = imagePicker.rememberCameraLauncher { imageData ->
-        viewModel.addImage(imageData)
-    }
+    val cameraLauncher = imagePicker.rememberCameraLauncher(
+        onImageCaptured = { imageData ->
+            viewModel.addImage(imageData)
+        },
+        onPermissionDenied = {
+            viewModel.onCameraPermissionDenied()
+        }
+    )
 
     // Gallery launcher (max 10 images)
     val galleryLauncher = imagePicker.rememberGalleryLauncher(maxImages = 10) { imageDataList ->
@@ -372,10 +378,40 @@ fun EditorScreen(
         // Error Snackbar
         uiState.error?.let { error ->
             LaunchedEffect(error) {
-                // Show error to user
-                kotlinx.coroutines.delay(3000)
-                viewModel.clearError()
+                snackbarHostState.showSnackbar(
+                    message = error,
+                    duration = SnackbarDuration.Short
+                )
             }
+        }
+
+        // Camera Permission Denied Dialog
+        if (uiState.cameraPermissionDenied) {
+            AlertDialog(
+                onDismissRequest = { viewModel.clearError() },
+                title = { Text("Camera Permission Required") },
+                text = {
+                    Text(
+                        "Camera access is needed to take photos of your pet. " +
+                        "Please enable camera permission in your device settings."
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.clearError()
+                            PermissionUtils.openAppSettings()
+                        }
+                    ) {
+                        Text("Open Settings")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.clearError() }) {
+                        Text("Cancel")
+                    }
+                }
+            )
         }
     }
 }

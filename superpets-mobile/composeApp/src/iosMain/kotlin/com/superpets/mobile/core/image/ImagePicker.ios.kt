@@ -25,7 +25,8 @@ import platform.posix.memcpy
 actual class ImagePicker {
     @Composable
     actual fun rememberCameraLauncher(
-        onImageCaptured: (ByteArray) -> Unit
+        onImageCaptured: (ByteArray) -> Unit,
+        onPermissionDenied: (() -> Unit)?
     ): () -> Unit {
         val viewController = LocalUIViewController.current
 
@@ -37,14 +38,17 @@ actual class ImagePicker {
                 val delegate = object : NSObject(), UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol {
                     override fun imagePickerController(
                         picker: UIImagePickerController,
-                        didFinishPickingImage: UIImage,
-                        editingInfo: Map<Any?, *>?
+                        didFinishPickingMediaWithInfo: Map<Any?, *>
                     ) {
-                        // Convert UIImage to JPEG data
-                        val jpegData = platform.UIKit.UIImageJPEGRepresentation(didFinishPickingImage, 0.8)
-                        if (jpegData != null) {
-                            val byteArray = jpegData.toByteArray()
-                            onImageCaptured(byteArray)
+                        // Get the captured image from info dictionary
+                        val image = didFinishPickingMediaWithInfo.get(platform.UIKit.UIImagePickerControllerOriginalImage) as? UIImage
+                        if (image != null) {
+                            // Convert UIImage to JPEG data with 80% quality to match Android
+                            val jpegData = platform.UIKit.UIImageJPEGRepresentation(image, 0.8)
+                            if (jpegData != null) {
+                                val byteArray = jpegData.toByteArray()
+                                onImageCaptured(byteArray)
+                            }
                         }
                         picker.dismissViewControllerAnimated(true, null)
                     }

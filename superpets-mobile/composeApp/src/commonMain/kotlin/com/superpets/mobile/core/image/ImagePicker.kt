@@ -10,10 +10,12 @@ expect class ImagePicker {
     /**
      * Launch camera to take a photo
      * @param onImageCaptured Callback with captured image as ByteArray
+     * @param onPermissionDenied Callback when permission is denied (Android only)
      */
     @Composable
     fun rememberCameraLauncher(
-        onImageCaptured: (ByteArray) -> Unit
+        onImageCaptured: (ByteArray) -> Unit,
+        onPermissionDenied: (() -> Unit)? = null
     ): () -> Unit
 
     /**

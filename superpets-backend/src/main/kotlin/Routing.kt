@@ -740,8 +740,8 @@ fun Application.configureRouting() {
                         credits = request.credits,
                         userId = userId,
                         userEmail = email,
-                        successUrl = "http://localhost:5173?payment=success",
-                        cancelUrl = "http://localhost:5173?payment=cancelled"
+                        successUrl = "https://superpets.fun?payment=success",
+                        cancelUrl = "https://superpets.fun?payment=cancelled"
                     )
 
                     call.respond(

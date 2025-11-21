@@ -5,9 +5,6 @@
 ### Payment Integration
 - [ ] Receipt/invoice display
 
-### Apple Login
-- [ ] Apple login implemented
-
 ### Pricing Strategy
 - [ ] Set refund policy
 

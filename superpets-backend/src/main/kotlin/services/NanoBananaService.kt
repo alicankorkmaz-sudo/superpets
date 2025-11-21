@@ -1,6 +1,8 @@
 package com.alicankorkmaz.services
 
 import com.alicankorkmaz.models.FalAiEditRequest
+import com.alicankorkmaz.models.FalAiQueueResponse
+import com.alicankorkmaz.models.FalAiStatusResponse
 import com.alicankorkmaz.models.InitiateUploadRequest
 import com.alicankorkmaz.models.InitiateUploadResponse
 import com.alicankorkmaz.models.NanoBananaEditRequest
@@ -13,6 +15,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 
 class NanoBananaService(private val application: Application) {
@@ -46,7 +49,7 @@ class NanoBananaService(private val application: Application) {
             imageUrls = listOf(request.imageUrl),
             numImages = request.numImages,
             outputFormat = request.outputFormat,
-            syncMode = request.syncMode
+            syncMode = true
         )
 
         return client.post("https://fal.run/fal-ai/nano-banana/edit") {

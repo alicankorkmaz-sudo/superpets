@@ -59,3 +59,16 @@ data class InitiateUploadResponse(
     @SerialName("file_url")
     val fileUrl: String
 )
+
+@Serializable
+data class FalAiQueueResponse(
+    @SerialName("request_id")
+    val requestId: String
+)
+
+@Serializable
+data class FalAiStatusResponse(
+    val status: String,
+    val images: List<ImageFile>? = null,
+    val description: String? = null
+)

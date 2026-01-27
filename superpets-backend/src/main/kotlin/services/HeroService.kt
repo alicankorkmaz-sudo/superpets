@@ -38,29 +38,41 @@ class HeroService(private val app: Application) {
 }
 
 fun Hero.buildPrompt(): String {
-    val scene = sceneOptions.random()
     return """
-        Create a superhero-style portrait of the SAME pet from the input photo.
+        Create a high-end, professional superhero portrait of the SAME pet from the input photo.
 
-        CRITICAL IDENTITY LOCK (must match the input exactly):
-        - Keep the pet’s face shape, eyes, nose, mouth, ear shape/position, fur length/texture, markings, and body proportions.
-        - Preserve the exact breed look, color pattern, and fluffiness.
-        - Keep the pet as the same species (do not turn into a human/character/plush/toy).
+        IDENTITY PRESERVATION (natural, not rigid):
+        - The pet must be immediately recognizable as the same individual.
+        - Preserve facial structure, eyes, nose, mouth, ear shape, fur color/pattern, and overall proportions.
+        - Do NOT exaggerate features or turn the pet into a cartoon or toy.
 
-        SUPERHERO COSTUME RULES:
-        - Add a ${hero}-inspired suit as CLOTHING OVER the pet (fabric suit, chest emblem, gloves/boots-like paw covers).
-        - Do NOT cover or replace the pet’s face. No full mask, no helmet, no human-like face, no big cartoon eyes.
-        - Ears must remain visible and uncovered; whiskers and muzzle must remain visible.
-        - If a mask is iconic for ${hero}, use a partial/open-face version: around the head/neck only, leaving eyes, nose, and mouth fully visible.
+        NATURAL INTEGRATION (NO CUT-PASTE):
+        - The superhero suit must look custom-made for THIS pet’s anatomy.
+        - Seamlessly blend fur and costume at the neck, shoulders, and limbs.
+        - Fur should naturally overlap costume edges (no hard cut lines).
+        - Body proportions must match the pet’s head size and posture.
 
-        SCENE + STYLE:
-        - Place the pet ${scene}. Keep natural pet anatomy and realistic fur detail.
-        - Match lighting and shadows to the environment; keep the pet’s fur readable (no plastic/smooth skin).
-        - Camera: close/medium shot, pet centered, face clearly visible, sharp focus on facial features.
+        COSTUME RULES:
+        - Add a ${hero}-inspired suit as realistic fabric clothing.
+        - Open face only: eyes, nose, mouth, muzzle, and ears fully visible.
+        - No helmet, no full mask, no human face replacement.
+        - Costume should follow the pet’s natural pose and muscle structure.
 
-        NEGATIVE CONSTRAINTS (avoid):
-        - Do not change facial features, fur pattern, ear shape, eye shape, or proportions.
-        - No extreme stylization, no chibi/cartoon, no heavy CGI that removes fur detail.
-        - No distortion, no extra limbs, no oversized head, no hidden muzzle, no identity loss.
+        CINEMATIC REALISM:
+        - Consistent lighting across face, body, and environment.
+        - Matching shadows between pet and background.
+        - Correct perspective and scale (no floating or pasted look).
+        - Photorealistic fur detail with visible depth and softness.
+
+        SCENE:
+        - Place the pet ${scene}.
+        - Use a professional, cinematic composition (not a sticker or collage).
+        - Shallow depth of field, subject clearly grounded in the scene.
+
+        STRICTLY AVOID:
+        - Cut-out or pasted appearance
+        - Toy-like or costume-doll proportions
+        - Mismatched lighting or sharp edge transitions
+        - Cartoon, chibi, or low-effort Photoshop look
     """.trimIndent()
 }

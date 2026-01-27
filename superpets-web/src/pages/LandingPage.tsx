@@ -11,10 +11,9 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <Shield className="text-primary-600" size={24} />
+          <div className="flex items-center">
             <span className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              SuperPets
+              🐾 Superpets
             </span>
           </div>
           <button
@@ -157,9 +156,8 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Shield size={24} />
-            <span className="text-xl font-bold">SuperPets</span>
+          <div className="flex items-center justify-center mb-4">
+            <span className="text-xl font-bold">🐾 Superpets</span>
           </div>
           <p className="text-gray-400 text-sm mb-4">
             Transform your pets into superheroes with AI-powered magic
@@ -184,7 +182,7 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
             </button>
           </div>
           <p className="text-gray-500 text-xs mt-6">
-            © 2025 SuperPets. All rights reserved.
+            © 2025 Superpets. All rights reserved.
           </p>
         </div>
       </footer>

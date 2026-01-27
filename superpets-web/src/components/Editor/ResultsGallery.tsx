@@ -10,9 +10,28 @@ export function ResultsGallery({ images, description }: ResultsGalleryProps) {
   const downloadImage = async (url: string, index: number) => {
     const response = await fetch(url);
     const blob = await response.blob();
+    const filename = `superpets-edit-${index + 1}.jpg`;
+
+    // Try Web Share API for mobile devices (saves to gallery)
+    if (navigator.share && navigator.canShare) {
+      const file = new File([blob], filename, { type: blob.type });
+      const shareData = { files: [file] };
+
+      if (navigator.canShare(shareData)) {
+        try {
+          await navigator.share(shareData);
+          return;
+        } catch (err) {
+          // User cancelled or share failed, fall back to download
+          if ((err as Error).name === 'AbortError') return;
+        }
+      }
+    }
+
+    // Fallback: traditional download
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `superpets-edit-${index + 1}.jpg`;
+    link.download = filename;
     link.click();
   };
 
@@ -38,12 +57,12 @@ export function ResultsGallery({ images, description }: ResultsGalleryProps) {
               alt={`Result ${index + 1}`}
               className="w-full aspect-square object-cover transform group-hover:scale-105 transition-transform duration-300"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
               <span className="text-white font-medium text-sm">Image {index + 1}</span>
               <button
                 onClick={() => downloadImage(image.url, index)}
-                className="bg-white text-gray-800 p-3 rounded-full hover:bg-primary-500 hover:text-white transition-all shadow-lg transform hover:scale-110"
-                title="Download image"
+                className="bg-white text-gray-800 p-3 rounded-full hover:bg-primary-500 hover:text-white transition-all shadow-lg transform hover:scale-110 active:scale-95"
+                title="Save image"
               >
                 <Download size={20} />
               </button>

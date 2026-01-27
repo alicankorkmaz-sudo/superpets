@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ImageUploader } from '../components/Editor/ImageUploader';
 import { HeroSelector } from '../components/Editor/HeroSelector';
 import { OutputSettings } from '../components/Editor/OutputSettings';
@@ -20,6 +20,7 @@ export function EditorPage() {
 
   const { editImages, loading, error, result } = useImageEdit();
   const { credits, refreshCredits } = useCredits();
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   // Simulate progress with realistic steps
   useEffect(() => {
@@ -73,6 +74,16 @@ export function EditorPage() {
         setProgress(0);
         setCurrentStep('');
       }, 500);
+    }
+  }, [result, loading]);
+
+  // Scroll to results on mobile when generation completes
+  useEffect(() => {
+    if (result && !loading && resultsRef.current) {
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
   }, [result, loading]);
 
@@ -174,7 +185,11 @@ export function EditorPage() {
         </div>
       </div>
 
-      {result && <ResultsGallery images={result.images} description={result.description} />}
+      {result && (
+        <div ref={resultsRef}>
+          <ResultsGallery images={result.images} description={result.description} />
+        </div>
+      )}
     </div>
   );
 }

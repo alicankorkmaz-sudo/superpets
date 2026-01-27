@@ -38,6 +38,7 @@ class HeroService(private val app: Application) {
 }
 
 fun Hero.buildPrompt(): String {
+    val scene = sceneOptions.random()
     return """
         Create a high-end, professional superhero portrait of the SAME pet from the input photo.
 

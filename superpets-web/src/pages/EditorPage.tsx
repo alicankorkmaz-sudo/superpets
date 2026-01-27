@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ImageUploader } from '../components/Editor/ImageUploader';
 import { HeroSelector } from '../components/Editor/HeroSelector';
 import { OutputSettings } from '../components/Editor/OutputSettings';
 import { ResultsGallery } from '../components/Editor/ResultsGallery';
+import { LoadingProgress } from '../components/Editor/LoadingProgress';
 import { useImageEdit } from '../hooks/useImageEdit';
 import { useCredits } from '../contexts/CreditsContext';
 import { Loader2, Sparkles } from 'lucide-react';
@@ -13,9 +14,70 @@ export function EditorPage() {
   const [numImages, setNumImages] = useState(1);
   const [outputFormat, setOutputFormat] = useState<'jpeg' | 'png'>('jpeg');
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState('');
+  const [startTime, setStartTime] = useState<number | null>(null);
 
   const { editImages, loading, error, result } = useImageEdit();
   const { credits, refreshCredits } = useCredits();
+
+  // Simulate progress with realistic steps
+  useEffect(() => {
+    if (!loading) {
+      setProgress(0);
+      setCurrentStep('');
+      setStartTime(null);
+      return;
+    }
+
+    setStartTime(Date.now());
+    setProgress(0);
+    setCurrentStep('Uploading your image...');
+
+    const steps = [
+      { threshold: 15, message: 'Uploading your image...', duration: 1000 },
+      { threshold: 35, message: 'Processing with AI magic...', duration: 2000 },
+      { threshold: 60, message: 'Generating your superhero...', duration: 3000 },
+      { threshold: 85, message: 'Adding final touches...', duration: 2500 },
+      { threshold: 95, message: 'Almost there...', duration: 1500 },
+    ];
+
+    let currentProgress = 0;
+    let stepIndex = 0;
+
+    const interval = setInterval(() => {
+      if (stepIndex < steps.length) {
+        const step = steps[stepIndex];
+        const increment = (step.threshold - currentProgress) / (step.duration / 100);
+
+        currentProgress += increment;
+
+        if (currentProgress >= step.threshold) {
+          currentProgress = step.threshold;
+          stepIndex++;
+          if (stepIndex < steps.length) {
+            setCurrentStep(steps[stepIndex].message);
+          }
+        }
+
+        setProgress(Math.min(currentProgress, 95));
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  // Complete progress when result is received
+  useEffect(() => {
+    if (result && loading === false) {
+      setProgress(100);
+      setCurrentStep('Done!');
+      setTimeout(() => {
+        setProgress(0);
+        setCurrentStep('');
+      }, 500);
+    }
+  }, [result, loading]);
 
   const handleNumImagesChange = (num: number) => {
     setNumImages(num);
@@ -53,8 +115,17 @@ export function EditorPage() {
 
   const canGenerate = file !== null && selectedHeroId !== null && !loading && credits >= numImages;
 
+  const estimatedTimeLeft = startTime ? Math.max(0, Math.round(10 - (Date.now() - startTime) / 1000)) : 10;
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 md:py-8 space-y-6 sm:space-y-8">
+      {loading && (
+        <LoadingProgress
+          progress={progress}
+          currentStep={currentStep}
+          estimatedTimeLeft={estimatedTimeLeft}
+        />
+      )}
 
       <div className="card shadow-lg">
         <div className="space-y-6">

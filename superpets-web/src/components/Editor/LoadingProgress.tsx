@@ -1,4 +1,5 @@
 import { Sparkles, Loader2 } from 'lucide-react';
+import { useMemo } from 'react';
 
 interface LoadingProgressProps {
   progress: number; // 0-100
@@ -6,7 +7,20 @@ interface LoadingProgressProps {
   estimatedTimeLeft?: number; // in seconds
 }
 
+const PRO_TIPS = [
+  { emoji: '💡', text: 'Each image uses 1 credit' },
+  { emoji: '⚡', text: 'Try different heroes for unique styles' },
+  { emoji: '🎨', text: 'Higher quality images work best' },
+  { emoji: '🦸', text: 'Each generation is unique every time' },
+  { emoji: '✨', text: 'You can generate up to 10 images at once' },
+  { emoji: '🎯', text: 'Clear pet photos give better results' },
+  { emoji: '🔥', text: 'Check out the gallery for inspiration' },
+];
+
 export function LoadingProgress({ progress, currentStep, estimatedTimeLeft }: LoadingProgressProps) {
+  const randomTip = useMemo(() => {
+    return PRO_TIPS[Math.floor(Math.random() * PRO_TIPS.length)];
+  }, []);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 space-y-6">
@@ -57,7 +71,7 @@ export function LoadingProgress({ progress, currentStep, estimatedTimeLeft }: Lo
         {/* Fun Tips */}
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
           <p className="text-sm text-purple-900 text-center">
-            💡 <span className="font-medium">Pro Tip:</span> Each image uses 1 credit
+            {randomTip.emoji} <span className="font-medium">Pro Tip:</span> {randomTip.text}
           </p>
         </div>
       </div>

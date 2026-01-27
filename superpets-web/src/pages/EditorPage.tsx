@@ -35,36 +35,28 @@ export function EditorPage() {
     setCurrentStep('Uploading your image...');
 
     const steps = [
-      { threshold: 15, message: 'Uploading your image...', duration: 1000 },
-      { threshold: 35, message: 'Processing with AI magic...', duration: 2000 },
-      { threshold: 60, message: 'Generating your superhero...', duration: 3000 },
-      { threshold: 85, message: 'Adding final touches...', duration: 2500 },
-      { threshold: 95, message: 'Almost there...', duration: 1500 },
+      { progress: 15, message: 'Uploading your image...', delay: 800 },
+      { progress: 35, message: 'Processing with AI magic...', delay: 1500 },
+      { progress: 60, message: 'Generating your superhero...', delay: 2500 },
+      { progress: 80, message: 'Adding final touches...', delay: 2000 },
+      { progress: 95, message: 'Almost there...', delay: 1500 },
     ];
 
-    let currentProgress = 0;
-    let stepIndex = 0;
+    const timers: NodeJS.Timeout[] = [];
+    let cumulativeDelay = 0;
 
-    const interval = setInterval(() => {
-      if (stepIndex < steps.length) {
-        const step = steps[stepIndex];
-        const increment = (step.threshold - currentProgress) / (step.duration / 100);
+    steps.forEach((step) => {
+      cumulativeDelay += step.delay;
+      const timer = setTimeout(() => {
+        setProgress(step.progress);
+        setCurrentStep(step.message);
+      }, cumulativeDelay);
+      timers.push(timer);
+    });
 
-        currentProgress += increment;
-
-        if (currentProgress >= step.threshold) {
-          currentProgress = step.threshold;
-          stepIndex++;
-          if (stepIndex < steps.length) {
-            setCurrentStep(steps[stepIndex].message);
-          }
-        }
-
-        setProgress(Math.min(currentProgress, 95));
-      }
-    }, 100);
-
-    return () => clearInterval(interval);
+    return () => {
+      timers.forEach(timer => clearTimeout(timer));
+    };
   }, [loading]);
 
   // Complete progress when result is received

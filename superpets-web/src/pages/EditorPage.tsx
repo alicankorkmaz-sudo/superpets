@@ -55,15 +55,6 @@ export function EditorPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 md:py-8 space-y-6 sm:space-y-8">
-      {/* Hero Section */}
-      <div className="text-center mb-4 sm:mb-6 md:mb-8">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-2 sm:mb-3">
-          Transform Your Pet into a Superhero
-        </h1>
-        <p className="text-gray-600 text-sm sm:text-base md:text-lg px-2">
-          Upload a photo, choose a hero, and watch the magic happen ✨
-        </p>
-      </div>
 
       <div className="card shadow-lg">
         <div className="space-y-6">

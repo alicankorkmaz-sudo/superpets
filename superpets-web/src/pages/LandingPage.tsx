@@ -1,4 +1,4 @@
-import { Sparkles, Zap, Shield, Heart, ArrowRight } from 'lucide-react';
+import { Zap, Shield, Heart, ArrowRight } from 'lucide-react';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -30,62 +30,39 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16 md:py-20 text-center">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
-            Transform Your Pet into a
+            Turn Your Pet into a
             <span className="block bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
               Superhero
             </span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed px-2">
-            Powered by cutting-edge AI, SuperPets transforms your beloved pets into epic superheroes.
-            Upload a photo, choose from 29+ unique heroes, and watch the magic unfold.
+            Upload a photo, pick a hero, get results in seconds.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-            <button
-              onClick={onGetStarted}
-              className="btn-primary w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all"
-            >
-              Get Started Free
-              <ArrowRight size={20} className="sm:w-6 sm:h-6" />
-            </button>
-            <button
-              onClick={() => {
-                document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="btn-secondary w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg"
-            >
-              See How It Works
-            </button>
-          </div>
+          <button
+            onClick={onGetStarted}
+            className="btn-primary w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all mx-auto"
+          >
+            Try Free
+            <ArrowRight size={20} className="sm:w-6 sm:h-6" />
+          </button>
           <p className="text-xs sm:text-sm text-gray-500 mt-3 sm:mt-4">
-            ✨ Start with 5 free credits • No credit card required
+            Start with 5 free credits
           </p>
         </div>
       </section>
 
       {/* Features Section */}
       <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 max-w-3xl mx-auto">
           <div className="card text-center hover:shadow-xl transition-shadow">
             <div className="flex justify-center mb-4">
               <div className="bg-primary-100 p-4 rounded-full">
-                <Sparkles className="text-primary-600" size={32} />
+                <Shield className="text-primary-600" size={32} />
               </div>
             </div>
-            <h3 className="text-xl font-bold mb-3">AI-Powered Magic</h3>
+            <h3 className="text-xl font-bold mb-3">Dozens of Heroes</h3>
             <p className="text-gray-600">
-              Using Google's Nano Banana model via fal.ai, we create stunning superhero transformations while preserving your pet's unique features.
-            </p>
-          </div>
-
-          <div className="card text-center hover:shadow-xl transition-shadow">
-            <div className="flex justify-center mb-4">
-              <div className="bg-secondary-100 p-4 rounded-full">
-                <Shield className="text-secondary-600" size={32} />
-              </div>
-            </div>
-            <h3 className="text-xl font-bold mb-3">29+ Unique Heroes</h3>
-            <p className="text-gray-600">
-              Choose from classic superheroes or unique characters. Each hero has 10 different scene variations for unlimited creativity.
+              Classic superheroes and unique characters to choose from.
             </p>
           </div>
 
@@ -95,9 +72,9 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
                 <Zap className="text-green-600" size={32} />
               </div>
             </div>
-            <h3 className="text-xl font-bold mb-3">Lightning Fast</h3>
+            <h3 className="text-xl font-bold mb-3">Fast Results</h3>
             <p className="text-gray-600">
-              Generate up to 10 images in parallel. High-quality results in seconds, not minutes.
+              High-quality images generated in seconds.
             </p>
           </div>
         </div>
@@ -166,15 +143,12 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       {/* CTA Section */}
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 text-center text-white">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Ready to Transform Your Pet?</h2>
-          <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 opacity-90 px-2">
-            Join thousands of pet owners who've turned their furry friends into legendary heroes.
-          </p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8">Ready to get started?</h2>
           <button
             onClick={onGetStarted}
             className="bg-white text-primary-600 w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg hover:bg-gray-100 transition-colors shadow-xl hover:shadow-2xl inline-flex items-center justify-center gap-2"
           >
-            Start Creating for Free
+            Try Free
             <ArrowRight size={20} className="sm:w-6 sm:h-6" />
           </button>
         </div>

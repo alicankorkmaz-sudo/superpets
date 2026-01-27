@@ -34,12 +34,17 @@ export function EditorPage() {
     setProgress(0);
     setCurrentStep('Uploading your image...');
 
+    // Calculate estimated time based on number of images
+    // Base time: 10 seconds for 1 image, add 3 seconds per additional image
+    const estimatedTotalTime = 10 + (numImages - 1) * 3;
+    const timeMultiplier = estimatedTotalTime / 10; // Scale delays based on estimated time
+
     const steps = [
-      { progress: 15, message: 'Uploading your image...', delay: 800 },
-      { progress: 35, message: 'Processing with AI magic...', delay: 1500 },
-      { progress: 60, message: 'Generating your superhero...', delay: 2500 },
-      { progress: 80, message: 'Adding final touches...', delay: 2000 },
-      { progress: 95, message: 'Almost there...', delay: 1500 },
+      { progress: 15, message: 'Uploading your image...', delay: 800 * timeMultiplier },
+      { progress: 35, message: 'Processing with AI magic...', delay: 1500 * timeMultiplier },
+      { progress: 60, message: numImages > 1 ? `Generating ${numImages} superhero images...` : 'Generating your superhero...', delay: 2500 * timeMultiplier },
+      { progress: 80, message: 'Adding final touches...', delay: 2000 * timeMultiplier },
+      { progress: 95, message: 'Almost there...', delay: 1500 * timeMultiplier },
     ];
 
     const timers: NodeJS.Timeout[] = [];
@@ -57,7 +62,7 @@ export function EditorPage() {
     return () => {
       timers.forEach(timer => clearTimeout(timer));
     };
-  }, [loading]);
+  }, [loading, numImages]);
 
   // Complete progress when result is received
   useEffect(() => {
@@ -107,7 +112,10 @@ export function EditorPage() {
 
   const canGenerate = file !== null && selectedHeroId !== null && !loading && credits >= numImages;
 
-  const estimatedTimeLeft = startTime ? Math.max(0, Math.round(10 - (Date.now() - startTime) / 1000)) : 10;
+  // Calculate estimated time based on number of images
+  // Base time: 10 seconds for 1 image, add 3 seconds per additional image
+  const estimatedTotalTime = 10 + (numImages - 1) * 3;
+  const estimatedTimeLeft = startTime ? Math.max(0, Math.round(estimatedTotalTime - (Date.now() - startTime) / 1000)) : estimatedTotalTime;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 md:py-8 space-y-6 sm:space-y-8">

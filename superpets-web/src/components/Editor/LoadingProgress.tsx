@@ -12,9 +12,8 @@ const PRO_TIPS = [
   { emoji: '⚡', text: 'Try different heroes for unique styles' },
   { emoji: '🎨', text: 'Higher quality images work best' },
   { emoji: '🦸', text: 'Each generation is unique every time' },
-  { emoji: '✨', text: 'You can generate up to 10 images at once' },
+  { emoji: '✨', text: 'You can generate up to 5 images at once' },
   { emoji: '🎯', text: 'Clear pet photos give better results' },
-  { emoji: '🔥', text: 'Check out the gallery for inspiration' },
 ];
 
 export function LoadingProgress({ progress, currentStep, estimatedTimeLeft }: LoadingProgressProps) {

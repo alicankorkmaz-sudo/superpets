@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 
 export function AuthCallbackPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -46,7 +46,7 @@ export function AuthCallbackPage() {
         {status === 'loading' && (
           <>
             <div className="flex justify-center mb-6">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500"></div>
+              <Loader2 size={48} className="animate-spin text-primary-500" />
             </div>
             <h2 className="text-2xl font-bold mb-4">Confirming Your Email...</h2>
             <p className="text-gray-600">Please wait while we verify your email address.</p>

@@ -1,4 +1,4 @@
-import { LogOut, Coins, RefreshCw, ShoppingCart, Home, Shield } from 'lucide-react';
+import { LogOut, Coins, RefreshCw, ShoppingCart, Home, Shield, PawPrint } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCredits } from '../../contexts/CreditsContext';
 import { useState, useEffect } from 'react';
@@ -38,8 +38,9 @@ export function Header({ currentView = 'editor', onNavigate }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent flex-shrink-0">
-            🐾 Superpets
+          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent flex-shrink-0 flex items-center gap-1.5">
+            <PawPrint size={20} className="text-primary-500 sm:w-6 sm:h-6" />
+            Superpets
           </h1>
 
           {/* Desktop Navigation */}

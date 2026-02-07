@@ -61,8 +61,9 @@ export function ResultsGallery({ images, description }: ResultsGalleryProps) {
               <span className="text-white font-medium text-sm">Image {index + 1}</span>
               <button
                 onClick={() => downloadImage(image.url, index)}
-                className="bg-white text-gray-800 p-3 rounded-full hover:bg-primary-500 hover:text-white transition-all shadow-lg transform hover:scale-110 active:scale-95"
+                className="bg-white text-gray-800 p-3 rounded-full hover:bg-primary-500 hover:text-white transition-all shadow-lg sm:transform sm:hover:scale-110 active:scale-95"
                 title="Save image"
+                aria-label={`Save image ${index + 1}`}
               >
                 <Download size={20} />
               </button>

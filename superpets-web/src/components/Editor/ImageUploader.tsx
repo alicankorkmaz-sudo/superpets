@@ -115,7 +115,7 @@ export function ImageUploader({ file, onFileChange }: ImageUploaderProps) {
               e.stopPropagation();
               removeFile();
             }}
-            className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg"
+            className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all shadow-lg"
           >
             <X size={18} />
           </button>

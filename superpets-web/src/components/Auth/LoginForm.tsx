@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, AlertTriangle } from 'lucide-react';
 
 export function LoginForm({ onSwitchToSignup, onBack }: { onSwitchToSignup: () => void; onBack?: () => void }) {
   const [email, setEmail] = useState('');
@@ -67,7 +67,7 @@ export function LoginForm({ onSwitchToSignup, onBack }: { onSwitchToSignup: () =
           <span>Back to home</span>
         </button>
       )}
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center text-gray-900">
         Sign In to Superpets
       </h2>
 
@@ -99,8 +99,9 @@ export function LoginForm({ onSwitchToSignup, onBack }: { onSwitchToSignup: () =
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
-            {error}
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-start gap-3">
+            <AlertTriangle size={20} className="flex-shrink-0 mt-0.5" />
+            <p className="text-sm">{error}</p>
           </div>
         )}
 

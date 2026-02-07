@@ -12,7 +12,7 @@ import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import { CreditsProvider } from './contexts/CreditsContext';
 import { useState, useEffect } from 'react';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import * as Sentry from '@sentry/react';
 
 type View = 'editor' | 'pricing' | 'terms' | 'privacy' | 'admin';
@@ -106,7 +106,7 @@ function App() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
+          <Loader2 size={40} className="animate-spin text-primary-500 mx-auto" />
           <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { ResultsGallery } from '../components/Editor/ResultsGallery';
 import { LoadingProgress } from '../components/Editor/LoadingProgress';
 import { useImageEdit } from '../hooks/useImageEdit';
 import { useCredits } from '../contexts/CreditsContext';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Sparkles, AlertTriangle } from 'lucide-react';
 
 export function EditorPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -139,55 +139,58 @@ export function EditorPage() {
       )}
 
       <div className="card shadow-lg">
-        <div className="space-y-6">
-          <ImageUploader file={file} onFileChange={setFile} />
-
-          <div className="border-t border-gray-200 pt-6">
-            <HeroSelector selectedHeroId={selectedHeroId} onHeroSelect={setSelectedHeroId} />
-          </div>
-
-          <div className="border-t border-gray-200 pt-6">
-            <OutputSettings
-              numImages={numImages}
-              onNumImagesChange={handleNumImagesChange}
-              outputFormat={outputFormat}
-              onOutputFormatChange={setOutputFormat}
-            />
-          </div>
-
-          {(error || validationError) && (
-            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg flex items-start gap-3">
-              <span className="text-xl">⚠️</span>
-              <div>
-                <p className="font-medium">Error</p>
-                <p className="text-sm">{error || validationError}</p>
-              </div>
-            </div>
-          )}
-
-          <button
-            onClick={handleGenerate}
-            disabled={!canGenerate}
-            className="btn-primary w-full flex items-center justify-center gap-2 text-base sm:text-lg py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="animate-spin" size={20} />
-                <span className="text-sm sm:text-base">Generating Your Superhero...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles size={20} />
-                <span className="text-sm sm:text-base">Generate Images ({numImages} {numImages === 1 ? 'credit' : 'credits'})</span>
-              </>
-            )}
-          </button>
-        </div>
+        <ImageUploader file={file} onFileChange={setFile} />
       </div>
 
-      {result && (
+      <div className="card shadow-lg">
+        <HeroSelector selectedHeroId={selectedHeroId} onHeroSelect={setSelectedHeroId} />
+      </div>
+
+      <div className="card shadow-lg">
+        <OutputSettings
+          numImages={numImages}
+          onNumImagesChange={handleNumImagesChange}
+          outputFormat={outputFormat}
+          onOutputFormatChange={setOutputFormat}
+        />
+      </div>
+
+      {(error || validationError) && (
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-start gap-3">
+          <AlertTriangle size={20} className="flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium">Error</p>
+            <p className="text-sm">{error || validationError}</p>
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={handleGenerate}
+        disabled={!canGenerate}
+        className="btn-primary w-full flex items-center justify-center gap-2 text-base sm:text-lg py-3 sm:py-4 shadow-lg hover:shadow-xl transition-all"
+      >
+        {loading ? (
+          <>
+            <Loader2 className="animate-spin" size={20} />
+            <span className="text-sm sm:text-base">Generating Your Superhero...</span>
+          </>
+        ) : (
+          <>
+            <Sparkles size={20} />
+            <span className="text-sm sm:text-base">Generate Images ({numImages} {numImages === 1 ? 'credit' : 'credits'})</span>
+          </>
+        )}
+      </button>
+
+      {result ? (
         <div ref={resultsRef}>
           <ResultsGallery images={result.images} description={result.description} />
+        </div>
+      ) : (
+        <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 sm:p-12 text-center">
+          <Sparkles size={32} className="mx-auto text-gray-300 mb-3" />
+          <p className="text-sm text-gray-400">Your superhero images will appear here</p>
         </div>
       )}
     </div>

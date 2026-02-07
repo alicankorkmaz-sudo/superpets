@@ -1,4 +1,4 @@
-import { Zap, Shield, Heart, ArrowRight } from 'lucide-react';
+import { Zap, Shield, Heart, ArrowRight, PawPrint } from 'lucide-react';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -12,8 +12,9 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
           <div className="flex items-center">
-            <span className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              🐾 Superpets
+            <span className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent flex items-center gap-1.5">
+              <PawPrint size={20} className="text-primary-600 sm:w-6 sm:h-6" />
+              Superpets
             </span>
           </div>
           <button
@@ -28,9 +29,9 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16 md:py-20 text-center">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight text-gray-900">
             Turn Your Pet into a
-            <span className="block bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+            <span className="block text-primary-600">
               Superhero
             </span>
           </h1>
@@ -59,7 +60,7 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
                 <Shield className="text-primary-600" size={32} />
               </div>
             </div>
-            <h3 className="text-xl font-bold mb-3">Dozens of Heroes</h3>
+            <h3 className="text-xl font-semibold mb-3">Dozens of Heroes</h3>
             <p className="text-gray-600">
               Classic superheroes and unique characters to choose from.
             </p>
@@ -71,7 +72,7 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
                 <Zap className="text-green-600" size={32} />
               </div>
             </div>
-            <h3 className="text-xl font-bold mb-3">Fast Results</h3>
+            <h3 className="text-xl font-semibold mb-3">Fast Results</h3>
             <p className="text-gray-600">
               High-quality images generated in seconds.
             </p>
@@ -82,13 +83,13 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       {/* How It Works */}
       <section id="how-it-works" className="bg-white py-12 sm:py-16">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">How It Works</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-center mb-8 sm:mb-12 text-gray-900">How It Works</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             <div className="text-center">
               <div className="bg-primary-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 1
               </div>
-              <h3 className="text-lg font-bold mb-2">Upload Your Pet Photo</h3>
+              <h3 className="text-lg font-semibold mb-2">Upload Your Pet Photo</h3>
               <p className="text-gray-600">
                 Choose your favorite photo of your pet. Works with dogs, cats, and any furry friend!
               </p>
@@ -98,7 +99,7 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
               <div className="bg-primary-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 2
               </div>
-              <h3 className="text-lg font-bold mb-2">Select a Hero</h3>
+              <h3 className="text-lg font-semibold mb-2">Select a Hero</h3>
               <p className="text-gray-600">
                 Pick from classics like Superman and Batman, or unique characters like Cyber Ninja and Cosmic Guardian.
               </p>
@@ -108,7 +109,7 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
               <div className="bg-primary-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mx-auto mb-4">
                 3
               </div>
-              <h3 className="text-lg font-bold mb-2">Generate & Download</h3>
+              <h3 className="text-lg font-semibold mb-2">Generate & Download</h3>
               <p className="text-gray-600">
                 Our AI creates your superhero pet in seconds. Download in high quality and share with the world!
               </p>
@@ -119,14 +120,14 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
 
       {/* Pricing Teaser */}
       <section className="max-w-5xl mx-auto px-4 py-12 sm:py-16 text-center">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">Simple, Transparent Pricing</h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4 sm:mb-6 text-gray-900">Simple, Transparent Pricing</h2>
         <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 px-2">
           1 credit = 1 image. Start with 5 free credits, no credit card required.
         </p>
         <div className="inline-block card max-w-md hover:shadow-xl transition-shadow w-full sm:w-auto">
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
             <Heart className="text-red-500" size={28} />
-            <span className="text-xl sm:text-2xl md:text-3xl font-bold">New User Bonus</span>
+            <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900">New User Bonus</span>
           </div>
           <p className="text-4xl sm:text-5xl font-bold text-primary-600 mb-2">5 Free Credits</p>
           <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">Create 5 superhero images for free!</p>
@@ -142,10 +143,10 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       {/* CTA Section */}
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto px-4 text-center text-white">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8">Ready to get started?</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 sm:mb-8">Ready to get started?</h2>
           <button
             onClick={onGetStarted}
-            className="bg-white text-primary-600 w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg hover:bg-gray-100 transition-colors shadow-xl hover:shadow-2xl inline-flex items-center justify-center gap-2"
+            className="bg-white text-primary-600 w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg hover:bg-gray-100 transition-colors shadow-xl hover:shadow-2xl inline-flex items-center justify-center gap-2"
           >
             Try Free
             <ArrowRight size={20} className="sm:w-6 sm:h-6" />
@@ -156,8 +157,9 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center mb-4">
-            <span className="text-xl font-bold">🐾 Superpets</span>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <PawPrint size={20} className="text-gray-300" />
+            <span className="text-xl font-bold">Superpets</span>
           </div>
           <p className="text-gray-400 text-sm mb-4">
             Transform your pets into superheroes with AI-powered magic
@@ -182,7 +184,7 @@ export function LandingPage({ onGetStarted, onLogin }: LandingPageProps) {
             </button>
           </div>
           <p className="text-gray-500 text-xs mt-6">
-            © 2025 Superpets. All rights reserved.
+            © {new Date().getFullYear()} Superpets. All rights reserved.
           </p>
         </div>
       </footer>

@@ -1,4 +1,4 @@
-import { Coins, Loader2 } from 'lucide-react';
+import { Coins, Loader2, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { api } from '../lib/api';
 
@@ -39,20 +39,21 @@ export function PricingPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 py-8 sm:py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-900 mb-3 sm:mb-4">
             Buy Credits
           </h1>
           <p className="text-base sm:text-lg text-gray-600">
             1 credit = 1 image
           </p>
           {error && (
-            <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
+            <div className="mt-4 bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-start gap-3">
+              <AlertTriangle size={20} className="flex-shrink-0 mt-0.5" />
+              <p className="text-sm">{error}</p>
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {pricingTiers.map((tier) => (
             <div
               key={tier.credits}

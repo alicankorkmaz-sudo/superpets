@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { ArrowLeft, Mail } from 'lucide-react';
+import { ArrowLeft, Mail, AlertTriangle } from 'lucide-react';
 
 export function SignupForm({ onSwitchToLogin, onBack }: { onSwitchToLogin: () => void; onBack?: () => void }) {
   const [email, setEmail] = useState('');
@@ -66,7 +66,7 @@ export function SignupForm({ onSwitchToLogin, onBack }: { onSwitchToLogin: () =>
             <Mail className="text-primary-600" size={40} />
           </div>
         </div>
-        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900">
           Check Your Email
         </h2>
         <p className="text-gray-600 mb-6">
@@ -102,7 +102,7 @@ export function SignupForm({ onSwitchToLogin, onBack }: { onSwitchToLogin: () =>
           <span>Back to home</span>
         </button>
       )}
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center text-gray-900">
         Create your Superpets account
       </h2>
 
@@ -134,8 +134,9 @@ export function SignupForm({ onSwitchToLogin, onBack }: { onSwitchToLogin: () =>
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
-            {error}
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-start gap-3">
+            <AlertTriangle size={20} className="flex-shrink-0 mt-0.5" />
+            <p className="text-sm">{error}</p>
           </div>
         )}
 

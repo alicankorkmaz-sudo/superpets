@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   Search,
+  Loader2,
 } from 'lucide-react';
 
 interface AdminStats {
@@ -125,9 +126,9 @@ export function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto"></div>
+          <Loader2 size={48} className="animate-spin text-primary-500 mx-auto" />
           <p className="mt-4 text-gray-600">Loading admin dashboard...</p>
         </div>
       </div>
@@ -136,10 +137,10 @@ export function AdminDashboardPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md">
           <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">Access Denied</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2 text-center">Access Denied</h2>
           <p className="text-gray-600 text-center">{error}</p>
         </div>
       </div>
@@ -147,50 +148,50 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
-      <div className="max-w-7xl mx-auto p-6">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <Shield className="w-8 h-8 text-purple-600" />
-            <h1 className="text-4xl font-bold text-gray-800">Admin Dashboard</h1>
+            <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" />
+            <h1 className="text-2xl sm:text-4xl font-semibold text-gray-800">Admin Dashboard</h1>
           </div>
-          <p className="text-gray-600">Manage users, monitor activity, and view analytics</p>
+          <p className="text-sm sm:text-base text-gray-600">Manage users, monitor activity, and view analytics</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-6">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-6 py-3 rounded-lg font-medium transition-all ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all ${
               activeTab === 'overview'
-                ? 'bg-white text-purple-600 shadow-md'
+                ? 'bg-white text-primary-600 shadow-md'
                 : 'bg-white/50 text-gray-600 hover:bg-white/80'
             }`}
           >
-            <Activity className="w-5 h-5 inline mr-2" />
+            <Activity className="w-4 h-4 sm:w-5 sm:h-5 inline mr-1.5 sm:mr-2" />
             Overview
           </button>
           <button
             onClick={() => setActiveTab('users')}
-            className={`px-6 py-3 rounded-lg font-medium transition-all ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all ${
               activeTab === 'users'
-                ? 'bg-white text-purple-600 shadow-md'
+                ? 'bg-white text-primary-600 shadow-md'
                 : 'bg-white/50 text-gray-600 hover:bg-white/80'
             }`}
           >
-            <Users className="w-5 h-5 inline mr-2" />
+            <Users className="w-4 h-4 sm:w-5 sm:h-5 inline mr-1.5 sm:mr-2" />
             Users ({users.length})
           </button>
           <button
             onClick={() => setActiveTab('transactions')}
-            className={`px-6 py-3 rounded-lg font-medium transition-all ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all ${
               activeTab === 'transactions'
-                ? 'bg-white text-purple-600 shadow-md'
+                ? 'bg-white text-primary-600 shadow-md'
                 : 'bg-white/50 text-gray-600 hover:bg-white/80'
             }`}
           >
-            <CreditCard className="w-5 h-5 inline mr-2" />
+            <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 inline mr-1.5 sm:mr-2" />
             Transactions
           </button>
         </div>
@@ -234,7 +235,7 @@ export function AdminDashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-purple-600" />
+                  <Activity className="w-5 h-5 text-primary-600" />
                   User Activity
                 </h3>
                 <div className="space-y-3">
@@ -255,7 +256,7 @@ export function AdminDashboardPage() {
 
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-purple-600" />
+                  <TrendingUp className="w-5 h-5 text-primary-600" />
                   Edit Activity
                 </h3>
                 <div className="space-y-3">
@@ -282,7 +283,7 @@ export function AdminDashboardPage() {
           <div className="bg-white rounded-lg shadow-md">
             {/* Search and Filter */}
             <div className="p-4 border-b border-gray-200">
-              <div className="flex gap-4 items-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
                 <div className="flex-1 relative">
                   <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
@@ -290,14 +291,14 @@ export function AdminDashboardPage() {
                     placeholder="Search by email or user ID..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
                 </div>
                 <div className="flex gap-2">
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
                     <option value="createdAt">Date Joined</option>
                     <option value="credits">Credits</option>
@@ -314,8 +315,49 @@ export function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Users Table */}
-            <div className="overflow-x-auto">
+            {/* Users — Card layout on mobile, table on md+ */}
+            <div className="md:hidden divide-y divide-gray-200">
+              {filteredUsers.map((user) => (
+                <div key={user.uid} className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm font-medium text-gray-900 truncate max-w-[200px] flex items-center gap-2">
+                      {user.email}
+                      {user.isAdmin && (
+                        <span className="px-2 py-0.5 text-xs bg-primary-100 text-primary-700 rounded-full flex-shrink-0">
+                          Admin
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedUser(user);
+                        setShowUserModal(true);
+                      }}
+                      className="text-primary-600 hover:text-primary-900 text-sm font-medium flex-shrink-0"
+                    >
+                      Manage
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs text-gray-500">
+                    <div>
+                      <span className="block text-gray-900 text-sm font-medium">{user.credits}</span>
+                      credits
+                    </div>
+                    <div>
+                      <span className="block text-gray-900 text-sm font-medium">{user.totalEdits}</span>
+                      edits
+                    </div>
+                    <div>
+                      <span className="block text-gray-900 text-sm font-medium">{formatRelativeTime(user.lastActivity)}</span>
+                      last active
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Users Table — md+ only */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
@@ -348,7 +390,7 @@ export function AdminDashboardPage() {
                             <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
                               {user.email}
                               {user.isAdmin && (
-                                <span className="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">
+                                <span className="px-2 py-1 text-xs bg-primary-100 text-primary-700 rounded-full">
                                   Admin
                                 </span>
                               )}
@@ -381,7 +423,7 @@ export function AdminDashboardPage() {
                             setSelectedUser(user);
                             setShowUserModal(true);
                           }}
-                          className="text-purple-600 hover:text-purple-900"
+                          className="text-primary-600 hover:text-primary-900"
                         >
                           Manage
                         </button>
@@ -453,7 +495,7 @@ export function AdminDashboardPage() {
                     type="checkbox"
                     checked={selectedUser.isAdmin}
                     onChange={(e) => handleUpdateUser(selectedUser.uid, { isAdmin: e.target.checked })}
-                    className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                   />
                   <span className="text-sm font-medium text-gray-700">Admin User</span>
                 </label>
@@ -464,7 +506,7 @@ export function AdminDashboardPage() {
                   <input
                     type="number"
                     defaultValue={selectedUser.credits}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         const input = e.target as HTMLInputElement;
@@ -477,7 +519,7 @@ export function AdminDashboardPage() {
                       const input = (e.target as HTMLButtonElement).previousElementSibling as HTMLInputElement;
                       handleUpdateUser(selectedUser.uid, { credits: parseInt(input.value) });
                     }}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                   >
                     Update
                   </button>

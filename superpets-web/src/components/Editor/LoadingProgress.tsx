@@ -21,13 +21,13 @@ export function LoadingProgress({ progress, currentStep, estimatedTimeLeft }: Lo
     return PRO_TIPS[Math.floor(Math.random() * PRO_TIPS.length)];
   }, []);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Generating images">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 space-y-6" aria-live="polite">
         {/* Animated Icon */}
         <div className="flex justify-center">
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-50 animate-pulse"></div>
-            <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 p-6 rounded-full">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 rounded-full blur-xl opacity-50 animate-pulse"></div>
+            <div className="relative bg-gradient-to-r from-primary-500 to-secondary-500 p-6 rounded-full">
               <Sparkles className="w-10 h-10 text-white animate-pulse" />
             </div>
           </div>
@@ -43,7 +43,7 @@ export function LoadingProgress({ progress, currentStep, estimatedTimeLeft }: Lo
         <div className="space-y-3">
           <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
             <div
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500 ease-out"
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             >
               {/* Animated shine effect */}
@@ -68,8 +68,8 @@ export function LoadingProgress({ progress, currentStep, estimatedTimeLeft }: Lo
         )}
 
         {/* Fun Tips */}
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-          <p className="text-sm text-purple-900 text-center">
+        <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+          <p className="text-sm text-primary-900 text-center">
             {randomTip.emoji} <span className="font-medium">Pro Tip:</span> {randomTip.text}
           </p>
         </div>
